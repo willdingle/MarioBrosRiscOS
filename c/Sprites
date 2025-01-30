@@ -1,0 +1,184 @@
+#include "Sprites.h"
+
+osspriteop_area* loadSpriteFile(const char *filename, int *sizePoint, FILE *logFile)
+{
+	int size;
+	bits type;
+	
+	fileswitch_object_type objType;
+	
+	xosfile_read_stamped_no_path(
+		filename,
+		&objType,
+		NULL,
+		NULL,
+		&size,
+		NULL,
+		&type
+	);
+	fprintf(logFile, "sprite file size = %d\n", size);
+	fflush(logFile);
+	
+	size += sizeof(int);
+	osspriteop_area *area = malloc(size);
+	
+	area->size = size;
+	area->first = 16;
+	
+	xosspriteop_load_sprite_file(
+		osspriteop_USER_AREA,
+		area,
+		filename
+	);
+	
+	fprintf(logFile, "Loading sprites finished!\n");
+	fflush(logFile);
+	
+	*sizePoint = size;
+	
+	return area;
+}
+
+void selectSprite(
+	Sprite *sprite,
+	const char *spriteName,
+	const int numOfFrames,
+	osspriteop_area *area,
+	int size,
+	os_factors *factors,
+	int xEigFactor,
+	int yEigFactor,
+	FILE *logFile
+)
+{
+	/*
+	// Allocate arrays for headers and transition tables
+	sprite->headers = malloc(numOfFrames * sizeof(osspriteop_header*));
+	sprite->transTabs = malloc(numOfFrames * sizeof(osspriteop_trans_tab*));
+	char *frameNameTemp;
+	sprintf(frameNameTemp, "%s%d", spriteName, i);
+	const char *frameName = frameNameTemp;
+	fprintf(logFile, "Sprite name: %s\n", frameName);
+	fflush(logFile);
+	*/
+	osspriteop_header *header1, *header2, *header3, *header4;
+	osspriteop_trans_tab *transTab;
+	
+	os_error *e = xosspriteop_select_sprite(
+		osspriteop_USER_AREA,
+		area,
+		(osspriteop_id) "mario0",
+		&header1
+	);
+
+	if (e != NULL)
+	{
+		fprintf(logFile, "selecting sprite 0 failed\n"
+		"   errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+		fflush(logFile);
+	}
+	
+	e = xosspriteop_select_sprite(
+		osspriteop_USER_AREA,
+		area,
+		(osspriteop_id) "mario1",
+		&header2
+	);
+
+	if (e != NULL)
+	{
+		fprintf(logFile, "selecting sprite 1 failed\n"
+		"   errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+		fflush(logFile);
+	}
+	
+	e = xosspriteop_select_sprite(
+		osspriteop_USER_AREA,
+		area,
+		(osspriteop_id) "mario2",
+		&header3
+	);
+
+	if (e != NULL)
+	{
+		fprintf(logFile, "selecting sprite 2 failed\n"
+		"   errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+		fflush(logFile);
+	}
+	
+	e = xosspriteop_select_sprite(
+		osspriteop_USER_AREA,
+		area,
+		(osspriteop_id) "mario3",
+		&header4
+	);
+
+	if (e != NULL)
+	{
+		fprintf(logFile, "selecting sprite 3 failed\n"
+		"   errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+		fflush(logFile);
+	}
+	
+	//factors->xmul = 1<<(xEigFactor - 1);
+	//factors->ymul = 1<<(yEigFactor);
+	factors->xmul = 4;
+	factors->ymul = 4;
+	factors->xdiv = 1;
+	factors->ydiv = 1;
+	
+	//fprintf(logFile, "Sprite name: %s\n", "invader0");
+	//fflush(logFile);
+	
+	e = xcolourtrans_generate_table_for_sprite(
+		area,
+		(osspriteop_id) "mario0",
+		os_CURRENT_MODE,
+		colourtrans_CURRENT_PALETTE,
+		NULL,
+		colourtrans_CURRENT_IF_ABSENT | colourtrans_RETURN_WIDE_ENTRIES,
+		NULL,
+		NULL,
+		&size
+	);
+	
+	if (e != NULL)
+	{
+	   fprintf(logFile, "xcolourtrans_generate_table #1 failed\n"
+	   "   errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+	   fflush(logFile);
+	}
+	
+	fprintf(logFile, "colourtrans table size = %d\n", size);
+	fflush(logFile);
+	
+	transTab = malloc(size);
+	
+	e = xcolourtrans_generate_table_for_sprite(
+		area,
+		(osspriteop_id) "mario0",
+		os_CURRENT_MODE,
+		colourtrans_CURRENT_PALETTE,
+		transTab,
+		colourtrans_CURRENT_IF_ABSENT | colourtrans_RETURN_WIDE_ENTRIES,
+		NULL,
+		NULL,
+		&size
+	);
+	
+	if (e != NULL)
+	{
+	   fprintf(logFile, "xcolourtrans_generate_table #2 failed\n"
+	   "   errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+	   fflush(logFile);
+	}
+	
+	sprite->frame1 = header1;
+	sprite->frame2 = header2;
+	sprite->frame3 = header3;
+	sprite->frame4 = header4;
+	sprite->curFrame = sprite->frame1;
+	sprite->frame = 0;
+	sprite->transTab = transTab;
+	
+}

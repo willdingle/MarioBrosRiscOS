@@ -1,0 +1,3 @@
+Set MarioBros$Dir <Obey$Dir>
+IconSprites <MarioBros$Dir>.!Sprites
+Run <MarioBros$Dir>.RunImage

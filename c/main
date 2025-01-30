@@ -1,0 +1,251 @@
+#include "Window.h"
+
+#define WIN_NUM_BUF_SIZE 12
+
+wimp_t task;
+wimp_event_no event;
+wimp_block *block;
+osbool QUIT = FALSE;
+osbool more;
+osbool windowOpen;
+wimp_window *window;
+wimp_window_state state;
+wimp_w winHandle;
+wimp_caret caret;
+int context = 0;
+int used, data_used;
+char *data;
+
+osspriteop_area *area;
+os_factors factors;
+int size;
+
+FILE *logFile;
+
+//********** SCREEN MODE INFO **********
+typedef union
+{        
+   int numbers[14];
+
+   struct
+   {    
+      int modeFlags,
+          scrRCol,
+          scrBRow,
+          nColour,
+          xEigFactor,
+          yEigFactor,
+          lineLength,  
+          screenSize,
+          yShiftSize,
+          log2bpp,
+          log2bpc,
+          xWindLimit,
+          yWindLimit,
+          minScreenBanks;
+   }
+   info;
+}
+ModeInfo;                                 
+
+ModeInfo modeInfo;
+         
+void updateModeInfo()
+{                                      
+   for (int i = 0; i < 15; i++)
+   {
+      modeInfo.numbers[i] = i;
+   }
+
+   modeInfo.numbers[14] = -1;
+
+   os_error *e = xos_read_vdu_variables(
+					(os_vdu_var_list*)modeInfo.numbers, 
+                    modeInfo.numbers
+				);
+}	
+
+//********** ANIMATION TIMER **********
+
+os_t timer;
+void (*timerCallback)(void*);
+void *timerWorkspace;
+
+void initialiseTimer()
+{
+	timer = 0;
+	timerCallback = NULL;
+	timerWorkspace = NULL;
+}
+
+void setTimer(int cs, void (*callback)(void*), void *ws)
+{
+	timer = os_read_monotonic_time() + cs;
+	timerCallback = callback;
+	timerWorkspace = ws;
+}
+
+void updateTimer()
+{
+	if (timer > 0)
+	{
+		os_t time = os_read_monotonic_time();
+		
+		if (time >= timer)
+		{
+			timer = 0;
+			timerCallback(timerWorkspace); 
+		}
+	}
+}
+
+void updateGame(void *ws)
+{
+	Sprite* sprite = (Sprite*)ws;
+	
+	sprite->frame++;
+	//fprintf(logFile, "Frame counter: %d\n", sprite->frame);
+	
+	if (sprite->frame%2 == 0)
+	{
+		if (sprite->curFrame == sprite->frame1)
+			sprite->curFrame = sprite->frame2;
+		else if (sprite->curFrame == sprite->frame2)
+			sprite->curFrame = sprite->frame3;
+		else if (sprite->curFrame == sprite->frame3)
+			sprite->curFrame = sprite->frame4;
+		else if (sprite->curFrame == sprite->frame4)
+			sprite->curFrame = sprite->frame1;
+	}
+	
+	if (sprite->x < 0)
+	{
+		sprite->xDir = 5;
+		osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario0");
+		osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario1");
+		osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario2");
+		osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario3");
+	}
+	else if (sprite->x > 600)
+	{
+		sprite->xDir = -5;
+		osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario0");
+		osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario1");
+		osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario2");
+		osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario3");
+		
+	}
+	sprite->x += sprite->xDir;
+	
+	wimp_force_redraw(block->open.w, 0, 0, 1024, +960);
+	
+	setTimer(4, updateGame, ws);
+}
+
+
+
+//********** MAIN FUNCTION **********
+
+int main()
+{
+	windowOpen = FALSE;
+	logFile = fopen("<MarioBros$Dir>.Log", "w");
+	task = wimp_initialise(wimp_VERSION_RO3, "Pong", NULL, NULL);
+	updateModeInfo();
+	
+	//Load sprites
+	area = loadSpriteFile("<MarioBros$Dir>.mario", &size, logFile);
+	Sprite mario;
+	mario.x = 100;
+	mario.y = 100;
+	mario.xDir = 5;
+	selectSprite(
+		&mario, 
+		"mario",
+		2,
+		area, 
+		size,
+		&factors,
+		modeInfo.info.xEigFactor,
+		modeInfo.info.yEigFactor,
+		logFile
+	);
+	
+	//Load window
+	wimp_open_template("<MarioBros$Dir>.Templates");
+	wimp_load_template(wimp_GET_SIZE, NULL, NULL, wimp_NO_FONTS, "Main", context, &used, &data_used);
+	data = malloc(data_used);
+	window = malloc(used);
+	wimp_load_template(window, data, (char const *) data + data_used, wimp_NO_FONTS, "Main", context, NULL, NULL);
+	wimp_close_template();
+	block = (wimp_block*)malloc(sizeof(wimp_block));
+	loadWindowIntoBlock(&window, &block);
+	winHandle          = block->open.w;
+	addIconToBar();
+	xwimp_open_window(&block->open);
+	xwimp_get_caret_position(&(block->caret));
+	xwimp_set_caret_position(
+		winHandle,
+		-1,
+		-1,
+		-1,
+		-1,
+		block->caret.index
+	);
+	
+	// Set timer
+	initialiseTimer();
+	setTimer(64, updateGame, (void*)&mario);
+	
+	//*** MAIN LOOP ***
+	while (!QUIT)
+	{
+		//*** SCAN KEYBOARD INPUT ***
+		int keyFromOSByte;
+		os_byte(
+			osbyte_SCAN_KEYBOARD,
+			16,
+			NULL,
+			&keyFromOSByte,
+			NULL
+		);
+		if (keyFromOSByte != 255)
+		{
+			fprintf(logFile, "Key: %i\n", keyFromOSByte);
+			fflush(logFile);
+		}
+		
+		//*** WIMP POLL ***
+		event = wimp_poll(wimp_QUEUE_KEY, block, NULL);
+		switch(event)
+		{
+			case wimp_NULL_REASON_CODE:
+				updateTimer();
+				break;
+			case wimp_REDRAW_WINDOW_REQUEST:
+				redrawWindow(block, area, &mario, &factors, logFile);
+				break;
+			case wimp_MOUSE_CLICK:
+				fprintf(logFile, "mouse click\n");
+				fflush(logFile);
+				break;
+			case wimp_OPEN_WINDOW_REQUEST:
+				wimp_open_window(&block->open);
+				windowOpen = TRUE;
+				break;
+			case wimp_CLOSE_WINDOW_REQUEST:
+				wimp_close_window(block->close.w);
+				QUIT = TRUE;
+				break;
+			case wimp_USER_MESSAGE:
+			case wimp_USER_MESSAGE_RECORDED:
+				QUIT = TRUE;
+				break;
+		}
+	}
+
+	fclose(logFile);
+	free(window);
+	wimp_close_down(task);
+	return 0;
+}

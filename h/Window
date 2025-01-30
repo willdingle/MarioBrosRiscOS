@@ -1,0 +1,5 @@
+#include "Sprites.h"
+
+void redrawWindow(wimp_block *block, osspriteop_area *area, Sprite *sprite, os_factors *factors, FILE *logFile);
+void loadWindowIntoBlock(wimp_window **window, wimp_block **block);
+void addIconToBar();

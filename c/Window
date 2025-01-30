@@ -1,0 +1,61 @@
+#include "Window.h"
+
+void redrawWindow(wimp_block *block, osspriteop_area *area, Sprite *sprite, os_factors *factors, FILE *logFile)
+{
+	wimp_draw draw;
+	
+	draw.w = block->redraw.w;
+	draw.box = block->redraw.box;
+	
+	int more;
+	
+	xwimp_redraw_window(&draw, &more);
+	
+	while (more)
+	{
+		int x = draw.box.x0 - draw.xscroll;
+		int y = draw.box.y1 - draw.yscroll;
+		
+		os_error *e = xosspriteop_put_sprite_scaled(
+			osspriteop_PTR,
+			area,
+			(osspriteop_id) sprite->curFrame,
+			x + sprite->x,
+			y + sprite->y,
+			os_ACTION_OVERWRITE | osspriteop_GIVEN_WIDE_ENTRIES | 0x8,
+			factors,
+			sprite->transTab
+		);
+		
+		if (e != NULL)
+		{
+			fprintf(logFile, "xosspriteop_put_sprite_scaled failed\n"
+				"	errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+			fflush(logFile);
+		}
+		
+		xwimp_get_rectangle(&draw, &more);
+	}
+}
+
+void loadWindowIntoBlock(wimp_window **window, wimp_block **block)
+{
+	(*block)->open.w = wimp_create_window(*window);
+	(*block)->open.visible = (*window)->visible;
+	(*block)->open.xscroll = (*window)->xscroll;
+	(*block)->open.yscroll = (*window)->yscroll;
+	(*block)->open.next = (*window)->next;
+}
+
+void addIconToBar()
+{
+	wimp_icon_create IBCr;
+	IBCr.w = wimp_ICON_BAR_RIGHT;
+	IBCr.icon.extent.x0 = 0;
+	IBCr.icon.extent.y0 = 0;
+	IBCr.icon.extent.x1 = 68;
+	IBCr.icon.extent.y1 = 68;
+	IBCr.icon.flags = wimp_ICON_SPRITE | wimp_BUTTON_CLICK << wimp_ICON_BUTTON_TYPE_SHIFT;
+	strncpy(IBCr.icon.data.sprite, "!test", 12);
+	wimp_create_icon(&IBCr);
+}
