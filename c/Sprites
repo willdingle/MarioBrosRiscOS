@@ -178,6 +178,7 @@ void selectSprite(
 	sprite->frame3 = header3;
 	sprite->frame4 = header4;
 	sprite->curFrame = sprite->frame1;
+	sprite->facing = 'R';
 	sprite->frame = 0;
 	sprite->transTab = transTab;
 	

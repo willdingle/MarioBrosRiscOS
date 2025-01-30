@@ -18,9 +18,10 @@ typedef struct Sprite
 	osspriteop_header *curFrame;
 	int frame;
 	osspriteop_trans_tab *transTab;
-	int x;
-	int y;
-	int xDir;
+	float x;
+	float y;
+	float xSpeed;
+	char facing;
 }
 Sprite;
 

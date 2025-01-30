@@ -63,7 +63,40 @@ void updateModeInfo()
 					(os_vdu_var_list*)modeInfo.numbers, 
                     modeInfo.numbers
 				);
-}	
+}
+
+//********** KEYBOARD HANDLER **********
+void handleKey(int key, Sprite *mario)
+{
+	switch (key)
+	{
+		// Left arrow
+		case 25:
+			mario->x -= mario->xSpeed;
+			if (mario->facing == 'R')
+			{
+				osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario0");
+				osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario1");
+				osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario2");
+				osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario3");
+				mario->facing = 'L';
+			}
+			break;
+			
+		// Right arrow
+		case 121:
+			mario->x += mario->xSpeed;
+			if (mario->facing == 'L')
+			{
+				osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario0");
+				osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario1");
+				osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario2");
+				osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario3");
+				mario->facing = 'R';
+			}
+			break;
+	}
+}
 
 //********** ANIMATION TIMER **********
 
@@ -103,42 +136,43 @@ void updateGame(void *ws)
 {
 	Sprite* sprite = (Sprite*)ws;
 	
-	sprite->frame++;
-	//fprintf(logFile, "Frame counter: %d\n", sprite->frame);
-	
-	if (sprite->frame%2 == 0)
+	//*** SCAN KEYBOARD INPUT ***
+	int keyFromOSByte;
+	os_byte(
+		osbyte_SCAN_KEYBOARD,
+		16,
+		NULL,
+		&keyFromOSByte,
+		NULL
+	);
+	if (keyFromOSByte != 255)
 	{
-		if (sprite->curFrame == sprite->frame1)
-			sprite->curFrame = sprite->frame2;
-		else if (sprite->curFrame == sprite->frame2)
-			sprite->curFrame = sprite->frame3;
-		else if (sprite->curFrame == sprite->frame3)
-			sprite->curFrame = sprite->frame4;
-		else if (sprite->curFrame == sprite->frame4)
-			sprite->curFrame = sprite->frame1;
-	}
-	
-	if (sprite->x < 0)
-	{
-		sprite->xDir = 5;
-		osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario0");
-		osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario1");
-		osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario2");
-		osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario3");
-	}
-	else if (sprite->x > 600)
-	{
-		sprite->xDir = -5;
-		osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario0");
-		osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario1");
-		osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario2");
-		osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario3");
+		handleKey(keyFromOSByte, sprite);
 		
+		sprite->frame++;
+		//fprintf(logFile, "Frame counter: %d\n", sprite->frame);
+		
+		if (sprite->frame%2 == 0)
+		{
+			if (sprite->curFrame == sprite->frame1)
+				sprite->curFrame = sprite->frame2;
+			else if (sprite->curFrame == sprite->frame2)
+				sprite->curFrame = sprite->frame3;
+			else if (sprite->curFrame == sprite->frame3)
+				sprite->curFrame = sprite->frame4;
+			else if (sprite->curFrame == sprite->frame4)
+				sprite->curFrame = sprite->frame1;
+		}
+		
+		//fprintf(logFile, "Key: %i\n", keyFromOSByte);
+		//fflush(logFile);
 	}
-	sprite->x += sprite->xDir;
+	else
+	{
+		sprite->curFrame = sprite->frame1;
+	}
 	
 	wimp_force_redraw(block->open.w, 0, 0, 1024, +960);
-	
 	setTimer(4, updateGame, ws);
 }
 
@@ -158,7 +192,7 @@ int main()
 	Sprite mario;
 	mario.x = 100;
 	mario.y = 100;
-	mario.xDir = 5;
+	mario.xSpeed = 5;
 	selectSprite(
 		&mario, 
 		"mario",
@@ -200,21 +234,6 @@ int main()
 	//*** MAIN LOOP ***
 	while (!QUIT)
 	{
-		//*** SCAN KEYBOARD INPUT ***
-		int keyFromOSByte;
-		os_byte(
-			osbyte_SCAN_KEYBOARD,
-			16,
-			NULL,
-			&keyFromOSByte,
-			NULL
-		);
-		if (keyFromOSByte != 255)
-		{
-			fprintf(logFile, "Key: %i\n", keyFromOSByte);
-			fflush(logFile);
-		}
-		
 		//*** WIMP POLL ***
 		event = wimp_poll(wimp_QUEUE_KEY, block, NULL);
 		switch(event)
