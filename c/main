@@ -68,34 +68,101 @@ void updateModeInfo()
 //********** KEYBOARD HANDLER **********
 void handleKey(int key, Sprite *mario)
 {
-	switch (key)
+	int leftAr = 25;
+	int leftArPressed;
+	int rightAr = 121;
+	int rightArPressed;
+	int xKey = 66;
+	int xKeyPressed;
+	int keyPressed = 0;
+	
+	os_byte(
+		osbyte_SCAN_KEYBOARD,
+		leftAr ^ 0x80,
+		NULL,
+		&leftArPressed,
+		NULL
+	);
+	
+	os_byte(
+		osbyte_SCAN_KEYBOARD,
+		rightAr ^ 0x80,
+		NULL,
+		&rightArPressed,
+		NULL
+	);
+	
+	os_byte(
+		osbyte_SCAN_KEYBOARD,
+		xKey ^ 0x80,
+		NULL,
+		&xKeyPressed,
+		NULL
+	);
+	
+	//Left arrow - move left
+	if (leftArPressed)
 	{
-		// Left arrow
-		case 25:
-			mario->x -= mario->xSpeed;
-			if (mario->facing == 'R')
-			{
-				osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario0");
-				osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario1");
-				osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario2");
-				osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario3");
-				mario->facing = 'L';
-			}
-			break;
-			
-		// Right arrow
-		case 121:
-			mario->x += mario->xSpeed;
-			if (mario->facing == 'L')
-			{
-				osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario0");
-				osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario1");
-				osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario2");
-				osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario3");
-				mario->facing = 'R';
-			}
-			break;
+		mario->x -= mario->xSpeed;
+		if (mario->facing == 'R')
+		{
+			osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario0");
+			osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario1");
+			osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario2");
+			osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario3");
+			mario->facing = 'L';
+		}
+		keyPressed = 1;
 	}
+		
+	//Right arrow - move right
+	if (rightArPressed)
+	{
+		mario->x += mario->xSpeed;
+		if (mario->facing == 'L')
+		{
+			osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario0");
+			osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario1");
+			osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario2");
+			osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario3");
+			mario->facing = 'R';
+		}
+		keyPressed = 1;
+	}
+			
+	//X - jump
+	if (xKeyPressed)
+	{
+		mario->y += mario->xSpeed;
+		keyPressed = 1;
+	}
+	else
+	{
+		mario->y -= mario->xSpeed;
+	}
+	
+	//Update animation if key pressed, apply gravity and reset animation if not
+	if (keyPressed)
+	{
+		mario->frame++;
+		
+		if (mario->frame%2 == 0)
+		{
+			if (mario->curFrame == mario->frame1)
+				mario->curFrame = mario->frame2;
+			else if (mario->curFrame == mario->frame2)
+				mario->curFrame = mario->frame3;
+			else if (mario->curFrame == mario->frame3)
+				mario->curFrame = mario->frame4;
+			else if (mario->curFrame == mario->frame4)
+				mario->curFrame = mario->frame1;
+		}
+	}
+	else
+	{
+		mario->curFrame = mario->frame1;
+	}
+	
 }
 
 //********** ANIMATION TIMER **********
@@ -136,7 +203,7 @@ void updateGame(void *ws)
 {
 	Sprite* sprite = (Sprite*)ws;
 	
-	//*** SCAN KEYBOARD INPUT ***
+	//Get keyboard input and update player sprite if necessary
 	int keyFromOSByte;
 	os_byte(
 		osbyte_SCAN_KEYBOARD,
@@ -145,32 +212,17 @@ void updateGame(void *ws)
 		&keyFromOSByte,
 		NULL
 	);
-	if (keyFromOSByte != 255)
-	{
-		handleKey(keyFromOSByte, sprite);
-		
-		sprite->frame++;
-		//fprintf(logFile, "Frame counter: %d\n", sprite->frame);
-		
-		if (sprite->frame%2 == 0)
-		{
-			if (sprite->curFrame == sprite->frame1)
-				sprite->curFrame = sprite->frame2;
-			else if (sprite->curFrame == sprite->frame2)
-				sprite->curFrame = sprite->frame3;
-			else if (sprite->curFrame == sprite->frame3)
-				sprite->curFrame = sprite->frame4;
-			else if (sprite->curFrame == sprite->frame4)
-				sprite->curFrame = sprite->frame1;
-		}
-		
-		//fprintf(logFile, "Key: %i\n", keyFromOSByte);
-		//fflush(logFile);
-	}
-	else
-	{
-		sprite->curFrame = sprite->frame1;
-	}
+	handleKey(keyFromOSByte, sprite);
+	
+	//Bounds
+	if (sprite->x < 0)
+		sprite->x = 0;
+	else if (sprite->x > 1024)
+		sprite->x = 1024;
+	if (sprite->y < 0)
+		sprite->y = 0;
+	else if (sprite->y > 960)
+		sprite->y = 960;
 	
 	wimp_force_redraw(block->open.w, 0, 0, 1024, +960);
 	setTimer(4, updateGame, ws);
