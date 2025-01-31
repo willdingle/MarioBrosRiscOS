@@ -21,6 +21,7 @@ typedef struct Sprite
 	float x;
 	float y;
 	float xSpeed;
+	float ySpeed;
 	char facing;
 }
 Sprite;

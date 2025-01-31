@@ -56,6 +56,6 @@ void addIconToBar()
 	IBCr.icon.extent.x1 = 68;
 	IBCr.icon.extent.y1 = 68;
 	IBCr.icon.flags = wimp_ICON_SPRITE | wimp_BUTTON_CLICK << wimp_ICON_BUTTON_TYPE_SHIFT;
-	strncpy(IBCr.icon.data.sprite, "!test", 12);
+	strncpy(IBCr.icon.data.sprite, "mario0", 12);
 	wimp_create_icon(&IBCr);
 }

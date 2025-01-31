@@ -66,6 +66,9 @@ void updateModeInfo()
 }
 
 //********** KEYBOARD HANDLER **********
+const float gravity = -0.5;
+int isJumping = 0;
+
 void handleKey(int key, Sprite *mario)
 {
 	int leftAr = 25;
@@ -131,17 +134,20 @@ void handleKey(int key, Sprite *mario)
 	}
 			
 	//X - jump
-	if (xKeyPressed)
+	if (xKeyPressed && !isJumping)
 	{
-		mario->y += mario->xSpeed;
+		mario->ySpeed = 12.0;
 		keyPressed = 1;
-	}
-	else
-	{
-		mario->y -= mario->xSpeed;
+		isJumping = 1;
 	}
 	
-	//Update animation if key pressed, apply gravity and reset animation if not
+	if (isJumping)
+	{
+		mario->y += mario->ySpeed;
+		mario->ySpeed += gravity;
+	}
+	
+	//Update animation if key pressed, reset animation if not
 	if (keyPressed)
 	{
 		mario->frame++;
@@ -214,15 +220,20 @@ void updateGame(void *ws)
 	);
 	handleKey(keyFromOSByte, sprite);
 	
-	//Bounds
+	//Bounds - uses width, height and scaling factor
+		//NOTE: for some reason using scale factor 4 in the bound collisions works, despite
+		//using scale factor 2 with the sprites. X bound seems exact, Y bound slightly off
 	if (sprite->x < 0)
 		sprite->x = 0;
-	else if (sprite->x > 1024)
-		sprite->x = 1024;
+	else if ((sprite->x + 16 * 4) > 1024)
+		sprite->x = (1024 - 16 * 4);
 	if (sprite->y < 0)
+	{
+		isJumping = 0;
 		sprite->y = 0;
-	else if (sprite->y > 960)
-		sprite->y = 960;
+	}
+	else if ((sprite->y + 24 * 4) > 960)
+		sprite->y = (960 - 24 * 4);
 	
 	wimp_force_redraw(block->open.w, 0, 0, 1024, +960);
 	setTimer(4, updateGame, ws);
@@ -244,7 +255,8 @@ int main()
 	Sprite mario;
 	mario.x = 100;
 	mario.y = 100;
-	mario.xSpeed = 5;
+	mario.xSpeed = 7;
+	mario.ySpeed = 0;
 	selectSprite(
 		&mario, 
 		"mario",

@@ -122,8 +122,8 @@ void selectSprite(
 	
 	//factors->xmul = 1<<(xEigFactor - 1);
 	//factors->ymul = 1<<(yEigFactor);
-	factors->xmul = 4;
-	factors->ymul = 4;
+	factors->xmul = 2;
+	factors->ymul = 2;
 	factors->xdiv = 1;
 	factors->ydiv = 1;
 	
