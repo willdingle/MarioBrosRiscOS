@@ -15,6 +15,7 @@ typedef struct Sprite
 	osspriteop_header *frame2;
 	osspriteop_header *frame3;
 	osspriteop_header *frame4;
+	osspriteop_header *frameJump;
 	osspriteop_header *curFrame;
 	int frame;
 	osspriteop_trans_tab *transTab;
