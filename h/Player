@@ -1,0 +1,22 @@
+#ifndef PLAYER_H
+#define PLAYER_H
+
+#include "Sprites.h"
+
+typedef struct KeyCodes
+{
+	const int left;
+	const int right;
+	const int x;
+}
+KeyCodes;
+
+typedef struct GameInfo
+{
+	const float gravity;
+}
+GameInfo;
+
+void updatePlayer(Sprite *mario, osspriteop_area *area);
+
+#endif

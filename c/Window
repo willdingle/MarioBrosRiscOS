@@ -1,5 +1,7 @@
 #include "Window.h"
 
+#include <string.h>
+
 void redrawWindow(wimp_block *block, osspriteop_area *area, Sprite *sprite, os_factors *factors, FILE *logFile)
 {
 	wimp_draw draw;

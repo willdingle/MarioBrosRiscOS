@@ -1,0 +1,126 @@
+#include "Player.h"
+
+#include "oslib/osbyte.h"
+
+KeyCodes keys = {.left=25, .right=121, .x=66};
+GameInfo gameInfo = {.gravity = -0.5};
+
+void updatePlayer(Sprite *mario, osspriteop_area *area)
+{
+	int leftPressed;
+	int rightPressed;
+	int xPressed;
+	int keyPressed = 0;
+	
+	//Checks whether left arrow, right arrow and X have been pressed
+	os_byte(
+		osbyte_SCAN_KEYBOARD,
+		keys.left ^ 0x80,
+		NULL,
+		&leftPressed,
+		NULL
+	);
+	
+	os_byte(
+		osbyte_SCAN_KEYBOARD,
+		keys.right ^ 0x80,
+		NULL,
+		&rightPressed,
+		NULL
+	);
+	
+	os_byte(
+		osbyte_SCAN_KEYBOARD,
+		keys.x ^ 0x80,
+		NULL,
+		&xPressed,
+		NULL
+	);
+	
+	//Left arrow - move left
+	if (leftPressed)
+	{
+		mario->x -= mario->xSpeed;
+		if (mario->facing == 'R')
+		{
+			osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario_still");
+			osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario_run0");
+			osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario_acc");
+			osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario_run1");
+			osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario_jump");
+			mario->facing = 'L';
+		}
+		keyPressed = 1;
+	}
+		
+	//Right arrow - move right
+	if (rightPressed)
+	{
+		mario->x += mario->xSpeed;
+		if (mario->facing == 'L')
+		{
+			osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario_still");
+			osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario_run0");
+			osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario_acc");
+			osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario_run1");
+			osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario_jump");
+			mario->facing = 'R';
+		}
+		keyPressed = 1;
+	}
+			
+	//X - jump
+	if (xPressed && !(mario->isJumping))
+	{
+		mario->ySpeed = 12.0;
+		keyPressed = 1;
+		mario->isJumping = 1;
+		mario->curFrame = mario->jumpFrame;
+	}
+	
+	if (mario->isJumping)
+	{
+		mario->y += mario->ySpeed;
+		mario->ySpeed += gameInfo.gravity;
+	}
+	
+	//Update animation if key pressed, reset animation if not
+	if (keyPressed)
+	{
+		mario->frame++;
+		
+		if (mario->frame%2 == 0)
+		{
+			if (mario->curFrame == mario->stillFrame)
+				mario->curFrame = mario->run0Frame;
+			else if (mario->curFrame == mario->run0Frame)
+				mario->curFrame = mario->accFrame;
+			else if (mario->curFrame == mario->accFrame)
+				mario->curFrame = mario->run1Frame;
+			else if (mario->curFrame == mario->run1Frame)
+				mario->curFrame = mario->stillFrame;
+		}
+	}
+	else if (!(mario->isJumping))
+	{
+		mario->curFrame = mario->stillFrame;
+		mario->frame = 0;
+	}
+	
+	//Bounds - uses width, height and scaling factor
+		//NOTE: for some reason using scale factor 4 in the bound collisions works, despite
+		//using scale factor 2 with the sprites. X bound seems exact, Y bound slightly off
+	if (mario->x < 0)
+		mario->x = 0;
+	else if ((mario->x + 16 * 4) > 1024)
+		mario->x = (1024 - 16 * 4);
+	if (mario->y < 0)
+	{
+		mario->isJumping = 0;
+		mario->y = 0;
+		mario->curFrame = mario->stillFrame;
+	}
+	else if ((mario->y + 24 * 4) > 960)
+		mario->y = (960 - 24 * 4);
+	
+}

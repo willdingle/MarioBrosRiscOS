@@ -1,5 +1,9 @@
 #include "Sprites.h"
 
+#include "oslib/osfile.h"
+
+#include <stdlib.h>
+
 osspriteop_area* loadSpriteFile(const char *filename, int *sizePoint, FILE *logFile)
 {
 	int size;
@@ -61,19 +65,17 @@ void selectSprite(
 	fprintf(logFile, "Sprite name: %s\n", frameName);
 	fflush(logFile);
 	*/
-	osspriteop_header *header1, *header2, *header3, *header4, *headerJump;
-	osspriteop_trans_tab *transTab;
 	
 	os_error *e = xosspriteop_select_sprite(
 		osspriteop_USER_AREA,
 		area,
-		(osspriteop_id) "mario0",
-		&header1
+		(osspriteop_id) "mario_still",
+		&(sprite->stillFrame)
 	);
 
 	if (e != NULL)
 	{
-		fprintf(logFile, "selecting sprite 0 failed\n"
+		fprintf(logFile, "selecting mario_still failed\n"
 		"   errnum = %d: message = '%s'\n", e->errnum, e->errmess);
 		fflush(logFile);
 	}
@@ -81,13 +83,13 @@ void selectSprite(
 	e = xosspriteop_select_sprite(
 		osspriteop_USER_AREA,
 		area,
-		(osspriteop_id) "mario1",
-		&header2
+		(osspriteop_id) "mario_run0",
+		&(sprite->run0Frame)
 	);
 
 	if (e != NULL)
 	{
-		fprintf(logFile, "selecting sprite 1 failed\n"
+		fprintf(logFile, "selecting mario_run0 failed\n"
 		"   errnum = %d: message = '%s'\n", e->errnum, e->errmess);
 		fflush(logFile);
 	}
@@ -95,13 +97,13 @@ void selectSprite(
 	e = xosspriteop_select_sprite(
 		osspriteop_USER_AREA,
 		area,
-		(osspriteop_id) "mario2",
-		&header3
+		(osspriteop_id) "mario_acc",
+		&(sprite->accFrame)
 	);
 
 	if (e != NULL)
 	{
-		fprintf(logFile, "selecting sprite 2 failed\n"
+		fprintf(logFile, "selecting mario_acc failed\n"
 		"   errnum = %d: message = '%s'\n", e->errnum, e->errmess);
 		fflush(logFile);
 	}
@@ -109,13 +111,13 @@ void selectSprite(
 	e = xosspriteop_select_sprite(
 		osspriteop_USER_AREA,
 		area,
-		(osspriteop_id) "mario3",
-		&header4
+		(osspriteop_id) "mario_run1",
+		&(sprite->run1Frame)
 	);
 
 	if (e != NULL)
 	{
-		fprintf(logFile, "selecting sprite 3 failed\n"
+		fprintf(logFile, "selecting mario_run1 failed\n"
 		"   errnum = %d: message = '%s'\n", e->errnum, e->errmess);
 		fflush(logFile);
 	}
@@ -123,13 +125,13 @@ void selectSprite(
 	e = xosspriteop_select_sprite(
 		osspriteop_USER_AREA,
 		area,
-		(osspriteop_id) "mariojump",
-		&headerJump
+		(osspriteop_id) "mario_jump",
+		&(sprite->jumpFrame)
 	);
 
 	if (e != NULL)
 	{
-		fprintf(logFile, "selecting jump sprite failed\n"
+		fprintf(logFile, "selecting mario_jump failed\n"
 		"   errnum = %d: message = '%s'\n", e->errnum, e->errmess);
 		fflush(logFile);
 	}
@@ -141,12 +143,9 @@ void selectSprite(
 	factors->xdiv = 1;
 	factors->ydiv = 1;
 	
-	//fprintf(logFile, "Sprite name: %s\n", "invader0");
-	//fflush(logFile);
-	
 	e = xcolourtrans_generate_table_for_sprite(
 		area,
-		(osspriteop_id) "mario0",
+		(osspriteop_id) "mario_still",
 		os_CURRENT_MODE,
 		colourtrans_CURRENT_PALETTE,
 		NULL,
@@ -166,14 +165,14 @@ void selectSprite(
 	fprintf(logFile, "colourtrans table size = %d\n", size);
 	fflush(logFile);
 	
-	transTab = malloc(size);
+	sprite->transTab = malloc(size);
 	
 	e = xcolourtrans_generate_table_for_sprite(
 		area,
-		(osspriteop_id) "mario0",
+		(osspriteop_id) "mario_still",
 		os_CURRENT_MODE,
 		colourtrans_CURRENT_PALETTE,
-		transTab,
+		sprite->transTab,
 		colourtrans_CURRENT_IF_ABSENT | colourtrans_RETURN_WIDE_ENTRIES,
 		NULL,
 		NULL,
@@ -187,14 +186,7 @@ void selectSprite(
 	   fflush(logFile);
 	}
 	
-	sprite->frame1 = header1;
-	sprite->frame2 = header2;
-	sprite->frame3 = header3;
-	sprite->frame4 = header4;
-	sprite->frameJump = headerJump;
-	sprite->curFrame = sprite->frame1;
+	sprite->curFrame = sprite->stillFrame;
 	sprite->facing = 'R';
 	sprite->frame = 0;
-	sprite->transTab = transTab;
-	
 }

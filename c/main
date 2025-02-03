@@ -1,4 +1,10 @@
 #include "Window.h"
+#include "Sprites.h"
+#include "Player.h"
+
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
 
 #define WIN_NUM_BUF_SIZE 12
 
@@ -21,6 +27,8 @@ os_factors factors;
 int size;
 
 FILE *logFile;
+
+
 
 //********** SCREEN MODE INFO **********
 typedef union
@@ -65,132 +73,9 @@ void updateModeInfo()
 				);
 }
 
-//********** KEYBOARD HANDLER **********
-const float gravity = -0.5;
-int isJumping = 0;
 
-void handleKey(Sprite *mario)
-{
-	int leftAr = 25;
-	int leftArPressed;
-	int rightAr = 121;
-	int rightArPressed;
-	int xKey = 66;
-	int xKeyPressed;
-	int keyPressed = 0;
-	
-	os_byte(
-		osbyte_SCAN_KEYBOARD,
-		leftAr ^ 0x80,
-		NULL,
-		&leftArPressed,
-		NULL
-	);
-	
-	os_byte(
-		osbyte_SCAN_KEYBOARD,
-		rightAr ^ 0x80,
-		NULL,
-		&rightArPressed,
-		NULL
-	);
-	
-	os_byte(
-		osbyte_SCAN_KEYBOARD,
-		xKey ^ 0x80,
-		NULL,
-		&xKeyPressed,
-		NULL
-	);
-	
-	//Left arrow - move left
-	if (leftArPressed)
-	{
-		mario->x -= mario->xSpeed;
-		if (mario->facing == 'R')
-		{
-			osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario0");
-			osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario1");
-			osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario2");
-			osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario3");
-			osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mariojump");
-			mario->facing = 'L';
-		}
-		keyPressed = 1;
-	}
-		
-	//Right arrow - move right
-	if (rightArPressed)
-	{
-		mario->x += mario->xSpeed;
-		if (mario->facing == 'L')
-		{
-			osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario0");
-			osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario1");
-			osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario2");
-			osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario3");
-			osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mariojump");
-			mario->facing = 'R';
-		}
-		keyPressed = 1;
-	}
-			
-	//X - jump
-	if (xKeyPressed && !isJumping)
-	{
-		mario->ySpeed = 12.0;
-		keyPressed = 1;
-		isJumping = 1;
-		mario->curFrame = mario->frameJump;
-	}
-	
-	if (isJumping)
-	{
-		mario->y += mario->ySpeed;
-		mario->ySpeed += gravity;
-	}
-	
-	//Update animation if key pressed, reset animation if not
-	if (keyPressed)
-	{
-		mario->frame++;
-		
-		if (mario->frame%2 == 0)
-		{
-			if (mario->curFrame == mario->frame1)
-				mario->curFrame = mario->frame2;
-			else if (mario->curFrame == mario->frame2)
-				mario->curFrame = mario->frame3;
-			else if (mario->curFrame == mario->frame3)
-				mario->curFrame = mario->frame4;
-			else if (mario->curFrame == mario->frame4)
-				mario->curFrame = mario->frame1;
-		}
-	}
-	else if (! isJumping)
-	{
-		mario->curFrame = mario->frame1;
-	}
-	
-	//Bounds - uses width, height and scaling factor
-		//NOTE: for some reason using scale factor 4 in the bound collisions works, despite
-		//using scale factor 2 with the sprites. X bound seems exact, Y bound slightly off
-	if (mario->x < 0)
-		mario->x = 0;
-	else if ((mario->x + 16 * 4) > 1024)
-		mario->x = (1024 - 16 * 4);
-	if (mario->y < 0)
-	{
-		isJumping = 0;
-		mario->y = 0;
-		mario->curFrame = mario->frame1;
-	}
-	else if ((mario->y + 24 * 4) > 960)
-		mario->y = (960 - 24 * 4);
-	
-}
 
-//********** ANIMATION TIMER **********
+//********** TIMER **********
 
 os_t timer;
 void (*timerCallback)(void*);
@@ -224,12 +109,15 @@ void updateTimer()
 	}
 }
 
+
+
+//********** UPDATE GAME **********
 void updateGame(void *ws)
 {
 	Sprite* sprite = (Sprite*)ws;
 	
-	//Get keyboard input and update player sprite if necessary
-	handleKey(sprite);
+	//Gets keyboard input and updates player accordingly
+	updatePlayer(sprite, area);
 	
 	wimp_force_redraw(block->open.w, 0, 0, 1024, +960);
 	setTimer(4, updateGame, ws);

@@ -1,21 +1,19 @@
-#include "oslib/wimp.h"
+#ifndef SPRITES_H
+#define SPRITES_H
+
 #include "oslib/osspriteop.h"
-#include "oslib/wimpreadsysinfo.h"
-#include "oslib/osfile.h"
 #include "oslib/os.h"
 #include "oslib/colourtrans.h"
-#include "oslib/osbyte.h"
-#include <stdlib.h>
-#include <string.h>
+
 #include <stdio.h>
 
 typedef struct Sprite
 {
-	osspriteop_header *frame1;
-	osspriteop_header *frame2;
-	osspriteop_header *frame3;
-	osspriteop_header *frame4;
-	osspriteop_header *frameJump;
+	osspriteop_header *stillFrame;
+	osspriteop_header *run0Frame;
+	osspriteop_header *accFrame;
+	osspriteop_header *run1Frame;
+	osspriteop_header *jumpFrame;
 	osspriteop_header *curFrame;
 	int frame;
 	osspriteop_trans_tab *transTab;
@@ -24,6 +22,7 @@ typedef struct Sprite
 	float xSpeed;
 	float ySpeed;
 	char facing;
+	int isJumping;
 }
 Sprite;
 
@@ -40,3 +39,5 @@ void selectSprite(
 	int yEigFactor,
 	FILE *logFile
 );
+
+#endif
