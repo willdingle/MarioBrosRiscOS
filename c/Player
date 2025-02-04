@@ -11,14 +11,24 @@ void updatePlayerAnimation(Sprite *mario)
 		
 	if (mario->frame%2 == 0)
 	{
-		if (mario->curFrame == mario->stillFrame)
-			mario->curFrame = mario->run0Frame;
-		else if (mario->curFrame == mario->run0Frame)
-			mario->curFrame = mario->accFrame;
-		else if (mario->curFrame == mario->accFrame)
-			mario->curFrame = mario->run1Frame;
-		else if (mario->curFrame == mario->run1Frame)
-			mario->curFrame = mario->stillFrame;
+		//If accelerating, switch between 3 frames
+		if (mario->xSpeed > 0 && mario->xSpeed < mario->xMaxSpeed)
+		{
+			if (mario->curFrame == mario->run0Frame)
+				mario->curFrame = mario->accFrame;
+			else if (mario->curFrame == mario->accFrame)
+				mario->curFrame = mario->run1Frame;
+			else
+				mario->curFrame = mario->run0Frame;
+		}
+		//If at full speed, switch between 2 frames
+		else if (mario->xSpeed == mario->xMaxSpeed)
+		{
+			if (mario->curFrame == mario->run0Frame)
+				mario->curFrame = mario->run1Frame;
+			else
+				mario->curFrame = mario->run0Frame;
+		}
 	}
 }
 
@@ -114,7 +124,7 @@ void updatePlayer(Sprite *mario, osspriteop_area *area)
 	}
 	
 	//Update animation if key pressed, reset animation if not
-	if (keyPressed)
+	if (keyPressed && !(mario->isJumping))
 	{
 		updatePlayerAnimation(mario);
 	}
