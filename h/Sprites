@@ -20,6 +20,8 @@ typedef struct Sprite
 	float x;
 	float y;
 	float xSpeed;
+	float xAcc;
+	float xMaxSpeed;
 	float ySpeed;
 	char facing;
 	int isJumping;

@@ -5,6 +5,23 @@
 KeyCodes keys = {.left=25, .right=121, .x=66};
 GameInfo gameInfo = {.gravity = -0.5};
 
+void updatePlayerAnimation(Sprite *mario)
+{
+	mario->frame++;
+		
+	if (mario->frame%2 == 0)
+	{
+		if (mario->curFrame == mario->stillFrame)
+			mario->curFrame = mario->run0Frame;
+		else if (mario->curFrame == mario->run0Frame)
+			mario->curFrame = mario->accFrame;
+		else if (mario->curFrame == mario->accFrame)
+			mario->curFrame = mario->run1Frame;
+		else if (mario->curFrame == mario->run1Frame)
+			mario->curFrame = mario->stillFrame;
+	}
+}
+
 void updatePlayer(Sprite *mario, osspriteop_area *area)
 {
 	int leftPressed;
@@ -40,7 +57,13 @@ void updatePlayer(Sprite *mario, osspriteop_area *area)
 	//Left arrow - move left
 	if (leftPressed)
 	{
+		if (mario->xSpeed < mario->xMaxSpeed)
+			mario->xSpeed += mario->xAcc;
+		if (mario->xSpeed > mario->xMaxSpeed)
+			mario->xSpeed = mario->xMaxSpeed;
+		
 		mario->x -= mario->xSpeed;
+		
 		if (mario->facing == 'R')
 		{
 			osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario_still");
@@ -56,7 +79,13 @@ void updatePlayer(Sprite *mario, osspriteop_area *area)
 	//Right arrow - move right
 	if (rightPressed)
 	{
+		if (mario->xSpeed < mario->xMaxSpeed)
+			mario->xSpeed += mario->xAcc;
+		if (mario->xSpeed > mario->xMaxSpeed)
+			mario->xSpeed = mario->xMaxSpeed;
+		
 		mario->x += mario->xSpeed;
+		
 		if (mario->facing == 'L')
 		{
 			osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario_still");
@@ -87,24 +116,13 @@ void updatePlayer(Sprite *mario, osspriteop_area *area)
 	//Update animation if key pressed, reset animation if not
 	if (keyPressed)
 	{
-		mario->frame++;
-		
-		if (mario->frame%2 == 0)
-		{
-			if (mario->curFrame == mario->stillFrame)
-				mario->curFrame = mario->run0Frame;
-			else if (mario->curFrame == mario->run0Frame)
-				mario->curFrame = mario->accFrame;
-			else if (mario->curFrame == mario->accFrame)
-				mario->curFrame = mario->run1Frame;
-			else if (mario->curFrame == mario->run1Frame)
-				mario->curFrame = mario->stillFrame;
-		}
+		updatePlayerAnimation(mario);
 	}
 	else if (!(mario->isJumping))
 	{
 		mario->curFrame = mario->stillFrame;
 		mario->frame = 0;
+		mario->xSpeed = 0;
 	}
 	
 	//Bounds - uses width, height and scaling factor

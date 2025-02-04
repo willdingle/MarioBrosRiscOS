@@ -139,7 +139,9 @@ int main()
 	Sprite mario;
 	mario.x = 100;
 	mario.y = 100;
-	mario.xSpeed = 7;
+	mario.xSpeed = 0;
+	mario.xAcc = 0.5;
+	mario.xMaxSpeed = 7;
 	mario.ySpeed = 0;
 	selectSprite(
 		&mario, 
@@ -175,7 +177,7 @@ int main()
 		block->caret.index
 	);
 	
-	// Set timer
+	//Set timer
 	initialiseTimer();
 	setTimer(64, updateGame, (void*)&mario);
 	
