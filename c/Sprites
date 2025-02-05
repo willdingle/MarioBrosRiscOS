@@ -43,8 +43,105 @@ osspriteop_area* loadSpriteFile(const char *filename, int *sizePoint, FILE *logF
 	return area;
 }
 
-void selectSprite(
-	Sprite *sprite,
+void selectShellcreeperSprites(
+	Shellcreeper *shellcreeper,
+	osspriteop_area *area,
+	int size,
+	FILE *logFile
+)
+{
+	os_error *e = xosspriteop_select_sprite(
+		osspriteop_USER_AREA,
+		area,
+		(osspriteop_id) "sc_still",
+		&(shellcreeper->stillFrame)
+	);
+
+	if (e != NULL)
+	{
+		fprintf(logFile, "selecting sc_still failed\n"
+		"   errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+		fflush(logFile);
+	}
+	
+	e = xosspriteop_select_sprite(
+		osspriteop_USER_AREA,
+		area,
+		(osspriteop_id) "sc_walk0",
+		&(shellcreeper->walk0Frame)
+	);
+
+	if (e != NULL)
+	{
+		fprintf(logFile, "selecting sc_walk0 failed\n"
+		"   errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+		fflush(logFile);
+	}
+	
+	e = xosspriteop_select_sprite(
+		osspriteop_USER_AREA,
+		area,
+		(osspriteop_id) "sc_walk1",
+		&(shellcreeper->walk1Frame)
+	);
+
+	if (e != NULL)
+	{
+		fprintf(logFile, "selecting sc_walk1 failed\n"
+		"   errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+		fflush(logFile);
+	}
+	
+	e = xcolourtrans_generate_table_for_sprite(
+		area,
+		(osspriteop_id) "sc_still",
+		os_CURRENT_MODE,
+		colourtrans_CURRENT_PALETTE,
+		NULL,
+		colourtrans_CURRENT_IF_ABSENT | colourtrans_RETURN_WIDE_ENTRIES,
+		NULL,
+		NULL,
+		&size
+	);
+	
+	if (e != NULL)
+	{
+	   fprintf(logFile, "xcolourtrans_generate_table #1 failed\n"
+	   "   errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+	   fflush(logFile);
+	}
+	
+	fprintf(logFile, "colourtrans table size = %d\n", size);
+	fflush(logFile);
+	
+	shellcreeper->transTab = malloc(size);
+	
+	e = xcolourtrans_generate_table_for_sprite(
+		area,
+		(osspriteop_id) "sc_still",
+		os_CURRENT_MODE,
+		colourtrans_CURRENT_PALETTE,
+		shellcreeper->transTab,
+		colourtrans_CURRENT_IF_ABSENT | colourtrans_RETURN_WIDE_ENTRIES,
+		NULL,
+		NULL,
+		&size
+	);
+	
+	if (e != NULL)
+	{
+	   fprintf(logFile, "xcolourtrans_generate_table #2 failed\n"
+	   "   errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+	   fflush(logFile);
+	}
+	
+	shellcreeper->curFrame = shellcreeper->stillFrame;
+	shellcreeper->facing = 'R';
+	shellcreeper->frame = 0;
+}
+
+void selectPlayerSprites(
+	Player *mario,
 	const char *spriteName,
 	const int numOfFrames,
 	osspriteop_area *area,
@@ -70,7 +167,7 @@ void selectSprite(
 		osspriteop_USER_AREA,
 		area,
 		(osspriteop_id) "mario_still",
-		&(sprite->stillFrame)
+		&(mario->stillFrame)
 	);
 
 	if (e != NULL)
@@ -84,7 +181,7 @@ void selectSprite(
 		osspriteop_USER_AREA,
 		area,
 		(osspriteop_id) "mario_run0",
-		&(sprite->run0Frame)
+		&(mario->run0Frame)
 	);
 
 	if (e != NULL)
@@ -98,7 +195,7 @@ void selectSprite(
 		osspriteop_USER_AREA,
 		area,
 		(osspriteop_id) "mario_acc",
-		&(sprite->accFrame)
+		&(mario->accFrame)
 	);
 
 	if (e != NULL)
@@ -112,7 +209,7 @@ void selectSprite(
 		osspriteop_USER_AREA,
 		area,
 		(osspriteop_id) "mario_run1",
-		&(sprite->run1Frame)
+		&(mario->run1Frame)
 	);
 
 	if (e != NULL)
@@ -126,7 +223,7 @@ void selectSprite(
 		osspriteop_USER_AREA,
 		area,
 		(osspriteop_id) "mario_jump",
-		&(sprite->jumpFrame)
+		&(mario->jumpFrame)
 	);
 
 	if (e != NULL)
@@ -165,14 +262,14 @@ void selectSprite(
 	fprintf(logFile, "colourtrans table size = %d\n", size);
 	fflush(logFile);
 	
-	sprite->transTab = malloc(size);
+	mario->transTab = malloc(size);
 	
 	e = xcolourtrans_generate_table_for_sprite(
 		area,
 		(osspriteop_id) "mario_still",
 		os_CURRENT_MODE,
 		colourtrans_CURRENT_PALETTE,
-		sprite->transTab,
+		mario->transTab,
 		colourtrans_CURRENT_IF_ABSENT | colourtrans_RETURN_WIDE_ENTRIES,
 		NULL,
 		NULL,
@@ -186,7 +283,7 @@ void selectSprite(
 	   fflush(logFile);
 	}
 	
-	sprite->curFrame = sprite->stillFrame;
-	sprite->facing = 'R';
-	sprite->frame = 0;
+	mario->curFrame = mario->stillFrame;
+	mario->facing = 'R';
+	mario->frame = 0;
 }

@@ -1,0 +1,27 @@
+#ifndef ENEMY_H
+#define ENEMY_H
+
+#include "oslib/osspriteop.h"
+
+typedef struct Shellcreeper
+{
+	osspriteop_header *stillFrame;
+	osspriteop_header *walk0Frame;
+	osspriteop_header *walk1Frame;
+	osspriteop_header *curFrame;
+	int frame;
+	osspriteop_trans_tab *transTab;
+	float x;
+	float y;
+	float xSpeed;
+	float xMaxSpeed;
+	float ySpeed;
+	char facing;
+	int isFalling;
+}
+Shellcreeper;
+
+void updateShellcreeperAnimation(Shellcreeper *shellcreeper);
+void updateShellcreeper(Shellcreeper *shellcreeper, osspriteop_area *area);
+
+#endif

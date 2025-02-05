@@ -1,0 +1,51 @@
+#include "Enemy.h"
+
+void updateShellcreeperAnimation(Shellcreeper *shellcreeper)
+{
+	shellcreeper->frame++;
+	
+	if (shellcreeper->frame%2 == 0)
+	{
+		if (shellcreeper->xSpeed == shellcreeper->xMaxSpeed)
+		{
+			if (shellcreeper->curFrame == shellcreeper->walk0Frame)
+				shellcreeper->curFrame = shellcreeper->walk1Frame;
+			else
+				shellcreeper->curFrame = shellcreeper->walk0Frame;
+		}
+	}
+}
+
+void updateShellcreeper(Shellcreeper *shellcreeper, osspriteop_area *area)
+{
+	//Movement
+	if (shellcreeper->isFalling)
+	{
+		shellcreeper->ySpeed += -0.5;
+		shellcreeper->y -= shellcreeper->ySpeed;
+	}
+	if (shellcreeper->facing == 'L')
+		shellcreeper->x -= shellCreeper->xSpeed;
+	else if (shellcreeper->facing == 'R')
+		shellCreeper->x += shellCreeper->xSpeed;
+	
+	//Animation
+	if (!(shellcreeper->isFalling))
+	{
+		updateShellcreeperAnimation(shellcreeper);
+	}
+	
+	//Bounds
+	if (shellcreeper->x < 0)
+		shellcreeper->x = 0;
+	else if ((shellcreeper->x + 12 * 4) > 1024)
+		shellcreeper->x = (1024 - 12 * 4);
+	if (shellcreeper->y < 0)
+	{
+		shellcreeper->isFalling = 0;
+		shellcreeper->y = 0;
+		shellcreeper->ySpeed = 0;
+	}
+	else if ((shellcreeper->y + 16 * 4) > 960)
+		shellcreeper->y = (960 - 16 * 4);
+}

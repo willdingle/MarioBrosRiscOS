@@ -1,6 +1,7 @@
 #include "Window.h"
 #include "Sprites.h"
 #include "Player.h"
+#include "Enemy.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -23,6 +24,8 @@ int used, data_used;
 char *data;
 
 osspriteop_area *area;
+Player mario;
+Shellcreeper shellcreeper;
 os_factors factors;
 int size;
 
@@ -114,10 +117,10 @@ void updateTimer()
 //********** UPDATE GAME **********
 void updateGame(void *ws)
 {
-	Sprite* sprite = (Sprite*)ws;
+	Player* mario = (Player*)ws;
 	
 	//Gets keyboard input and updates player accordingly
-	updatePlayer(sprite, area);
+	updatePlayer(mario, area);
 	
 	wimp_force_redraw(block->open.w, 0, 0, 1024, +960);
 	setTimer(4, updateGame, ws);
@@ -134,16 +137,15 @@ int main()
 	task = wimp_initialise(wimp_VERSION_RO3, "Pong", NULL, NULL);
 	updateModeInfo();
 	
-	//Load sprites
-	area = loadSpriteFile("<MarioBros$Dir>.mario", &size, logFile);
-	Sprite mario;
+	//Load sprites and initialise entities
+	area = loadSpriteFile("<MarioBros$Dir>.!Sprites", &size, logFile);
 	mario.x = 100;
 	mario.y = 100;
 	mario.xSpeed = 0;
 	mario.xAcc = 0.5;
 	mario.xMaxSpeed = 7;
 	mario.ySpeed = 0;
-	selectSprite(
+	selectPlayerSprites(
 		&mario, 
 		"mario",
 		2,
@@ -152,6 +154,16 @@ int main()
 		&factors,
 		modeInfo.info.xEigFactor,
 		modeInfo.info.yEigFactor,
+		logFile
+	);
+	shellcreeper.x = 200;
+	shellcreeper.y = 100;
+	shellcreeper.xSpeed = 7;
+	shellcreeper.isFalling = 1;
+	selectShellcreeperSprites(
+		&shellcreeper,
+		area,
+		size,
 		logFile
 	);
 	
@@ -192,7 +204,7 @@ int main()
 				updateTimer();
 				break;
 			case wimp_REDRAW_WINDOW_REQUEST:
-				redrawWindow(block, area, &mario, &factors, logFile);
+				redrawWindow(block, area, &mario, &shellcreeper, &factors, logFile);
 				break;
 			case wimp_MOUSE_CLICK:
 				fprintf(logFile, "mouse click\n");

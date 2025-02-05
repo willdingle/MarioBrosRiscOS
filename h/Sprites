@@ -5,33 +5,22 @@
 #include "oslib/os.h"
 #include "oslib/colourtrans.h"
 
-#include <stdio.h>
+#include "Player.h"
+#include "Enemy.h"
 
-typedef struct Sprite
-{
-	osspriteop_header *stillFrame;
-	osspriteop_header *run0Frame;
-	osspriteop_header *accFrame;
-	osspriteop_header *run1Frame;
-	osspriteop_header *jumpFrame;
-	osspriteop_header *curFrame;
-	int frame;
-	osspriteop_trans_tab *transTab;
-	float x;
-	float y;
-	float xSpeed;
-	float xAcc;
-	float xMaxSpeed;
-	float ySpeed;
-	char facing;
-	int isJumping;
-}
-Sprite;
+#include <stdio.h>
 
 osspriteop_area* loadSpriteFile(const char *filename, int *sizePoint, FILE *logFile);
 
-void selectSprite(
-	Sprite *sprite,
+void selectShellcreeperSprites(
+	Shellcreeper *shellcreeper,
+	osspriteop_area *area,
+	int size,
+	FILE *logFile
+);
+
+void selectPlayerSprites(
+	Player *mario,
 	const char *spriteName,
 	const int numOfFrames,
 	osspriteop_area *area,

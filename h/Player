@@ -1,7 +1,28 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include "Sprites.h"
+#include "oslib/osspriteop.h"
+
+typedef struct Player
+{
+	osspriteop_header *stillFrame;
+	osspriteop_header *run0Frame;
+	osspriteop_header *accFrame;
+	osspriteop_header *run1Frame;
+	osspriteop_header *jumpFrame;
+	osspriteop_header *curFrame;
+	int frame;
+	osspriteop_trans_tab *transTab;
+	float x;
+	float y;
+	float xSpeed;
+	float xAcc;
+	float xMaxSpeed;
+	float ySpeed;
+	char facing;
+	int isJumping;
+}
+Player;
 
 typedef struct KeyCodes
 {
@@ -17,6 +38,6 @@ typedef struct GameInfo
 }
 GameInfo;
 
-void updatePlayer(Sprite *mario, osspriteop_area *area);
+void updatePlayer(Player *mario, osspriteop_area *area);
 
 #endif

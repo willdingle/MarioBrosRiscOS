@@ -5,7 +5,7 @@
 KeyCodes keys = {.left=25, .right=121, .x=66};
 GameInfo gameInfo = {.gravity = -0.5};
 
-void updatePlayerAnimation(Sprite *mario)
+void updatePlayerAnimation(Player *mario)
 {
 	mario->frame++;
 		
@@ -32,7 +32,7 @@ void updatePlayerAnimation(Sprite *mario)
 	}
 }
 
-void updatePlayer(Sprite *mario, osspriteop_area *area)
+void updatePlayer(Player *mario, osspriteop_area *area)
 {
 	int leftPressed;
 	int rightPressed;
@@ -150,5 +150,4 @@ void updatePlayer(Sprite *mario, osspriteop_area *area)
 	}
 	else if ((mario->y + 24 * 4) > 960)
 		mario->y = (960 - 24 * 4);
-	
 }
