@@ -4,14 +4,25 @@ void updateShellcreeperAnimation(Shellcreeper *shellcreeper)
 {
 	shellcreeper->frame++;
 	
-	if (shellcreeper->frame%2 == 0)
+	if (shellcreeper->frame % 4 == 0)
 	{
 		if (shellcreeper->xSpeed == shellcreeper->xMaxSpeed)
 		{
-			if (shellcreeper->curFrame == shellcreeper->walk0Frame)
-				shellcreeper->curFrame = shellcreeper->walk1Frame;
-			else
-				shellcreeper->curFrame = shellcreeper->walk0Frame;
+			if (shellcreeper->curFrame == shellcreeper->walk0Frame || shellcreeper->curFrame == shellcreeper->walk1Frame)
+				shellcreeper->curFrame = shellcreeper->stillFrame;
+			else if (shellcreeper->curFrame == shellcreeper->stillFrame)
+			{
+				if (shellcreeper->lastWalk == 0)
+				{
+					shellcreeper->curFrame = shellcreeper->walk1Frame;
+					shellcreeper->lastWalk = 1;
+				}
+				else
+				{
+					shellcreeper->curFrame = shellcreeper->walk0Frame;
+					shellcreeper->lastWalk = 0;
+				}
+			}
 		}
 	}
 }
@@ -22,12 +33,12 @@ void updateShellcreeper(Shellcreeper *shellcreeper, osspriteop_area *area)
 	if (shellcreeper->isFalling)
 	{
 		shellcreeper->ySpeed += -0.5;
-		shellcreeper->y -= shellcreeper->ySpeed;
+		shellcreeper->y += shellcreeper->ySpeed;
 	}
 	if (shellcreeper->facing == 'L')
-		shellcreeper->x -= shellCreeper->xSpeed;
+		shellcreeper->x -= shellcreeper->xSpeed;
 	else if (shellcreeper->facing == 'R')
-		shellCreeper->x += shellCreeper->xSpeed;
+		shellcreeper->x += shellcreeper->xSpeed;
 	
 	//Animation
 	if (!(shellcreeper->isFalling))
@@ -35,11 +46,13 @@ void updateShellcreeper(Shellcreeper *shellcreeper, osspriteop_area *area)
 		updateShellcreeperAnimation(shellcreeper);
 	}
 	
-	//Bounds
-	if (shellcreeper->x < 0)
-		shellcreeper->x = 0;
-	else if ((shellcreeper->x + 12 * 4) > 1024)
-		shellcreeper->x = (1024 - 12 * 4);
+	//Bounds - wrap around to other side when going off left or right side of screen
+	if (shellcreeper->x + 12 * 4 < 0)
+	{
+		shellcreeper->x = 1024;
+	}
+	//else if ((shellcreeper->x + 12 * 4) > 1024)
+	//	shellcreeper->x = (1024 - 12 * 4);
 	if (shellcreeper->y < 0)
 	{
 		shellcreeper->isFalling = 0;

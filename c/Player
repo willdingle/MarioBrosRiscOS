@@ -136,12 +136,13 @@ void updatePlayer(Player *mario, osspriteop_area *area)
 	}
 	
 	//Bounds - uses width, height and scaling factor
+	//Wrap around to other side when going off left or right side of screen
 		//NOTE: for some reason using scale factor 4 in the bound collisions works, despite
 		//using scale factor 2 with the sprites. X bound seems exact, Y bound slightly off
-	if (mario->x < 0)
-		mario->x = 0;
-	else if ((mario->x + 16 * 4) > 1024)
-		mario->x = (1024 - 16 * 4);
+	if (mario->x + 16*4 < 0)
+		mario->x = 1024;
+	else if (mario->x > 1024)
+		mario->x = 0 - 16*4;
 	if (mario->y < 0)
 	{
 		mario->isJumping = 0;

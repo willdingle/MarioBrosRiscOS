@@ -2,7 +2,8 @@ gcc -c -mlibscl -IOSLib: -o main.o main.c -std=c99
 gcc -c -mlibscl -IOSLib: -o Window.o Window.c -std=c99
 gcc -c -mlibscl -IOSLib: -o Sprites.o Sprites.c -std=c99
 gcc -c -mlibscl -IOSLib: -o Player.o Player.c -std=c99
-gcc -mlibscl -o !MarioBros/RunImage main.o Window.o Sprites.o Player.o -LOSLib: -lOSLib32
+gcc -c -mlibscl -IOSLib: -o Enemy.o Enemy.c -std=c99
+gcc -mlibscl -o !MarioBros/RunImage main.o Window.o Sprites.o Player.o Enemy.o -LOSLib: -lOSLib32
 
 SetType !MarioBros.RunImage &FF8
 Wipe o ~C

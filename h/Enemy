@@ -10,6 +10,7 @@ typedef struct Shellcreeper
 	osspriteop_header *walk1Frame;
 	osspriteop_header *curFrame;
 	int frame;
+	int lastWalk;
 	osspriteop_trans_tab *transTab;
 	float x;
 	float y;

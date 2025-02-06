@@ -121,6 +121,7 @@ void updateGame(void *ws)
 	
 	//Gets keyboard input and updates player accordingly
 	updatePlayer(mario, area);
+	updateShellcreeper(&shellcreeper, area);
 	
 	wimp_force_redraw(block->open.w, 0, 0, 1024, +960);
 	setTimer(4, updateGame, ws);
@@ -134,7 +135,7 @@ int main()
 {
 	windowOpen = FALSE;
 	logFile = fopen("<MarioBros$Dir>.Log", "w");
-	task = wimp_initialise(wimp_VERSION_RO3, "Pong", NULL, NULL);
+	task = wimp_initialise(wimp_VERSION_RO3, "Mario Bros", NULL, NULL);
 	updateModeInfo();
 	
 	//Load sprites and initialise entities
@@ -159,6 +160,7 @@ int main()
 	shellcreeper.x = 200;
 	shellcreeper.y = 100;
 	shellcreeper.xSpeed = 7;
+	shellcreeper.xMaxSpeed = 7;
 	shellcreeper.isFalling = 1;
 	selectShellcreeperSprites(
 		&shellcreeper,
