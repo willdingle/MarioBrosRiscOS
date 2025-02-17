@@ -2,6 +2,7 @@
 #include "Sprites.h"
 #include "Player.h"
 #include "Enemy.h"
+#include "Level.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -26,6 +27,7 @@ char *data;
 osspriteop_area *area;
 Player mario;
 Shellcreeper shellcreeper;
+Level level;
 os_factors factors;
 int size;
 
@@ -157,6 +159,7 @@ int main()
 		modeInfo.info.yEigFactor,
 		logFile
 	);
+	
 	shellcreeper.x = 200;
 	shellcreeper.y = 100;
 	shellcreeper.xSpeed = 7;
@@ -164,6 +167,14 @@ int main()
 	shellcreeper.isFalling = 1;
 	selectShellcreeperSprites(
 		&shellcreeper,
+		area,
+		size,
+		logFile
+	);
+	
+	selectLevelSprites(
+		1,
+		&level,
 		area,
 		size,
 		logFile
@@ -206,7 +217,7 @@ int main()
 				updateTimer();
 				break;
 			case wimp_REDRAW_WINDOW_REQUEST:
-				redrawWindow(block, area, &mario, &shellcreeper, &factors, logFile);
+				redrawWindow(block, area, &mario, &shellcreeper, &level, &factors, logFile);
 				break;
 			case wimp_MOUSE_CLICK:
 				fprintf(logFile, "mouse click\n");

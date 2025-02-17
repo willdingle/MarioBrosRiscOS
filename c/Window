@@ -2,7 +2,7 @@
 
 #include <string.h>
 
-void redrawWindow(wimp_block *block, osspriteop_area *area, Player *mario, Shellcreeper *shellcreeper, os_factors *factors, FILE *logFile)
+void redrawWindow(wimp_block *block, osspriteop_area *area, Player *mario, Shellcreeper *shellcreeper, Level *level, os_factors *factors, FILE *logFile)
 {
 	wimp_draw draw;
 	
@@ -18,7 +18,27 @@ void redrawWindow(wimp_block *block, osspriteop_area *area, Player *mario, Shell
 		int x = draw.box.x0 - draw.xscroll;
 		int y = draw.box.y1 - draw.yscroll;
 		
+		//Draw level
 		os_error *e = xosspriteop_put_sprite_scaled(
+			osspriteop_PTR,
+			area,
+			(osspriteop_id) level->floor,
+			x,
+			y,
+			os_ACTION_OVERWRITE | osspriteop_GIVEN_WIDE_ENTRIES | 0x8,
+			factors,
+			mario->transTab
+		);
+		
+		if (e != NULL)
+		{
+			fprintf(logFile, "Put level floor failed\n"
+				"	errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+			fflush(logFile);
+		}
+		
+		//Draw player
+		e = xosspriteop_put_sprite_scaled(
 			osspriteop_PTR,
 			area,
 			(osspriteop_id) mario->curFrame,
@@ -36,6 +56,7 @@ void redrawWindow(wimp_block *block, osspriteop_area *area, Player *mario, Shell
 			fflush(logFile);
 		}
 		
+		//Draw enemies
 		e = xosspriteop_put_sprite_scaled(
 			osspriteop_PTR,
 			area,

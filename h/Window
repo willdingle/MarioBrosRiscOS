@@ -5,7 +5,7 @@
 
 #include "oslib/wimp.h"
 
-void redrawWindow(wimp_block *block, osspriteop_area *area, Player *mario, Shellcreeper *shellcreeper, os_factors *factors, FILE *logFile);
+void redrawWindow(wimp_block *block, osspriteop_area *area, Player *mario, Shellcreeper *shellcreeper, Level *level, os_factors *factors, FILE *logFile);
 void loadWindowIntoBlock(wimp_window **window, wimp_block **block);
 void addIconToBar();
 

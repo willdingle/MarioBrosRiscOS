@@ -43,6 +43,57 @@ osspriteop_area* loadSpriteFile(const char *filename, int *sizePoint, FILE *logF
 	return area;
 }
 
+void selectLevelSprites(
+	int levelNum,
+	Level *level,
+	osspriteop_area *area,
+	int size,
+	FILE *logFile
+)
+{
+	os_error *e = xosspriteop_select_sprite(
+		osspriteop_USER_AREA,
+		area,
+		(osspriteop_id) "floor",
+		&(level->floor)
+	);
+
+	if (e != NULL)
+	{
+		fprintf(logFile, "selecting floor failed\n"
+		"   errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+		fflush(logFile);
+	}
+	
+	e = xosspriteop_select_sprite(
+		osspriteop_USER_AREA,
+		area,
+		(osspriteop_id) "pipe_bottom",
+		&(level->pipeBottom)
+	);
+
+	if (e != NULL)
+	{
+		fprintf(logFile, "selecting pipe_bottom failed\n"
+		"   errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+		fflush(logFile);
+	}
+	
+	e = xosspriteop_select_sprite(
+		osspriteop_USER_AREA,
+		area,
+		(osspriteop_id) "pipe_top",
+		&(level->pipeTop)
+	);
+
+	if (e != NULL)
+	{
+		fprintf(logFile, "selecting pipe_top failed\n"
+		"   errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+		fflush(logFile);
+	}
+}
+
 void selectShellcreeperSprites(
 	Shellcreeper *shellcreeper,
 	osspriteop_area *area,

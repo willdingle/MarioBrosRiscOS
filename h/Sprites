@@ -7,10 +7,19 @@
 
 #include "Player.h"
 #include "Enemy.h"
+#include "Level.h"
 
 #include <stdio.h>
 
 osspriteop_area* loadSpriteFile(const char *filename, int *sizePoint, FILE *logFile);
+
+void selectLevelSprites(
+	int levelNum,
+	Level *level,
+	osspriteop_area *area,
+	int size,
+	FILE *logFile
+);
 
 void selectShellcreeperSprites(
 	Shellcreeper *shellcreeper,

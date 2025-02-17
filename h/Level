@@ -1,0 +1,17 @@
+#ifndef LEVEL_H
+#define LEVEL_H
+
+#include "oslib/osspriteop.h"
+
+typedef struct Level
+{
+	int levelNum;
+	osspriteop_header *floor;
+	osspriteop_header *pipeBottom;
+	osspriteop_header *pipeTop;
+}
+Level;
+
+
+
+#endif
