@@ -37,6 +37,86 @@ void redrawWindow(wimp_block *block, osspriteop_area *area, Player *mario, Shell
 			fflush(logFile);
 		}
 		
+		e = xosspriteop_put_sprite_scaled(
+			osspriteop_PTR,
+			area,
+			(osspriteop_id) level->pipeBottom,
+			x + 1024 - (32*4),
+			y + (25 * 4),
+			os_ACTION_OVERWRITE | osspriteop_GIVEN_WIDE_ENTRIES | 0x8,
+			factors,
+			mario->transTab
+		);
+		
+		if (e != NULL)
+		{
+			fprintf(logFile, "Put pipe bottom right failed\n"
+				"	errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+			fflush(logFile);
+		}
+		
+		osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "pipe_bottom");
+		
+		e = xosspriteop_put_sprite_scaled(
+			osspriteop_PTR,
+			area,
+			(osspriteop_id) level->pipeBottom,
+			x,
+			y + (25 * 4),
+			os_ACTION_OVERWRITE | osspriteop_GIVEN_WIDE_ENTRIES | 0x8,
+			factors,
+			mario->transTab
+		);
+		
+		if (e != NULL)
+		{
+			fprintf(logFile, "Put pipe bottom left failed\n"
+				"	errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+			fflush(logFile);
+		}
+		
+		osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "pipe_bottom");
+		
+		e = xosspriteop_put_sprite_scaled(
+			osspriteop_PTR,
+			area,
+			(osspriteop_id) level->pipeTop,
+			x + 1024 - (48*4),
+			y + 896 - (56*4),
+			os_ACTION_OVERWRITE | osspriteop_GIVEN_WIDE_ENTRIES | 0x8,
+			factors,
+			mario->transTab
+		);
+		
+		if (e != NULL)
+		{
+			fprintf(logFile, "Put pipe top right failed\n"
+				"	errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+			fflush(logFile);
+		}
+		
+		osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "pipe_top");
+		
+		e = xosspriteop_put_sprite_scaled(
+			osspriteop_PTR,
+			area,
+			(osspriteop_id) level->pipeTop,
+			x,
+			y + 896 - (56*4),
+			os_ACTION_OVERWRITE | osspriteop_GIVEN_WIDE_ENTRIES | 0x8,
+			factors,
+			mario->transTab
+		);
+		
+		if (e != NULL)
+		{
+			fprintf(logFile, "Put pipe top left failed\n"
+				"	errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+			fflush(logFile);
+		}
+		
+		osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "pipe_top");
+		
 		//Draw player
 		e = xosspriteop_put_sprite_scaled(
 			osspriteop_PTR,

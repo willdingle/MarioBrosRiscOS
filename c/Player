@@ -143,12 +143,12 @@ void updatePlayer(Player *mario, osspriteop_area *area)
 		mario->x = 1024;
 	else if (mario->x > 1024)
 		mario->x = 0 - 16*4;
-	if (mario->y < 0)
+	if (mario->y < (16*4))
 	{
 		mario->isJumping = 0;
-		mario->y = 0;
+		mario->y = 16*4;
 		mario->curFrame = mario->stillFrame;
 	}
-	else if ((mario->y + 24 * 4) > 960)
-		mario->y = (960 - 24 * 4);
+	else if ((mario->y + 24 * 4) > 896)
+		mario->y = (896 - 24 * 4);
 }

@@ -53,10 +53,10 @@ void updateShellcreeper(Shellcreeper *shellcreeper, osspriteop_area *area)
 	}
 	//else if ((shellcreeper->x + 12 * 4) > 1024)
 	//	shellcreeper->x = (1024 - 12 * 4);
-	if (shellcreeper->y < 0)
+	if (shellcreeper->y < 16*4)
 	{
 		shellcreeper->isFalling = 0;
-		shellcreeper->y = 0;
+		shellcreeper->y = 16*4;
 		shellcreeper->ySpeed = 0;
 	}
 	else if ((shellcreeper->y + 16 * 4) > 960)

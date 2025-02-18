@@ -142,8 +142,8 @@ int main()
 	
 	//Load sprites and initialise entities
 	area = loadSpriteFile("<MarioBros$Dir>.!Sprites", &size, logFile);
-	mario.x = 100;
-	mario.y = 100;
+	mario.x = 150;
+	mario.y = 16*4;
 	mario.xSpeed = 0;
 	mario.xAcc = 0.5;
 	mario.xMaxSpeed = 7;
