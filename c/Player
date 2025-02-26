@@ -115,6 +115,7 @@ void updatePlayer(Player *mario, osspriteop_area *area)
 		keyPressed = 1;
 		mario->isJumping = 1;
 		mario->curFrame = mario->jumpFrame;
+		mario->curTransTab = mario->jumpTransTab;
 	}
 	
 	if (mario->isJumping)
@@ -148,6 +149,7 @@ void updatePlayer(Player *mario, osspriteop_area *area)
 		mario->isJumping = 0;
 		mario->y = 16*4;
 		mario->curFrame = mario->stillFrame;
+		mario->curTransTab = mario->mainTransTab;
 	}
 	else if ((mario->y + 24 * 4) > 896)
 		mario->y = (896 - 24 * 4);

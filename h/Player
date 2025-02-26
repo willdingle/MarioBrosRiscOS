@@ -12,7 +12,7 @@ typedef struct Player
 	osspriteop_header *jumpFrame;
 	osspriteop_header *curFrame;
 	int frame;
-	osspriteop_trans_tab *transTab;
+	osspriteop_trans_tab *mainTransTab, *jumpTransTab, *curTransTab;
 	float x;
 	float y;
 	float xSpeed;

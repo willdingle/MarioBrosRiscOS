@@ -27,7 +27,7 @@ void redrawWindow(wimp_block *block, osspriteop_area *area, Player *mario, Shell
 			y,
 			os_ACTION_OVERWRITE | osspriteop_GIVEN_WIDE_ENTRIES | 0x8,
 			factors,
-			mario->transTab
+			mario->mainTransTab
 		);
 		
 		if (e != NULL)
@@ -45,7 +45,7 @@ void redrawWindow(wimp_block *block, osspriteop_area *area, Player *mario, Shell
 			y + (25 * 4),
 			os_ACTION_OVERWRITE | osspriteop_GIVEN_WIDE_ENTRIES | 0x8,
 			factors,
-			mario->transTab
+			mario->mainTransTab
 		);
 		
 		if (e != NULL)
@@ -65,7 +65,7 @@ void redrawWindow(wimp_block *block, osspriteop_area *area, Player *mario, Shell
 			y + (25 * 4),
 			os_ACTION_OVERWRITE | osspriteop_GIVEN_WIDE_ENTRIES | 0x8,
 			factors,
-			mario->transTab
+			mario->mainTransTab
 		);
 		
 		if (e != NULL)
@@ -85,7 +85,7 @@ void redrawWindow(wimp_block *block, osspriteop_area *area, Player *mario, Shell
 			y + 896 - (56*4),
 			os_ACTION_OVERWRITE | osspriteop_GIVEN_WIDE_ENTRIES | 0x8,
 			factors,
-			mario->transTab
+			mario->mainTransTab
 		);
 		
 		if (e != NULL)
@@ -105,7 +105,7 @@ void redrawWindow(wimp_block *block, osspriteop_area *area, Player *mario, Shell
 			y + 896 - (56*4),
 			os_ACTION_OVERWRITE | osspriteop_GIVEN_WIDE_ENTRIES | 0x8,
 			factors,
-			mario->transTab
+			mario->mainTransTab
 		);
 		
 		if (e != NULL)
@@ -126,7 +126,7 @@ void redrawWindow(wimp_block *block, osspriteop_area *area, Player *mario, Shell
 			y + mario->y,
 			os_ACTION_OVERWRITE | osspriteop_GIVEN_WIDE_ENTRIES | 0x8,
 			factors,
-			mario->transTab
+			mario->curTransTab
 		);
 		
 		if (e != NULL)
@@ -177,6 +177,6 @@ void addIconToBar()
 	IBCr.icon.extent.x1 = 68;
 	IBCr.icon.extent.y1 = 68;
 	IBCr.icon.flags = wimp_ICON_SPRITE | wimp_BUTTON_CLICK << wimp_ICON_BUTTON_TYPE_SHIFT;
-	strncpy(IBCr.icon.data.sprite, "mario0", 12);
+	strncpy(IBCr.icon.data.sprite, "mario_still", 12);
 	wimp_create_icon(&IBCr);
 }

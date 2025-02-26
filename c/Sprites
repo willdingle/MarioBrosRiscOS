@@ -292,6 +292,7 @@ void selectPlayerSprites(
 	factors->xdiv = 1;
 	factors->ydiv = 1;
 	
+	//Trans tab for most player sprites
 	e = xcolourtrans_generate_table_for_sprite(
 		area,
 		(osspriteop_id) "mario_still",
@@ -314,14 +315,58 @@ void selectPlayerSprites(
 	fprintf(logFile, "colourtrans table size = %d\n", size);
 	fflush(logFile);
 	
-	mario->transTab = malloc(size);
+	mario->mainTransTab = malloc(size);
 	
 	e = xcolourtrans_generate_table_for_sprite(
 		area,
 		(osspriteop_id) "mario_still",
 		os_CURRENT_MODE,
 		colourtrans_CURRENT_PALETTE,
-		mario->transTab,
+		mario->mainTransTab,
+		colourtrans_CURRENT_IF_ABSENT | colourtrans_RETURN_WIDE_ENTRIES,
+		NULL,
+		NULL,
+		&size
+	);
+	
+	if (e != NULL)
+	{
+	   fprintf(logFile, "xcolourtrans_generate_table #2 failed\n"
+	   "   errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+	   fflush(logFile);
+	}
+	
+	//Trans tab for jump sprite
+	e = xcolourtrans_generate_table_for_sprite(
+		area,
+		(osspriteop_id) "mario_jump",
+		os_CURRENT_MODE,
+		colourtrans_CURRENT_PALETTE,
+		NULL,
+		colourtrans_CURRENT_IF_ABSENT | colourtrans_RETURN_WIDE_ENTRIES,
+		NULL,
+		NULL,
+		&size
+	);
+	
+	if (e != NULL)
+	{
+	   fprintf(logFile, "xcolourtrans_generate_table #1 failed\n"
+	   "   errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+	   fflush(logFile);
+	}
+	
+	fprintf(logFile, "colourtrans table size = %d\n", size);
+	fflush(logFile);
+	
+	mario->jumpTransTab = malloc(size);
+	
+	e = xcolourtrans_generate_table_for_sprite(
+		area,
+		(osspriteop_id) "mario_jump",
+		os_CURRENT_MODE,
+		colourtrans_CURRENT_PALETTE,
+		mario->jumpTransTab,
 		colourtrans_CURRENT_IF_ABSENT | colourtrans_RETURN_WIDE_ENTRIES,
 		NULL,
 		NULL,
@@ -336,6 +381,7 @@ void selectPlayerSprites(
 	}
 	
 	mario->curFrame = mario->stillFrame;
+	mario->curTransTab = mario->mainTransTab;
 	mario->facing = 'R';
 	mario->frame = 0;
 }
