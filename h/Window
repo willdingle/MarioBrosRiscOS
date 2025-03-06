@@ -4,7 +4,7 @@
 #include "Sprites.h"
 
 #include "oslib/wimp.h"
-
+void drawPlatforms(osspriteop_area *area, Level *level, os_factors *factors, int x, int y, FILE *logFile);
 void redrawWindow(wimp_block *block, osspriteop_area *area, Player *mario, Shellcreeper *shellcreeper, Level *level, os_factors *factors, FILE *logFile);
 void loadWindowIntoBlock(wimp_window **window, wimp_block **block);
 void addIconToBar();

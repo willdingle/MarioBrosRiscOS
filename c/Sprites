@@ -92,6 +92,74 @@ void selectLevelSprites(
 		"   errnum = %d: message = '%s'\n", e->errnum, e->errmess);
 		fflush(logFile);
 	}
+	
+	//Load platform tiles
+	osspriteop_id platId;
+	
+	switch(levelNum)
+	{
+		case 1:
+			platId = (osspriteop_id) "plat_blue";
+			break;
+	}
+	
+	e = xosspriteop_select_sprite(
+		osspriteop_USER_AREA,
+		area,
+		platId,
+		&(level->platTile)
+	);
+	
+	if (e != NULL)
+	{
+		fprintf(logFile, "selecting platform %d failed\n"
+		"   errnum = %d: message = '%s'\n", platId, e->errnum, e->errmess);
+		fflush(logFile);
+	}
+	
+	e = xcolourtrans_generate_table_for_sprite(
+		area,
+		platId,
+		os_CURRENT_MODE,
+		colourtrans_CURRENT_PALETTE,
+		NULL,
+		colourtrans_CURRENT_IF_ABSENT | colourtrans_RETURN_WIDE_ENTRIES,
+		NULL,
+		NULL,
+		&size
+	);
+	
+	if (e != NULL)
+	{
+	   fprintf(logFile, "xcolourtrans_generate_table #1 failed\n"
+	   "   errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+	   fflush(logFile);
+	}
+	
+	fprintf(logFile, "colourtrans table size = %d\n", size);
+	fflush(logFile);
+	
+	level->transTab = malloc(size);
+	
+	e = xcolourtrans_generate_table_for_sprite(
+		area,
+		platId,
+		os_CURRENT_MODE,
+		colourtrans_CURRENT_PALETTE,
+		level->transTab,
+		colourtrans_CURRENT_IF_ABSENT | colourtrans_RETURN_WIDE_ENTRIES,
+		NULL,
+		NULL,
+		&size
+	);
+	
+	if (e != NULL)
+	{
+	   fprintf(logFile, "xcolourtrans_generate_table #2 failed\n"
+	   "   errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+	   fflush(logFile);
+	}
+	
 }
 
 void selectShellcreeperSprites(

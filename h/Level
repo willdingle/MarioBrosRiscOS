@@ -9,6 +9,10 @@ typedef struct Level
 	osspriteop_header *floor;
 	osspriteop_header *pipeBottom;
 	osspriteop_header *pipeTop;
+	osspriteop_header *platTile;
+	osspriteop_header *platMoveTiles[3];
+	osspriteop_trans_tab *transTab;
+	int TLPlatCoords[14];
 }
 Level;
 

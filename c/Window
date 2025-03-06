@@ -2,6 +2,163 @@
 
 #include <string.h>
 
+void drawPlatforms(osspriteop_area *area, Level *level, os_factors *factors, int x, int y, FILE *logFile)
+{
+	//Top-left platform
+	for (int i = 0; i < 14; i++)
+	{
+		os_error *e = xosspriteop_put_sprite_scaled(
+			osspriteop_PTR,
+			area,
+			(osspriteop_id) level->platTile,
+			x + (i * 8 * factors->xmul * 2),
+			y + (152 * factors->ymul * 2),
+			os_ACTION_OVERWRITE | osspriteop_GIVEN_WIDE_ENTRIES | 0x8,
+			factors,
+			level->transTab
+		);
+		
+		if (e != NULL)
+		{
+			fprintf(logFile, "Put platform tile failed\n"
+				"	errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+			fflush(logFile);
+		}
+	}
+	
+	//Top-right platform
+	for (int i = 0; i < 14; i++)
+	{
+		os_error *e = xosspriteop_put_sprite_scaled(
+			osspriteop_PTR,
+			area,
+			(osspriteop_id) level->platTile,
+			x + (144 * factors->xmul * 2) + (i * 8 * factors->xmul * 2),
+			y + (152 * factors->ymul * 2),
+			os_ACTION_OVERWRITE | osspriteop_GIVEN_WIDE_ENTRIES | 0x8,
+			factors,
+			level->transTab
+		);
+		
+		if (e != NULL)
+		{
+			fprintf(logFile, "Put platform tile failed\n"
+				"	errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+			fflush(logFile);
+		}
+	}
+	
+	//Middle-left platform
+	for (int i = 0; i < 4; i++)
+	{
+		os_error *e = xosspriteop_put_sprite_scaled(
+			osspriteop_PTR,
+			area,
+			(osspriteop_id) level->platTile,
+			x + (i * 8 * factors->xmul * 2),
+			y + (96 * factors->ymul * 2),
+			os_ACTION_OVERWRITE | osspriteop_GIVEN_WIDE_ENTRIES | 0x8,
+			factors,
+			level->transTab
+		);
+		
+		if (e != NULL)
+		{
+			fprintf(logFile, "Put platform tile failed\n"
+				"	errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+			fflush(logFile);
+		}
+	}
+	
+	//Middle-right platform
+	for (int i = 0; i < 4; i++)
+	{
+		os_error *e = xosspriteop_put_sprite_scaled(
+			osspriteop_PTR,
+			area,
+			(osspriteop_id) level->platTile,
+			x + (224 * factors->xmul * 2) + (i * 8 * factors->xmul * 2),
+			y + (96 * factors->ymul * 2),
+			os_ACTION_OVERWRITE | osspriteop_GIVEN_WIDE_ENTRIES | 0x8,
+			factors,
+			level->transTab
+		);
+		
+		if (e != NULL)
+		{
+			fprintf(logFile, "Put platform tile failed\n"
+				"	errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+			fflush(logFile);
+		}
+	}
+	
+	//Middle platform
+	for (int i = 0; i < 16; i++)
+	{
+		os_error *e = xosspriteop_put_sprite_scaled(
+			osspriteop_PTR,
+			area,
+			(osspriteop_id) level->platTile,
+			x + (64 * factors->xmul * 2) + (i * 8 * factors->xmul * 2),
+			y + (104 * factors->ymul * 2),
+			os_ACTION_OVERWRITE | osspriteop_GIVEN_WIDE_ENTRIES | 0x8,
+			factors,
+			level->transTab
+		);
+		
+		if (e != NULL)
+		{
+			fprintf(logFile, "Put platform tile failed\n"
+				"	errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+			fflush(logFile);
+		}
+	}
+	
+	//Bottom-left platform
+	for (int i = 0; i < 12; i++)
+	{
+		os_error *e = xosspriteop_put_sprite_scaled(
+			osspriteop_PTR,
+			area,
+			(osspriteop_id) level->platTile,
+			x + (i * 8 * factors->xmul * 2),
+			y + (56 * factors->ymul * 2),
+			os_ACTION_OVERWRITE | osspriteop_GIVEN_WIDE_ENTRIES | 0x8,
+			factors,
+			level->transTab
+		);
+		
+		if (e != NULL)
+		{
+			fprintf(logFile, "Put platform tile failed\n"
+				"	errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+			fflush(logFile);
+		}
+	}
+	
+	//Bottom-right platform
+	for (int i = 0; i < 12; i++)
+	{
+		os_error *e = xosspriteop_put_sprite_scaled(
+			osspriteop_PTR,
+			area,
+			(osspriteop_id) level->platTile,
+			x + (160 * factors->xmul * 2) + (i * 8 * factors->xmul * 2),
+			y + (56 * factors->ymul * 2),
+			os_ACTION_OVERWRITE | osspriteop_GIVEN_WIDE_ENTRIES | 0x8,
+			factors,
+			level->transTab
+		);
+		
+		if (e != NULL)
+		{
+			fprintf(logFile, "Put platform tile failed\n"
+				"	errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+			fflush(logFile);
+		}
+	}
+}
+
 void redrawWindow(wimp_block *block, osspriteop_area *area, Player *mario, Shellcreeper *shellcreeper, Level *level, os_factors *factors, FILE *logFile)
 {
 	wimp_draw draw;
@@ -18,7 +175,7 @@ void redrawWindow(wimp_block *block, osspriteop_area *area, Player *mario, Shell
 		int x = draw.box.x0 - draw.xscroll;
 		int y = draw.box.y1 - draw.yscroll;
 		
-		//Draw level
+		//Draw floor
 		os_error *e = xosspriteop_put_sprite_scaled(
 			osspriteop_PTR,
 			area,
@@ -37,6 +194,7 @@ void redrawWindow(wimp_block *block, osspriteop_area *area, Player *mario, Shell
 			fflush(logFile);
 		}
 		
+		//Draw pipes
 		e = xosspriteop_put_sprite_scaled(
 			osspriteop_PTR,
 			area,
@@ -116,6 +274,9 @@ void redrawWindow(wimp_block *block, osspriteop_area *area, Player *mario, Shell
 		}
 		
 		osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "pipe_top");
+		
+		//Draw platforms
+		drawPlatforms(area, level, factors, x, y, logFile);
 		
 		//Draw player
 		e = xosspriteop_put_sprite_scaled(
