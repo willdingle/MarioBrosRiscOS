@@ -2,6 +2,7 @@
 #define PLAYER_H
 
 #include "oslib/osspriteop.h"
+#include "Level.h"
 
 typedef struct Player
 {
@@ -15,12 +16,15 @@ typedef struct Player
 	osspriteop_trans_tab *mainTransTab, *jumpTransTab, *curTransTab;
 	float x;
 	float y;
+	float width;
+	float height;
 	float xSpeed;
 	float xAcc;
 	float xMaxSpeed;
 	float ySpeed;
 	char facing;
 	int isJumping;
+	int isOnPlat;
 }
 Player;
 
@@ -38,6 +42,8 @@ typedef struct GameInfo
 }
 GameInfo;
 
-void updatePlayer(Player *mario, osspriteop_area *area);
+void platCollision(Player *mario, Level *level, int oldX, int oldY);
+void updatePlayerAnimation(Player *mario);
+void updatePlayer(Player *mario, Level *level, osspriteop_area *area);
 
 #endif

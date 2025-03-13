@@ -3,7 +3,68 @@
 #include "oslib/osbyte.h"
 
 KeyCodes keys = {.left=25, .right=121, .x=66};
-GameInfo gameInfo = {.gravity = -0.5};
+GameInfo gameInfo = {.gravity = -0.35};
+
+void platCollision(Player *mario, Level *level, int oldX, int oldY)
+{
+	float marX = mario->x;
+	float marY = mario->y;
+	float marWidth = mario->width * 4;
+	float marHeight = mario->height * 4;
+	
+	int onPlatDetected = 0;
+	
+	for (int i = 0; i < 7; i++)
+	{
+		float platX = level->plats[i].x;
+		float platY = level->plats[i].y;
+		float platWidth = level->plats[i].width;
+		float platHeight = level->plats[i].height;
+		
+		int colX = 0;
+		int colY = 0;
+		
+		//Downwards and upwards y
+		if (marX <= platX + platWidth && marX + marWidth >= platX && marY <= platY + platHeight && marY >= platY)
+		{
+			colY = 1;
+			mario->y = oldY + 1;
+			mario->ySpeed = 0;
+			mario->isJumping = 0;
+			mario->isOnPlat = 1;
+			onPlatDetected = 1;
+		}
+		else if (mario->ySpeed > 0)
+			if (marX <= platX + platWidth && marX + marWidth >= platX && marY + marHeight >= platY && marY + marHeight <= platY + platHeight)
+			{
+				colY = 1;
+				mario->y = oldY;
+				mario->ySpeed = 0;
+			}
+			
+		//Leftwards and rightwards x
+		if (mario->xSpeed < 0)
+			if (marX <= platX + platWidth && marX >= platX && marY <= platY + platWidth && marY + marHeight >= platY)
+			{
+				colX = 1;
+				mario->x = oldX;
+				mario->xSpeed = 0;
+			}
+		else if (mario->xSpeed > 0)
+			if (marX + marWidth > platX && marX + marWidth < platX + platWidth && marY <= platY + platWidth && marY + marHeight >= platY)
+			{
+				colX = 1;
+				mario->x = oldX;
+				mario->xSpeed = 0;
+			}
+	}
+	
+	//Update if mario is on platform
+	if (mario->isOnPlat && !onPlatDetected)
+	{
+		mario->isOnPlat = 0;
+	}
+}
 
 void updatePlayerAnimation(Player *mario)
 {
@@ -32,12 +93,14 @@ void updatePlayerAnimation(Player *mario)
 	}
 }
 
-void updatePlayer(Player *mario, osspriteop_area *area)
+void updatePlayer(Player *mario, Level *level, osspriteop_area *area)
 {
 	int leftPressed;
 	int rightPressed;
 	int xPressed;
 	int keyPressed = 0;
+	float oldX = mario->x;
+	float oldY = mario->y;
 	
 	//Checks whether left arrow, right arrow and X have been pressed
 	os_byte(
@@ -118,10 +181,14 @@ void updatePlayer(Player *mario, osspriteop_area *area)
 		mario->curTransTab = mario->jumpTransTab;
 	}
 	
+	//Platform collision
+	platCollision(mario, level, oldX, oldY);
+	
+	//Apply jump / fall
 	if (mario->isJumping)
 	{
-		mario->y += mario->ySpeed;
 		mario->ySpeed += gameInfo.gravity;
+		mario->y += mario->ySpeed;
 	}
 	
 	//Update animation if key pressed, reset animation if not
@@ -153,4 +220,6 @@ void updatePlayer(Player *mario, osspriteop_area *area)
 	}
 	else if ((mario->y + 24 * 4) > 896)
 		mario->y = (896 - 24 * 4);
+	
+	
 }

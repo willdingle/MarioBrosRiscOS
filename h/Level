@@ -3,6 +3,15 @@
 
 #include "oslib/osspriteop.h"
 
+typedef struct PlatformInfo
+{
+	float x;
+	float y;
+	float width;
+	float height;
+}
+PlatformInfo;
+
 typedef struct Level
 {
 	int levelNum;
@@ -12,10 +21,10 @@ typedef struct Level
 	osspriteop_header *platTile;
 	osspriteop_header *platMoveTiles[3];
 	osspriteop_trans_tab *transTab;
-	int TLPlatCoords[14];
+	
+	int platSize;
+	PlatformInfo plats[7];
 }
 Level;
-
-
 
 #endif
