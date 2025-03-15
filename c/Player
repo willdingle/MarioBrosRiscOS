@@ -14,7 +14,7 @@ void platCollision(Player *mario, Level *level, int oldX, int oldY)
 	
 	int onPlatDetected = 0;
 	
-	for (int i = 0; i < 7; i++)
+	for (int i = 0; i < 8; i++)
 	{
 		float platX = level->plats[i].x;
 		float platY = level->plats[i].y;
@@ -24,24 +24,6 @@ void platCollision(Player *mario, Level *level, int oldX, int oldY)
 		int colX = 0;
 		int colY = 0;
 		
-		//Downwards and upwards y
-		if (marX <= platX + platWidth && marX + marWidth >= platX && marY <= platY + platHeight && marY >= platY)
-		{
-			colY = 1;
-			mario->y = oldY + 1;
-			mario->ySpeed = 0;
-			mario->isJumping = 0;
-			mario->isOnPlat = 1;
-			onPlatDetected = 1;
-		}
-		else if (mario->ySpeed > 0)
-			if (marX <= platX + platWidth && marX + marWidth >= platX && marY + marHeight >= platY && marY + marHeight <= platY + platHeight)
-			{
-				colY = 1;
-				mario->y = oldY;
-				mario->ySpeed = 0;
-			}
-			
 		//Leftwards and rightwards x
 		if (mario->xSpeed < 0)
 			if (marX <= platX + platWidth && marX >= platX && marY <= platY + platWidth && marY + marHeight >= platY)
@@ -57,6 +39,26 @@ void platCollision(Player *mario, Level *level, int oldX, int oldY)
 				mario->x = oldX;
 				mario->xSpeed = 0;
 			}
+		
+		//Downwards and upwards y
+		if (marX <= platX + platWidth && marX + marWidth >= platX && marY <= platY + platHeight && marY >= platY)
+		{
+			colY = 1;
+			mario->y = platY + platHeight;
+			mario->ySpeed = 0;
+			mario->isJumping = 0;
+			mario->isOnPlat = 1;
+			onPlatDetected = 1;
+		}
+		else if (mario->ySpeed > 0)
+			if (marX <= platX + platWidth && marX + marWidth >= platX && marY + marHeight >= platY && marY + marHeight <= platY + platHeight)
+			{
+				colY = 1;
+				mario->y = oldY;
+				mario->ySpeed = 0;
+			}
+			
+		
 	}
 	
 	//Update if mario is on platform
@@ -181,8 +183,11 @@ void updatePlayer(Player *mario, Level *level, osspriteop_area *area)
 		mario->curTransTab = mario->jumpTransTab;
 	}
 	
-	//Platform collision
-	platCollision(mario, level, oldX, oldY);
+	//Check if walked off platform
+	if (!(mario->isJumping) && !(mario->isOnPlat) && mario->y + 16*4 > 1)
+	{
+		mario->isJumping = 1;
+	}
 	
 	//Apply jump / fall
 	if (mario->isJumping)
@@ -190,6 +195,9 @@ void updatePlayer(Player *mario, Level *level, osspriteop_area *area)
 		mario->ySpeed += gameInfo.gravity;
 		mario->y += mario->ySpeed;
 	}
+	
+	//Platform collision
+	platCollision(mario, level, oldX, oldY);
 	
 	//Update animation if key pressed, reset animation if not
 	if (keyPressed && !(mario->isJumping))
@@ -211,6 +219,7 @@ void updatePlayer(Player *mario, Level *level, osspriteop_area *area)
 		mario->x = 1024;
 	else if (mario->x > 1024)
 		mario->x = 0 - 16*4;
+	/*
 	if (mario->y < (16*4))
 	{
 		mario->isJumping = 0;
@@ -218,6 +227,7 @@ void updatePlayer(Player *mario, Level *level, osspriteop_area *area)
 		mario->curFrame = mario->stillFrame;
 		mario->curTransTab = mario->mainTransTab;
 	}
+	*/
 	else if ((mario->y + 24 * 4) > 896)
 		mario->y = (896 - 24 * 4);
 	

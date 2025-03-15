@@ -23,7 +23,7 @@ typedef struct Level
 	osspriteop_trans_tab *transTab;
 	
 	int platSize;
-	PlatformInfo plats[7];
+	PlatformInfo plats[8];
 }
 Level;
 

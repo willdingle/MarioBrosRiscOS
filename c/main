@@ -226,6 +226,12 @@ int main()
 		level.plats[6].y = 56 * factors.ymul * 2;		
 		level.plats[6].width = 12 * level.platSize * factors.xmul * 2;
 		level.plats[6].height = level.platSize * factors.ymul * 2;
+		
+		//Ground
+		level.plats[7].x = 0;
+		level.plats[7].y = 0;
+		level.plats[7].width = 1024;
+		level.plats[7].height = 16*4;
 	
 	//Load window
 	wimp_open_template("<MarioBros$Dir>.Templates");
