@@ -199,21 +199,21 @@ int main()
 		
 		//Middle-left
 		level.plats[2].x = 0;
-		level.plats[2].y = 0;		
-		level.plats[2].width = 0;
-		level.plats[2].height = 0;
+		level.plats[2].y = 96 * factors.ymul * 2;		
+		level.plats[2].width = 4 * level.platSize * factors.xmul * 2;
+		level.plats[2].height = level.platSize * factors.ymul * 2;
 		
 		//Middle-right
-		level.plats[3].x = 0;
-		level.plats[3].y = 0;		
-		level.plats[3].width = 0;
-		level.plats[3].height = 0;		
+		level.plats[3].x = 224 * factors.xmul * 2;
+		level.plats[3].y = 96 * factors.ymul * 2;		
+		level.plats[3].width = 4 * level.platSize * factors.xmul * 2;
+		level.plats[3].height = level.platSize * factors.ymul * 2;		
 		
 		//Middle
-		level.plats[4].x = 0;
-		level.plats[4].y = 0;		
-		level.plats[4].width = 0;
-		level.plats[4].height = 0;
+		level.plats[4].x = 64 * factors.xmul * 2;
+		level.plats[4].y = 104 * factors.ymul * 2;		
+		level.plats[4].width = 16 * level.platSize * factors.xmul * 2;
+		level.plats[4].height = level.platSize * factors.ymul * 2;
 		
 		//Bottom-left
 		level.plats[5].x = 0;
