@@ -207,6 +207,7 @@ void updatePlayer(Player *mario, Level *level, osspriteop_area *area)
 	else if (!(mario->isJumping))
 	{
 		mario->curFrame = mario->stillFrame;
+		mario->curTransTab = mario->mainTransTab;
 		mario->frame = 0;
 		mario->xSpeed = 0;
 	}
