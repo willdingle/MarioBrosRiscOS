@@ -3,7 +3,7 @@
 #include "oslib/osbyte.h"
 
 KeyCodes keys = {.left=25, .right=121, .x=66};
-GameInfo gameInfo = {.gravity = -0.35};
+GameInfo gameInfo = {.gravity = -0.98};
 
 void platCollision(Player *mario, Level *level, int oldX, int oldY)
 {
@@ -41,7 +41,7 @@ void platCollision(Player *mario, Level *level, int oldX, int oldY)
 			}
 		
 		//Downwards and upwards y
-		if (marX <= platX + platWidth && marX + marWidth >= platX && marY <= platY + platHeight && marY >= platY)
+		if ((marX <= platX + platWidth && marX + marWidth >= platX && marY <= platY + platHeight && marY >= platY) && !(mario->ySpeed > 0))
 		{
 			colY = 1;
 			mario->y = platY + platHeight;
@@ -176,7 +176,7 @@ void updatePlayer(Player *mario, Level *level, osspriteop_area *area)
 	//X - jump
 	if (xPressed && !(mario->isJumping))
 	{
-		mario->ySpeed = 15.0;
+		mario->ySpeed = 22.0;
 		keyPressed = 1;
 		mario->isJumping = 1;
 		mario->curFrame = mario->jumpFrame;

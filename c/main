@@ -148,8 +148,8 @@ int main()
 	mario.width = 16;
 	mario.height = 24;
 	mario.xSpeed = 0;
-	mario.xAcc = 0.5;
-	mario.xMaxSpeed = 8;
+	mario.xAcc = 1;
+	mario.xMaxSpeed = 12;
 	mario.ySpeed = 0;
 	selectPlayerSprites(
 		&mario, 
