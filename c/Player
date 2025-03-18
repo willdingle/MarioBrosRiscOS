@@ -72,7 +72,7 @@ void updatePlayerAnimation(Player *mario)
 {
 	mario->frame++;
 		
-	if (mario->frame%2 == 0)
+	if (mario->frame%1 == 0)
 	{
 		//If accelerating, switch between 3 frames
 		if (mario->xSpeed > 0 && mario->xSpeed < mario->xMaxSpeed)
@@ -176,7 +176,7 @@ void updatePlayer(Player *mario, Level *level, osspriteop_area *area)
 	//X - jump
 	if (xPressed && !(mario->isJumping))
 	{
-		mario->ySpeed = 12.0;
+		mario->ySpeed = 15.0;
 		keyPressed = 1;
 		mario->isJumping = 1;
 		mario->curFrame = mario->jumpFrame;
@@ -187,6 +187,7 @@ void updatePlayer(Player *mario, Level *level, osspriteop_area *area)
 	if (!(mario->isJumping) && !(mario->isOnPlat) && mario->y + 16*4 > 1)
 	{
 		mario->isJumping = 1;
+		mario->ySpeed = -6.0;
 	}
 	
 	//Apply jump / fall

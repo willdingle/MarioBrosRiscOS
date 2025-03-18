@@ -149,7 +149,7 @@ int main()
 	mario.height = 24;
 	mario.xSpeed = 0;
 	mario.xAcc = 0.5;
-	mario.xMaxSpeed = 7;
+	mario.xMaxSpeed = 8;
 	mario.ySpeed = 0;
 	selectPlayerSprites(
 		&mario, 
