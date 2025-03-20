@@ -24,6 +24,8 @@ typedef struct Level
 	
 	int platSize;
 	PlatformInfo plats[8];
+	
+	Shellcreeper *shellcreepers;
 }
 Level;
 
@@ -38,5 +40,7 @@ enum GameState
 	GAME_OVER,
 	NAME_SCREEN
 };
+
+void initLevel(Level *level);
 
 #endif

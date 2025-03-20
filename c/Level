@@ -1,2 +1,25 @@
 #include "Level.h"
 
+void initLevel(Level *level)
+{
+	switch (level->levelNum)
+	{
+		case 1:
+			Shellcreeper shellcreeper;
+			shellcreeper.x = 200;
+			shellcreeper.y = 100;
+			shellcreeper.xSpeed = 7;
+			shellcreeper.xMaxSpeed = 7;
+			shellcreeper.isFalling = 1;
+			selectShellcreeperSprites(
+				&shellcreeper,
+				area,
+				size,
+				logFile
+			);
+			
+			level->shellcreepers = (Shellcreeper*) malloc(1 * sizeof(Shellcreeper));
+			level->shellcreepers[0] = shellcreeper;
+			break;
+	}
+}

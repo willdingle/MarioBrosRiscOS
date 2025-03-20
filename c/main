@@ -28,7 +28,6 @@ osspriteop_area *area;
 Player mario;
 Shellcreeper shellcreeper;
 Level level;
-PlatformInfo plats[7];
 os_factors factors;
 int size;
 
