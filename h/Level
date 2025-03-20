@@ -27,4 +27,16 @@ typedef struct Level
 }
 Level;
 
+enum GameState
+{
+	MAIN_MENU,
+	LEVEL_INTRO,
+	PLAYING,
+	DYING,
+	RESPAWNING,
+	POINTS_SCREEN,
+	GAME_OVER,
+	NAME_SCREEN
+};
+
 #endif

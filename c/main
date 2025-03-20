@@ -242,7 +242,7 @@ int main()
 	wimp_close_template();
 	block = (wimp_block*)malloc(sizeof(wimp_block));
 	loadWindowIntoBlock(&window, &block);
-	winHandle          = block->open.w;
+	winHandle = block->open.w;
 	addIconToBar();
 	xwimp_open_window(&block->open);
 	xwimp_get_caret_position(&(block->caret));

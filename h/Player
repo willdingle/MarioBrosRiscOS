@@ -25,6 +25,7 @@ typedef struct Player
 	char facing;
 	int isJumping;
 	int isOnPlat;
+	int beenHit;
 }
 Player;
 
