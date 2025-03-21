@@ -1,25 +1,39 @@
 #include "Level.h"
 
-void initLevel(Level *level)
+#include "Sprites.h"
+
+#include <stdlib.h>
+
+void initLevel(Level *level, osspriteop_area *area, int size, FILE *logFile)
 {
+	selectLevelSprites(
+		level,
+		area,
+		size,
+		logFile
+	);
+	
 	switch (level->levelNum)
 	{
 		case 1:
-			Shellcreeper shellcreeper;
-			shellcreeper.x = 200;
-			shellcreeper.y = 100;
-			shellcreeper.xSpeed = 7;
-			shellcreeper.xMaxSpeed = 7;
-			shellcreeper.isFalling = 1;
+			level->numOfShellcreepers = 2;
+			level->shellcreepers = (Shellcreeper*) malloc(level->numOfShellcreepers * sizeof(Shellcreeper));
+			level->shellcreepers[0].x = 200;
+			level->shellcreepers[0].y = 100;
+			level->shellcreepers[0].xSpeed = 7;
+			level->shellcreepers[0].xMaxSpeed = 7;
+			level->shellcreepers[0].isFalling = 1;
+			
 			selectShellcreeperSprites(
-				&shellcreeper,
+				&(level->shellcreepers[0]),
 				area,
 				size,
 				logFile
 			);
 			
-			level->shellcreepers = (Shellcreeper*) malloc(1 * sizeof(Shellcreeper));
-			level->shellcreepers[0] = shellcreeper;
+			level->shellcreepers[1] = level->shellcreepers[0];
+			level->shellcreepers[1].x = 500;
+			
 			break;
 	}
 }

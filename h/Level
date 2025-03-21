@@ -2,6 +2,9 @@
 #define LEVEL_H
 
 #include "oslib/osspriteop.h"
+#include <stdio.h>
+
+#include "Enemy.h"
 
 typedef struct PlatformInfo
 {
@@ -26,6 +29,7 @@ typedef struct Level
 	PlatformInfo plats[8];
 	
 	Shellcreeper *shellcreepers;
+	int numOfShellcreepers;
 }
 Level;
 
@@ -41,6 +45,11 @@ enum GameState
 	NAME_SCREEN
 };
 
-void initLevel(Level *level);
+void initLevel(
+	Level *level,
+	osspriteop_area *area,
+	int size,
+	FILE *logFile
+);
 
 #endif

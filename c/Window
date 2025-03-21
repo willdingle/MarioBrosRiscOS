@@ -159,7 +159,7 @@ void drawPlatforms(osspriteop_area *area, Level *level, os_factors *factors, int
 	}
 }
 
-void redrawWindow(wimp_block *block, osspriteop_area *area, Player *mario, Shellcreeper *shellcreeper, Level *level, os_factors *factors, FILE *logFile)
+void redrawWindow(wimp_block *block, osspriteop_area *area, Player *mario, Level *level, os_factors *factors, FILE *logFile)
 {
 	wimp_draw draw;
 	
@@ -298,23 +298,28 @@ void redrawWindow(wimp_block *block, osspriteop_area *area, Player *mario, Shell
 		}
 		
 		//Draw enemies
-		e = xosspriteop_put_sprite_scaled(
-			osspriteop_PTR,
-			area,
-			(osspriteop_id) shellcreeper->curFrame,
-			x + shellcreeper->x,
-			y + shellcreeper->y,
-			os_ACTION_OVERWRITE | osspriteop_GIVEN_WIDE_ENTRIES | 0x8,
-			factors,
-			shellcreeper->transTab
-		);
-		
-		if (e != NULL)
+		for (int i = 0; i < level->numOfShellcreepers; i++)
 		{
-			fprintf(logFile, "Put shellcreeper failed\n"
-				"	errnum = %d: message = '%s'\n", e->errnum, e->errmess);
-			fflush(logFile);
+			e = xosspriteop_put_sprite_scaled(
+				osspriteop_PTR,
+				area,
+				(osspriteop_id) level->shellcreepers[i].curFrame,
+				x + level->shellcreepers[i].x,
+				y + level->shellcreepers[i].y,
+				os_ACTION_OVERWRITE | osspriteop_GIVEN_WIDE_ENTRIES | 0x8,
+				factors,
+				level->shellcreepers[i].transTab
+			);
+			
+			if (e != NULL)
+			{
+				fprintf(logFile, "Put shellcreeper %d failed\n"
+					"	errnum = %d: message = '%s'\n", i, e->errnum, e->errmess);
+				fflush(logFile);
+			}
 		}
+		
+		
 		
 		xwimp_get_rectangle(&draw, &more);
 	}

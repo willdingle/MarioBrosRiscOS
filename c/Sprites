@@ -44,7 +44,6 @@ osspriteop_area* loadSpriteFile(const char *filename, int *sizePoint, FILE *logF
 }
 
 void selectLevelSprites(
-	int levelNum,
 	Level *level,
 	osspriteop_area *area,
 	int size,
@@ -96,7 +95,7 @@ void selectLevelSprites(
 	//Load platform tiles
 	osspriteop_id platId;
 	
-	switch(levelNum)
+	switch(level->levelNum)
 	{
 		case 1:
 			platId = (osspriteop_id) "plat_blue";

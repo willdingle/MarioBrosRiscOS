@@ -26,7 +26,6 @@ char *data;
 
 osspriteop_area *area;
 Player mario;
-Shellcreeper shellcreeper;
 Level level;
 os_factors factors;
 int size;
@@ -62,7 +61,7 @@ typedef union
 ModeInfo;                                 
 
 ModeInfo modeInfo;
-         
+
 void updateModeInfo()
 {                                      
    for (int i = 0; i < 15; i++)
@@ -123,7 +122,13 @@ void updateGame(void *ws)
 	
 	//Gets keyboard input and updates player accordingly
 	updatePlayer(mario, &level, area);
-	updateShellcreeper(&shellcreeper, area);
+	
+	//Updates all shellcreepers in level
+	for (int i = 0; i < level.numOfShellcreepers; i++)
+	{
+		updateShellcreeper(&(level.shellcreepers[i]), area);
+	}
+	
 	
 	wimp_force_redraw(block->open.w, 0, 0, 1024, +960);
 	setTimer(4, updateGame, ws);
@@ -140,7 +145,7 @@ int main()
 	task = wimp_initialise(wimp_VERSION_RO3, "Mario Bros", NULL, NULL);
 	updateModeInfo();
 	
-	//Load sprites and initialise entities
+	//Load sprite file and load player sprites
 	area = loadSpriteFile("<MarioBros$Dir>.!Sprites", &size, logFile);
 	mario.x = 150;
 	mario.y = 16*4;
@@ -162,27 +167,11 @@ int main()
 		logFile
 	);
 	
-	shellcreeper.x = 200;
-	shellcreeper.y = 100;
-	shellcreeper.xSpeed = 7;
-	shellcreeper.xMaxSpeed = 7;
-	shellcreeper.isFalling = 1;
-	selectShellcreeperSprites(
-		&shellcreeper,
-		area,
-		size,
-		logFile
-	);
+	//Initialise level
+	level.levelNum = 1;
+	initLevel(&level, area, size, logFile);
 	
-	selectLevelSprites(
-		1,
-		&level,
-		area,
-		size,
-		logFile
-	);
-	
-	//Level platform info
+	//Store positions and dimensions of platforms for collision detection
 	level.platSize = 8;
 		//Top-left
 		level.plats[0].x = 0;
@@ -269,7 +258,7 @@ int main()
 				updateTimer();
 				break;
 			case wimp_REDRAW_WINDOW_REQUEST:
-				redrawWindow(block, area, &mario, &shellcreeper, &level, &factors, logFile);
+				redrawWindow(block, area, &mario, &level, &factors, logFile);
 				break;
 			case wimp_MOUSE_CLICK:
 				fprintf(logFile, "mouse click\n");
