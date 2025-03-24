@@ -43,6 +43,7 @@ typedef struct GameInfo
 }
 GameInfo;
 
+void enemyCollision(Player *mario, Level *level);
 void platCollision(Player *mario, Level *level, int oldX, int oldY);
 void updatePlayerAnimation(Player *mario);
 void updatePlayer(Player *mario, Level *level, osspriteop_area *area);

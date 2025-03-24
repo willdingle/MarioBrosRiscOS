@@ -18,8 +18,10 @@ void initLevel(Level *level, osspriteop_area *area, int size, FILE *logFile)
 		case 1:
 			level->numOfShellcreepers = 2;
 			level->shellcreepers = (Shellcreeper*) malloc(level->numOfShellcreepers * sizeof(Shellcreeper));
-			level->shellcreepers[0].x = 200;
+			level->shellcreepers[0].x = 700;
 			level->shellcreepers[0].y = 100;
+			level->shellcreepers[0].width = 12;
+			level->shellcreepers[0].height = 16;
 			level->shellcreepers[0].xSpeed = 7;
 			level->shellcreepers[0].xMaxSpeed = 7;
 			level->shellcreepers[0].isFalling = 1;

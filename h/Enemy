@@ -14,6 +14,8 @@ typedef struct Shellcreeper
 	osspriteop_trans_tab *transTab;
 	float x;
 	float y;
+	float width;
+	float height;
 	float xSpeed;
 	float xMaxSpeed;
 	float ySpeed;
