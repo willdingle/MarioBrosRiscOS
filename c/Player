@@ -5,7 +5,7 @@
 KeyCodes keys = {.left=25, .right=121, .x=66};
 GameInfo gameInfo = {.gravity = -0.98};
 
-void enemyCollision(Player *mario, Level *level, FILE *logFile)
+void enemyCollision(Player *mario, Level *level, enum GameState *gameState, FILE *logFile)
 {
 	float marX = mario->x;
 	float marY = mario->y;
@@ -29,6 +29,8 @@ void enemyCollision(Player *mario, Level *level, FILE *logFile)
 			{
 				fprintf(logFile, "Enemy collision!\n");
 				fflush(logFile);
+				mario->curFrame = mario->hitFrame;
+				mario->state = HIT;
 			}
 		}
 	}
@@ -124,7 +126,32 @@ void updatePlayerAnimation(Player *mario)
 	}
 }
 
-void updatePlayer(Player *mario, Level *level, osspriteop_area *area, FILE *logFile)
+void updatePlayer(Player *mario, Level *level, osspriteop_area *area, enum GameState *gameState, FILE *logFile)
+{
+	switch (mario->state)
+	{
+		case LIVING:
+			updatePlayerPlaying(mario, level, area, gameState, logFile);
+			break;
+			
+		case HIT:
+			mario->hitTime += 1;
+			if (mario->hitTime >= 120/4)
+			{
+				mario->state = DYING;
+				mario->curFrame = mario->dyingFrame;
+				mario->ySpeed = 22.0;
+			}
+			break;
+			
+		case DYING:
+			mario->ySpeed += gameInfo.gravity;
+			mario->y += mario->ySpeed;
+			break;
+	}		
+}
+
+void updatePlayerPlaying(Player *mario, Level *level, osspriteop_area *area, enum GameState *gameState, FILE *logFile)
 {
 	int leftPressed;
 	int rightPressed;
@@ -226,12 +253,6 @@ void updatePlayer(Player *mario, Level *level, osspriteop_area *area, FILE *logF
 		mario->y += mario->ySpeed;
 	}
 	
-	//Platform collision
-	platCollision(mario, level, oldX, oldY);
-	
-	//Enemy collision
-	enemyCollision(mario, level, logFile);
-	
 	//Update animation if key pressed, reset animation if not
 	if (keyPressed && !(mario->isJumping))
 	{
@@ -244,6 +265,12 @@ void updatePlayer(Player *mario, Level *level, osspriteop_area *area, FILE *logF
 		mario->frame = 0;
 		mario->xSpeed = 0;
 	}
+	
+	//Platform collision
+	platCollision(mario, level, oldX, oldY);
+	
+	//Enemy collision
+	enemyCollision(mario, level, gameState, logFile);
 	
 	//Bounds - uses width, height and scaling factor
 	//Wrap around to other side when going off left or right side of screen
@@ -264,5 +291,4 @@ void updatePlayer(Player *mario, Level *level, osspriteop_area *area, FILE *logF
 	else if ((mario->y + 24 * 4) > 896)
 		mario->y = (896 - 24 * 4);
 	*/
-	
 }

@@ -4,6 +4,14 @@
 #include "oslib/osspriteop.h"
 #include "Level.h"
 
+enum PlayerState
+{
+	LIVING,
+	HIT,
+	DYING,
+	RESPAWNING
+};
+
 typedef struct Player
 {
 	osspriteop_header *stillFrame;
@@ -11,6 +19,8 @@ typedef struct Player
 	osspriteop_header *accFrame;
 	osspriteop_header *run1Frame;
 	osspriteop_header *jumpFrame;
+	osspriteop_header *hitFrame;
+	osspriteop_header *dyingFrame;
 	osspriteop_header *curFrame;
 	int frame;
 	osspriteop_trans_tab *mainTransTab, *jumpTransTab, *curTransTab;
@@ -25,7 +35,8 @@ typedef struct Player
 	char facing;
 	int isJumping;
 	int isOnPlat;
-	int beenHit;
+	enum PlayerState state;
+	int hitTime;
 }
 Player;
 
@@ -43,9 +54,10 @@ typedef struct GameInfo
 }
 GameInfo;
 
-void enemyCollision(Player *mario, Level *level, FILE *logFile);
+void enemyCollision(Player *mario, Level *level, enum GameState *gameState, FILE *logFile);
 void platCollision(Player *mario, Level *level, int oldX, int oldY);
 void updatePlayerAnimation(Player *mario);
-void updatePlayer(Player *mario, Level *level, osspriteop_area *area, FILE *logFile);
+void updatePlayer(Player *mario, Level *level, osspriteop_area *area, enum GameState *gameState, FILE *logFile);
+void updatePlayerPlaying(Player *mario, Level *level, osspriteop_area *area, enum GameState *gameState, FILE *logFile);
 
 #endif

@@ -352,6 +352,34 @@ void selectPlayerSprites(
 		fflush(logFile);
 	}
 	
+	e = xosspriteop_select_sprite(
+		osspriteop_USER_AREA,
+		area,
+		(osspriteop_id) "mario_hit",
+		&(mario->hitFrame)
+	);
+
+	if (e != NULL)
+	{
+		fprintf(logFile, "selecting mario_hit failed\n"
+		"   errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+		fflush(logFile);
+	}
+	
+	e = xosspriteop_select_sprite(
+		osspriteop_USER_AREA,
+		area,
+		(osspriteop_id) "mario_dying",
+		&(mario->dyingFrame)
+	);
+
+	if (e != NULL)
+	{
+		fprintf(logFile, "selecting mario_dying failed\n"
+		"   errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+		fflush(logFile);
+	}
+	
 	//factors->xmul = 1<<(xEigFactor - 1);
 	//factors->ymul = 1<<(yEigFactor);
 	factors->xmul = 2;
