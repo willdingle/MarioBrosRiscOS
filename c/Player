@@ -19,7 +19,7 @@ void enemyCollision(Player *mario, Level *level, FILE *logFile)
 		float scWidth = level->shellcreepers[i].width * 4;
 		float scHeight = level->shellcreepers[i].height * 4;
 		
-		fprintf(logFile, "x: %f, y: %f, width: %f, height: %f\n", scX, scY, scWidth, scHeight);
+		//fprintf(logFile, "x: %f, y: %f, width: %f, height: %f\n", scX, scY, scWidth, scHeight);
 		//fprintf(logFile, "xSpeed: %f\n", level->shellcreepers[i].xSpeed);
 		
 		//Enemy travelling left collision

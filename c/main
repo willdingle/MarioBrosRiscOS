@@ -27,6 +27,7 @@ char *data;
 osspriteop_area *area;
 Player mario;
 Level level;
+enum GameState gameState = PLAYING;
 os_factors factors;
 int size;
 
@@ -116,22 +117,30 @@ void updateTimer()
 
 
 //********** UPDATE GAME **********
+
 void updateGame(void *ws)
 {
-	Player* mario = (Player*)ws;
-	
-	//Gets keyboard input and updates player accordingly
-	updatePlayer(mario, &level, area, logFile);
-	
-	//Updates all shellcreepers in level
-	for (int i = 0; i < level.numOfShellcreepers; i++)
+	switch(gameState)
 	{
-		updateShellcreeper(&(level.shellcreepers[i]), area);
+		case PLAYING:
+		{
+			Player* mario = (Player*)ws;
+			
+			//Updates all shellcreepers in level
+			for (int i = 0; i < level.numOfShellcreepers; i++)
+			{
+				updateShellcreeper(&(level.shellcreepers[i]), area);
+			}
+			
+			//Gets keyboard input and updates player accordingly
+			updatePlayer(mario, &level, area, logFile);
+			
+			//Call a window redraw and reset the timer
+			wimp_force_redraw(block->open.w, 0, 0, 1024, +960);
+			setTimer(4, updateGame, ws);
+			break;
+		}
 	}
-	
-	
-	wimp_force_redraw(block->open.w, 0, 0, 1024, +960);
-	setTimer(4, updateGame, ws);
 }
 
 
@@ -281,6 +290,7 @@ int main()
 
 	fclose(logFile);
 	free(window);
+	free(level.shellcreepers);
 	wimp_close_down(task);
 	return 0;
 }
