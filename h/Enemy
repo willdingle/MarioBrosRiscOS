@@ -3,6 +3,8 @@
 
 #include "oslib/osspriteop.h"
 
+typedef struct Level Level;
+
 typedef struct Shellcreeper
 {
 	osspriteop_header *stillFrame;
@@ -21,10 +23,12 @@ typedef struct Shellcreeper
 	float ySpeed;
 	char facing;
 	int isFalling;
+	int isOnPlat;
 }
 Shellcreeper;
 
 void updateShellcreeperAnimation(Shellcreeper *shellcreeper);
-void updateShellcreeper(Shellcreeper *shellcreeper, osspriteop_area *area);
+void updateShellcreeper(Shellcreeper *shellcreeper, Level *level, osspriteop_area *area);
+void scPlatCollision(Shellcreeper *shellcreeper, Level *level);
 
 #endif

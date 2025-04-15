@@ -2,7 +2,10 @@
 #define PLAYER_H
 
 #include "oslib/osspriteop.h"
-#include "Level.h"
+#include <stdio.h>
+
+typedef struct Level Level;
+enum GameState;
 
 enum PlayerState
 {

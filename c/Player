@@ -1,6 +1,7 @@
 #include "Player.h"
 
 #include "oslib/osbyte.h"
+#include "Level.h"
 
 KeyCodes keys = {.left=25, .right=121, .x=66};
 GameInfo gameInfo = {.gravity = -0.98};

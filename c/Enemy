@@ -1,4 +1,5 @@
 #include "Enemy.h"
+#include "Level.h"
 
 void updateShellcreeperAnimation(Shellcreeper *shellcreeper)
 {
@@ -27,7 +28,7 @@ void updateShellcreeperAnimation(Shellcreeper *shellcreeper)
 	}
 }
 
-void updateShellcreeper(Shellcreeper *shellcreeper, osspriteop_area *area)
+void updateShellcreeper(Shellcreeper *shellcreeper, Level *level, osspriteop_area *area)
 {
 	//Movement
 	if (shellcreeper->isFalling)
@@ -53,6 +54,17 @@ void updateShellcreeper(Shellcreeper *shellcreeper, osspriteop_area *area)
 	}
 	//else if ((shellcreeper->x + 12 * 4) > 1024)
 	//	shellcreeper->x = (1024 - 12 * 4);
+
+	scPlatCollision(shellcreeper, level);
+	
+	//Check if walked off platform
+	if (!(shellcreeper->isFalling) && !(shellcreeper->isOnPlat) && shellcreeper->y + 16*4 > 1)
+	{
+		shellcreeper->isFalling = 1;
+		shellcreeper->ySpeed = -6.0;
+	}
+
+	//Ground and sky collision
 	if (shellcreeper->y < 16*4)
 	{
 		shellcreeper->isFalling = 0;
@@ -61,4 +73,38 @@ void updateShellcreeper(Shellcreeper *shellcreeper, osspriteop_area *area)
 	}
 	else if ((shellcreeper->y + 16 * 4) > 960)
 		shellcreeper->y = (960 - 16 * 4);
+}
+
+void scPlatCollision(Shellcreeper *shellcreeper, Level *level)
+{
+	float objX = shellcreeper->x;
+	float objY = shellcreeper->y;
+	float objWidth = shellcreeper->width * 4;
+	float objHeight = shellcreeper->height * 4;
+	
+	int onPlatDetected = 0;
+
+	for (int i = 0; i < 8; i++)
+	{
+		float platX = level->plats[i].x;
+		float platY = level->plats[i].y;
+		float platWidth = level->plats[i].width;
+		float platHeight = level->plats[i].height;
+		
+		//Downwards y platform collision
+		if ((objX <= platX + platWidth && objX + objWidth >= platX && objY <= platY + platHeight && objY >= platY) && !(shellcreeper->ySpeed > 0))
+		{
+			shellcreeper->y = platY + platHeight;
+			shellcreeper->ySpeed = 0;
+			shellcreeper->isFalling = 0;
+			shellcreeper->isOnPlat = 1;
+			onPlatDetected = 1;
+		}
+	}
+	
+	//Update if object is on platform
+	if (shellcreeper->isOnPlat && !onPlatDetected)
+	{
+		shellcreeper->isOnPlat = 0;
+	}
 }
