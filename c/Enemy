@@ -31,7 +31,7 @@ void updateShellcreeperAnimation(Shellcreeper *shellcreeper)
 void updateShellcreeper(Shellcreeper *shellcreeper, Level *level, osspriteop_area *area)
 {
 	//Movement
-	if (shellcreeper->isFalling)
+	if (shellcreeper->isFalling && !(shellcreeper->inPipe))
 	{
 		shellcreeper->ySpeed += -0.5;
 		shellcreeper->y += shellcreeper->ySpeed;
@@ -47,14 +47,6 @@ void updateShellcreeper(Shellcreeper *shellcreeper, Level *level, osspriteop_are
 		updateShellcreeperAnimation(shellcreeper);
 	}
 	
-	//Bounds - wrap around to other side when going off left or right side of screen
-	if (shellcreeper->x + 12 * 4 < 0)
-	{
-		shellcreeper->x = 1024;
-	}
-	//else if ((shellcreeper->x + 12 * 4) > 1024)
-	//	shellcreeper->x = (1024 - 12 * 4);
-
 	scPlatCollision(shellcreeper, level);
 	
 	//Check if walked off platform
@@ -62,6 +54,61 @@ void updateShellcreeper(Shellcreeper *shellcreeper, Level *level, osspriteop_are
 	{
 		shellcreeper->isFalling = 1;
 		shellcreeper->ySpeed = -6.0;
+	}
+	
+	//Check if on ground level, in a pipe or other
+	switch ((int) shellcreeper->y)
+	{
+		//Ground
+		case 16*4:
+			//Left pipe check
+			if (shellcreeper->facing == 'L' && shellcreeper->x <= 32*4)
+			{
+				shellcreeper->y = 24*4;
+				shellcreeper->inPipe = 1;
+			}
+			//Right pipe check
+			else if (shellcreeper->facing == 'R' && shellcreeper->x + (shellcreeper->width * 4) >= 1024 - 32*4)
+			{
+				shellcreeper->y = 24*4;
+				shellcreeper->inPipe = 1;
+			}
+			break;
+		
+		//In pipe
+		case 24*4:
+			//Left pipe
+			if (shellcreeper->facing == 'L' && shellcreeper->x + (shellcreeper->width * 4) < 32*4)
+			{
+				shellcreeper->x = 48*4;
+				shellcreeper->y = 178*4;
+				shellcreeper->facing = 'R';
+				shellcreeper->isFalling = 1;
+				shellcreeper->inPipe = 0;
+			}
+			//Right pipe
+			else if (shellcreeper->facing == 'R' && shellcreeper->x > 1024 - 32*4)
+			{
+				shellcreeper->x = 1024 - 48*4 - shellcreeper->width * 4;
+				shellcreeper->y = 178*4;
+				shellcreeper->facing = 'L';
+				shellcreeper->isFalling = 1;
+				shellcreeper->inPipe = 0;
+			}
+			break;
+			
+		//Other
+		default:
+			//Bounds - wrap around to other side when going off left or right side of screen
+			if (shellcreeper->facing == 'L' && shellcreeper->x + 12 * 4 < 0)
+			{
+				shellcreeper->x = 1024;
+			}
+			else if (shellcreeper->facing == 'R' && shellcreeper->x > 1024)
+			{
+				shellcreeper->x = 0 - 16*4;
+			}
+			break;
 	}
 
 	//Ground and sky collision

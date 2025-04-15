@@ -24,6 +24,7 @@ typedef struct Shellcreeper
 	char facing;
 	int isFalling;
 	int isOnPlat;
+	int inPipe;
 }
 Shellcreeper;
 
