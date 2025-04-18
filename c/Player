@@ -34,6 +34,17 @@ void enemyCollision(Player *mario, Level *level, enum GameState *gameState, FILE
 				mario->state = HIT;
 			}
 		}
+		//Enemy travelling right collision
+		if (level->shellcreepers[i].facing == 'R')
+		{
+			if (scX + scWidth > marX && scX + scWidth < marX + marWidth && scY <= marY + marWidth && scY + scHeight >= marY)
+			{
+				fprintf(logFile, "Enemy collision!\n");
+				fflush(logFile);
+				mario->curFrame = mario->hitFrame;
+				mario->state = HIT;
+			}
+		}
 	}
 }
 
@@ -150,14 +161,16 @@ void updatePlayer(Player *mario, Level *level, osspriteop_area *area, enum GameS
 			mario->hitTime += 1;
 			mario->ySpeed += gameInfo.gravity;
 			mario->y += mario->ySpeed;
-			fprintf(logFile, "mario y: %f\n mario state: %i\n\n", mario->y, mario->state);
-			fflush(logFile);
+			//fprintf(logFile, "mario y: %f\n mario state: %i\n\n", mario->y, mario->state);
+			//fflush(logFile);
 			
 			if ((mario->y + mario->height * 4) < 0)
 			{
 				mario->y = 896 - mario->height * 4;
 				mario->ySpeed = -1;
 				mario->state = RESPAWNING;
+				mario->curFrame = mario->stillFrame;
+				mario->curTransTab = mario->mainTransTab;
 			}
 			break;
 			

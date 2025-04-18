@@ -130,8 +130,8 @@ void updateGame(void *ws)
 			for (int i = 0; i < level.numOfShellcreepers; i++)
 			{
 				updateShellcreeper(&(level.shellcreepers[i]), &level, area);
-				fprintf(logFile, "x: %f\n y: %f\n\n", level.shellcreepers[i].x, level.shellcreepers[i].y);
-				fflush(logFile);
+				//fprintf(logFile, "x: %f\n y: %f\n\n", level.shellcreepers[i].x, level.shellcreepers[i].y);
+				//fflush(logFile);
 			}
 			
 			//Gets keyboard input and updates player accordingly
