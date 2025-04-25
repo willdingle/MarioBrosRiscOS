@@ -17,6 +17,7 @@ PlatformInfo;
 
 enum PlatRow
 {
+	NOT_HIT,
 	TOP_LEFT,
 	TOP_RIGHT,
 	MIDDLE_LEFT,
@@ -33,7 +34,9 @@ typedef struct Level
 	osspriteop_header *pipeBottom;
 	osspriteop_header *pipeTop;
 	osspriteop_header *platTile;
-	osspriteop_header *platMoveTiles[3];
+	osspriteop_header *platMoveFrames[3];
+	int frame;
+	int framesDescending;
 	osspriteop_trans_tab *transTab;
 	
 	int platSize;

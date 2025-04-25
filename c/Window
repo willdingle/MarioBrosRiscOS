@@ -117,6 +117,59 @@ void drawPlatforms(osspriteop_area *area, Level *level, os_factors *factors, int
 	//Bottom-left platform
 	for (int i = 0; i < 12; i++)
 	{
+		if (level->platRow == BOTTOM_LEFT)
+		{
+			if (i == level->platSquare - 1 || i == level->platSquare + 1)
+			{
+				continue;
+			}
+			else if (i == level->platSquare)
+			{
+				os_error *e = xosspriteop_put_sprite_scaled(
+					osspriteop_PTR,
+					area,
+					(osspriteop_id) level->platMoveFrames[level->frame],
+					x + ((i - 1) * 8 * factors->xmul * 2),
+					y + (56 * factors->ymul * 2),
+					os_ACTION_OVERWRITE | osspriteop_GIVEN_WIDE_ENTRIES | 0x8,
+					factors,
+					level->transTab
+				);
+				
+				switch (level->frame)
+				{
+					case 0:
+						if (!(level->framesDescending))
+						{
+							(level->frame)++;
+						}
+						else
+						{
+							level->platRow = NOT_HIT;
+							level->platSquare = 0;
+							level->framesDescending = 0;
+						}
+						break;
+					case 1:
+						if (!(level->framesDescending))
+						{
+							(level->frame)++;
+						}
+						else
+						{
+							(level->frame)--;
+						}
+						break;
+					case 2:
+						level->framesDescending = 1;
+						(level->frame)--;
+						break;
+				}
+				
+				continue;
+			}	
+		}
+		
 		os_error *e = xosspriteop_put_sprite_scaled(
 			osspriteop_PTR,
 			area,

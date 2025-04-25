@@ -94,11 +94,15 @@ void selectLevelSprites(
 	
 	//Load platform tiles
 	osspriteop_id platId;
+	osspriteop_id platMoveFrameIds[3];
 	
 	switch(level->levelNum)
 	{
 		case 1:
 			platId = (osspriteop_id) "plat_blue";
+			platMoveFrameIds[0] = (osspriteop_id) "plat_blue1";
+			platMoveFrameIds[1] = (osspriteop_id) "plat_blue2";
+			platMoveFrameIds[2] = (osspriteop_id) "plat_blue3";
 			break;
 	}
 	
@@ -114,6 +118,23 @@ void selectLevelSprites(
 		fprintf(logFile, "selecting platform %d failed\n"
 		"   errnum = %d: message = '%s'\n", platId, e->errnum, e->errmess);
 		fflush(logFile);
+	}
+	
+	for (int i = 0; i < 3; i++)
+	{
+		e = xosspriteop_select_sprite(
+			osspriteop_USER_AREA,
+			area,
+			platMoveFrameIds[i],
+			&(level->platMoveFrames[i])
+		);
+		
+		if (e != NULL)
+		{
+			fprintf(logFile, "selecting platform move frame %d failed\n"
+			"   errnum = %d: message = '%s'\n", i + 1, e->errnum, e->errmess);
+			fflush(logFile);
+		}
 	}
 	
 	e = xcolourtrans_generate_table_for_sprite(

@@ -57,7 +57,8 @@ void updateShellcreeper(Shellcreeper *shellcreeper, Level *level, osspriteop_are
 	}
 	
 	//Check if on ground level, in a pipe or other
-	switch ((int) shellcreeper->y)
+	int shY = (int) (shellcreeper->y);
+	switch (shY)
 	{
 		//Ground
 		case 16*4:
