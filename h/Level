@@ -15,6 +15,17 @@ typedef struct PlatformInfo
 }
 PlatformInfo;
 
+enum PlatRow
+{
+	TOP_LEFT,
+	TOP_RIGHT,
+	MIDDLE_LEFT,
+	MIDDLE_RIGHT,
+	MIDDLE,
+	BOTTOM_LEFT,
+	BOTTOM_RIGHT
+};
+
 typedef struct Level
 {
 	int levelNum;
@@ -27,6 +38,8 @@ typedef struct Level
 	
 	int platSize;
 	PlatformInfo plats[8];
+	enum PlatRow platRow;
+	int platSquare;
 	
 	Shellcreeper *shellcreepers;
 	int numOfShellcreepers;

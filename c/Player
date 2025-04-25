@@ -48,7 +48,7 @@ void enemyCollision(Player *mario, Level *level, enum GameState *gameState, FILE
 	}
 }
 
-void platCollision(Player *mario, Level *level, int oldX, int oldY)
+void platCollision(Player *mario, Level *level, int oldX, int oldY, FILE *logFile)
 {
 	float marX = mario->x;
 	float marY = mario->y;
@@ -99,6 +99,7 @@ void platCollision(Player *mario, Level *level, int oldX, int oldY)
 				colY = 1;
 				mario->y = oldY;
 				mario->ySpeed = 0;
+				calcPlatHit(mario, level, i, logFile);
 			}
 			
 		
@@ -109,6 +110,39 @@ void platCollision(Player *mario, Level *level, int oldX, int oldY)
 	{
 		mario->isOnPlat = 0;
 	}
+}
+
+void calcPlatHit(Player *mario, Level *level, int i, FILE *logFile)
+{
+	switch (i)
+	{
+		case 0:
+			level->platRow = TOP_LEFT;
+			break;
+		case 1:
+			level->platRow = TOP_RIGHT;
+			break;
+		case 2:
+			level->platRow = MIDDLE_LEFT;
+			break;
+		case 3:
+			level->platRow = MIDDLE_RIGHT;
+			break;
+		case 4:
+			level->platRow = MIDDLE;
+			break;
+		case 5:
+			level->platRow = BOTTOM_LEFT;
+			break;
+		case 6:
+			level->platRow = BOTTOM_RIGHT;
+			break;
+	}
+	
+	float midOfMario = (mario->x + (mario->x + mario->width * 4)) / 2;
+	level->platSquare = (int) ((midOfMario - level->plats[i].x) / level->platSize / 4);
+	fprintf(logFile, "Plat square hit: %i\n", level->platSquare);
+	fflush(logFile);
 }
 
 void updatePlayerAnimation(Player *mario)
@@ -325,7 +359,7 @@ void updatePlayerPlaying(Player *mario, Level *level, osspriteop_area *area, enu
 	}
 	
 	//Platform collision
-	platCollision(mario, level, oldX, oldY);
+	platCollision(mario, level, oldX, oldY, logFile);
 	
 	//Enemy collision
 	enemyCollision(mario, level, gameState, logFile);
