@@ -1,6 +1,8 @@
 #include "Enemy.h"
 #include "Level.h"
 
+#include <stdio.h>
+
 void updateShellcreeperAnimation(Shellcreeper *shellcreeper)
 {
 	shellcreeper->frame++;
@@ -28,26 +30,34 @@ void updateShellcreeperAnimation(Shellcreeper *shellcreeper)
 	}
 }
 
-void updateShellcreeper(Shellcreeper *shellcreeper, Level *level, osspriteop_area *area)
+void updateShellcreeper(Shellcreeper *shellcreeper, Level *level, osspriteop_area *area, void *logFile)
 {
 	//Movement
-	if (shellcreeper->isFalling && !(shellcreeper->inPipe))
+	if (!shellcreeper->inHitState)
 	{
-		shellcreeper->ySpeed += -0.5;
-		shellcreeper->y += shellcreeper->ySpeed;
+		if (shellcreeper->isFalling && !(shellcreeper->inPipe))
+		{
+			shellcreeper->ySpeed += -0.5;
+			shellcreeper->y += shellcreeper->ySpeed;
+		}
+		if (shellcreeper->facing == 'L')
+			shellcreeper->x -= shellcreeper->xSpeed;
+		else if (shellcreeper->facing == 'R')
+			shellcreeper->x += shellcreeper->xSpeed;
+		
+		//Animation
+		if (!(shellcreeper->isFalling))
+		{
+			updateShellcreeperAnimation(shellcreeper);
+		}
 	}
-	if (shellcreeper->facing == 'L')
-		shellcreeper->x -= shellcreeper->xSpeed;
-	else if (shellcreeper->facing == 'R')
-		shellcreeper->x += shellcreeper->xSpeed;
-	
-	//Animation
-	if (!(shellcreeper->isFalling))
+	else
 	{
-		updateShellcreeperAnimation(shellcreeper);
+		//Hit state animation
 	}
 	
-	scPlatCollision(shellcreeper, level);
+	
+	scPlatCollision(shellcreeper, level, logFile);
 	
 	//Check if walked off platform
 	if (!(shellcreeper->isFalling) && !(shellcreeper->isOnPlat) && shellcreeper->y + 16*4 > 1)
@@ -123,7 +133,7 @@ void updateShellcreeper(Shellcreeper *shellcreeper, Level *level, osspriteop_are
 		shellcreeper->y = (960 - 16 * 4);
 }
 
-void scPlatCollision(Shellcreeper *shellcreeper, Level *level)
+void scPlatCollision(Shellcreeper *shellcreeper, Level *level, void *logFile)
 {
 	float objX = shellcreeper->x;
 	float objY = shellcreeper->y;
@@ -147,6 +157,20 @@ void scPlatCollision(Shellcreeper *shellcreeper, Level *level)
 			shellcreeper->isFalling = 0;
 			shellcreeper->isOnPlat = 1;
 			onPlatDetected = 1;
+			
+			//Check if this platform has been hit
+			enum PlatRow thisPlatRow;
+			getPlatRow(&thisPlatRow, i);
+			if (thisPlatRow == level->platRow)
+			{
+				float midOfSc = (objX + (objX + objWidth)) / 2;
+				int thisPlatSquare = (int) ((midOfSc - level->plats[i].x) / level->platSize / 4);
+				if (thisPlatSquare == level->platSquare)
+				{
+					fprintf((FILE*)logFile, "Shellcreeper hit\n");
+					shellcreeper->inHitState = 1;
+				}
+			}
 		}
 	}
 	

@@ -25,11 +25,12 @@ typedef struct Shellcreeper
 	int isFalling;
 	int isOnPlat;
 	int inPipe;
+	int inHitState;
 }
 Shellcreeper;
 
 void updateShellcreeperAnimation(Shellcreeper *shellcreeper);
-void updateShellcreeper(Shellcreeper *shellcreeper, Level *level, osspriteop_area *area);
-void scPlatCollision(Shellcreeper *shellcreeper, Level *level);
+void updateShellcreeper(Shellcreeper *shellcreeper, Level *level, osspriteop_area *area, void *logFile);
+void scPlatCollision(Shellcreeper *shellcreeper, Level *level, void *logFile);
 
 #endif

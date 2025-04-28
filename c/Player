@@ -114,31 +114,7 @@ void platCollision(Player *mario, Level *level, int oldX, int oldY, FILE *logFil
 
 void calcPlatHit(Player *mario, Level *level, int i, FILE *logFile)
 {
-	switch (i)
-	{
-		case 0:
-			level->platRow = TOP_LEFT;
-			break;
-		case 1:
-			level->platRow = TOP_RIGHT;
-			break;
-		case 2:
-			level->platRow = MIDDLE_LEFT;
-			break;
-		case 3:
-			level->platRow = MIDDLE_RIGHT;
-			break;
-		case 4:
-			level->platRow = MIDDLE;
-			break;
-		case 5:
-			level->platRow = BOTTOM_LEFT;
-			break;
-		case 6:
-			level->platRow = BOTTOM_RIGHT;
-			break;
-	}
-	
+	getPlatRow(&(level->platRow), i);
 	float midOfMario = (mario->x + (mario->x + mario->width * 4)) / 2;
 	level->platSquare = (int) ((midOfMario - level->plats[i].x) / level->platSize / 4);
 	fprintf(logFile, "Plat square hit: %i\n", level->platSquare);
@@ -220,7 +196,7 @@ void updatePlayer(Player *mario, Level *level, osspriteop_area *area, enum GameS
 				os_byte(
 					osbyte_SCAN_KEYBOARD,
 					keys.right ^ 0x80,
-					NULL,
+					0,
 					&rightPressed,
 					NULL
 				);
@@ -228,7 +204,7 @@ void updatePlayer(Player *mario, Level *level, osspriteop_area *area, enum GameS
 				os_byte(
 					osbyte_SCAN_KEYBOARD,
 					keys.left ^ 0x80,
-					NULL,
+					0,
 					&leftPressed,
 					NULL
 				);
@@ -256,7 +232,7 @@ void updatePlayerPlaying(Player *mario, Level *level, osspriteop_area *area, enu
 	os_byte(
 		osbyte_SCAN_KEYBOARD,
 		keys.left ^ 0x80,
-		NULL,
+		0,
 		&leftPressed,
 		NULL
 	);
@@ -264,7 +240,7 @@ void updatePlayerPlaying(Player *mario, Level *level, osspriteop_area *area, enu
 	os_byte(
 		osbyte_SCAN_KEYBOARD,
 		keys.right ^ 0x80,
-		NULL,
+		0,
 		&rightPressed,
 		NULL
 	);
@@ -272,7 +248,7 @@ void updatePlayerPlaying(Player *mario, Level *level, osspriteop_area *area, enu
 	os_byte(
 		osbyte_SCAN_KEYBOARD,
 		keys.x ^ 0x80,
-		NULL,
+		0,
 		&xPressed,
 		NULL
 	);

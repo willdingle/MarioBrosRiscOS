@@ -42,3 +42,31 @@ void initLevel(Level *level, osspriteop_area *area, int size, FILE *logFile)
 			break;
 	}
 }
+
+void getPlatRow(enum PlatRow *thisPlatRow, int i)
+{
+	switch (i)
+	{
+		case 0:
+			*thisPlatRow = TOP_LEFT;
+			break;
+		case 1:
+			*thisPlatRow = TOP_RIGHT;
+			break;
+		case 2:
+			*thisPlatRow = MIDDLE_LEFT;
+			break;
+		case 3:
+			*thisPlatRow = MIDDLE_RIGHT;
+			break;
+		case 4:
+			*thisPlatRow = MIDDLE;
+			break;
+		case 5:
+			*thisPlatRow = BOTTOM_LEFT;
+			break;
+		case 6:
+			*thisPlatRow = BOTTOM_RIGHT;
+			break;
+	}
+}

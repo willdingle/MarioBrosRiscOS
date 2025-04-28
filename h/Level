@@ -65,5 +65,6 @@ void initLevel(
 	int size,
 	FILE *logFile
 );
+void getPlatRow(enum PlatRow *thisPlatRow, int i);
 
 #endif
