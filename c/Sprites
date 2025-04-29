@@ -231,6 +231,34 @@ void selectShellcreeperSprites(
 		fflush(logFile);
 	}
 	
+	e = xosspriteop_select_sprite(
+		osspriteop_USER_AREA,
+		area,
+		(osspriteop_id) "sc_hit0",
+		&(shellcreeper->hit0Frame)
+	);
+
+	if (e != NULL)
+	{
+		fprintf(logFile, "selecting sc_walk1 failed\n"
+		"   errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+		fflush(logFile);
+	}
+	
+	e = xosspriteop_select_sprite(
+		osspriteop_USER_AREA,
+		area,
+		(osspriteop_id) "sc_hit1",
+		&(shellcreeper->hit1Frame)
+	);
+
+	if (e != NULL)
+	{
+		fprintf(logFile, "selecting sc_walk1 failed\n"
+		"   errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+		fflush(logFile);
+	}
+	
 	e = xcolourtrans_generate_table_for_sprite(
 		area,
 		(osspriteop_id) "sc_still",

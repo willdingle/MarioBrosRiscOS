@@ -4,6 +4,7 @@
 #include "Sprites.h"
 
 #include "oslib/wimp.h"
+void drawPlatHit(osspriteop_area *area, Level *level, os_factors *factors, int x, int y, int i, int curPlatRow, FILE *logFile);
 void drawPlatforms(osspriteop_area *area, Level *level, os_factors *factors, int x, int y, FILE *logFile);
 void redrawWindow(wimp_block *block, osspriteop_area *area, Player *mario, Level *level, os_factors *factors, FILE *logFile);
 void loadWindowIntoBlock(wimp_window **window, wimp_block **block);

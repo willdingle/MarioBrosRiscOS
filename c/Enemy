@@ -9,7 +9,7 @@ void updateShellcreeperAnimation(Shellcreeper *shellcreeper)
 	
 	if (shellcreeper->frame % 4 == 0)
 	{
-		if (shellcreeper->xSpeed == shellcreeper->xMaxSpeed)
+		if (shellcreeper->xSpeed == shellcreeper->xMaxSpeed && !shellcreeper->inHitState)
 		{
 			if (shellcreeper->curFrame == shellcreeper->walk0Frame || shellcreeper->curFrame == shellcreeper->walk1Frame)
 				shellcreeper->curFrame = shellcreeper->stillFrame;
@@ -27,35 +27,38 @@ void updateShellcreeperAnimation(Shellcreeper *shellcreeper)
 				}
 			}
 		}
+		else
+		{
+			if (shellcreeper->curFrame == shellcreeper->hit0Frame)
+				shellcreeper->curFrame = shellcreeper->hit1Frame;
+			else
+				shellcreeper->curFrame = shellcreeper->hit0Frame;
+		}
 	}
 }
 
 void updateShellcreeper(Shellcreeper *shellcreeper, Level *level, osspriteop_area *area, void *logFile)
 {
+	if (shellcreeper->isFalling && !(shellcreeper->inPipe))
+	{
+		shellcreeper->ySpeed += -0.5;
+		shellcreeper->y += shellcreeper->ySpeed;
+	}
+	
 	//Movement
 	if (!shellcreeper->inHitState)
 	{
-		if (shellcreeper->isFalling && !(shellcreeper->inPipe))
-		{
-			shellcreeper->ySpeed += -0.5;
-			shellcreeper->y += shellcreeper->ySpeed;
-		}
 		if (shellcreeper->facing == 'L')
 			shellcreeper->x -= shellcreeper->xSpeed;
 		else if (shellcreeper->facing == 'R')
 			shellcreeper->x += shellcreeper->xSpeed;
-		
-		//Animation
-		if (!(shellcreeper->isFalling))
-		{
-			updateShellcreeperAnimation(shellcreeper);
-		}
-	}
-	else
-	{
-		//Hit state animation
 	}
 	
+	//Animation
+	if (!(shellcreeper->isFalling))
+	{
+		updateShellcreeperAnimation(shellcreeper);
+	}
 	
 	scPlatCollision(shellcreeper, level, logFile);
 	
@@ -140,6 +143,8 @@ void scPlatCollision(Shellcreeper *shellcreeper, Level *level, void *logFile)
 	float objWidth = shellcreeper->width * 4;
 	float objHeight = shellcreeper->height * 4;
 	
+	fprintf((FILE*) logFile, "%f,\t%f,\t%f,\t%f\n", objX, objY, objWidth, objHeight);
+	
 	int onPlatDetected = 0;
 
 	for (int i = 0; i < 8; i++)
@@ -169,6 +174,9 @@ void scPlatCollision(Shellcreeper *shellcreeper, Level *level, void *logFile)
 				{
 					fprintf((FILE*)logFile, "Shellcreeper hit\n");
 					shellcreeper->inHitState = 1;
+					shellcreeper->curFrame = shellcreeper->hit0Frame;
+					shellcreeper->ySpeed = 5.0;
+					shellcreeper->isFalling = 1;
 				}
 			}
 		}

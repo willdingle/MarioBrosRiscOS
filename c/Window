@@ -2,11 +2,69 @@
 
 #include <string.h>
 
+void drawPlatHit(osspriteop_area *area, Level *level, os_factors *factors, int x, int y, int i, int curPlatRow, FILE *logFile)
+{
+	os_error *e = xosspriteop_put_sprite_scaled(
+		osspriteop_PTR,
+		area,
+		(osspriteop_id) level->platMoveFrames[level->frame],
+		x + (level->plats[curPlatRow].x) + ((i - 1) * 8 * factors->xmul * 2),
+		y + level->plats[curPlatRow].y,
+		os_ACTION_OVERWRITE | osspriteop_GIVEN_WIDE_ENTRIES | 0x8,
+		factors,
+		level->transTab
+	);
+	
+	switch (level->frame)
+	{
+		case 0:
+			if (!(level->framesDescending))
+			{
+				(level->frame)++;
+			}
+			else
+			{
+				level->platRow = NOT_HIT;
+				level->platSquare = 0;
+				level->framesDescending = 0;
+			}
+			break;
+		case 1:
+			if (!(level->framesDescending))
+			{
+				(level->frame)++;
+			}
+			else
+			{
+				(level->frame)--;
+			}
+			break;
+		case 2:
+			level->framesDescending = 1;
+			(level->frame)--;
+			break;
+	}
+}
+
 void drawPlatforms(osspriteop_area *area, Level *level, os_factors *factors, int x, int y, FILE *logFile)
 {
 	//Top-left platform
 	for (int i = 0; i < 14; i++)
 	{
+		if (level->platRow == TOP_LEFT)
+		{
+			if (i == level->platSquare - 1 || i == level->platSquare + 1)
+			{
+				continue;
+			}
+			else if (i == level->platSquare)
+			{
+				//Draw platform hit animation
+				drawPlatHit(area, level, factors, x, y, i, 0, logFile);
+				continue;
+			}	
+		}
+		
 		os_error *e = xosspriteop_put_sprite_scaled(
 			osspriteop_PTR,
 			area,
@@ -29,6 +87,20 @@ void drawPlatforms(osspriteop_area *area, Level *level, os_factors *factors, int
 	//Top-right platform
 	for (int i = 0; i < 14; i++)
 	{
+		if (level->platRow == TOP_RIGHT)
+		{
+			if (i == level->platSquare - 1 || i == level->platSquare + 1)
+			{
+				continue;
+			}
+			else if (i == level->platSquare)
+			{
+				//Draw platform hit animation
+				drawPlatHit(area, level, factors, x, y, i, 1, logFile);
+				continue;
+			}	
+		}
+		
 		os_error *e = xosspriteop_put_sprite_scaled(
 			osspriteop_PTR,
 			area,
@@ -51,6 +123,20 @@ void drawPlatforms(osspriteop_area *area, Level *level, os_factors *factors, int
 	//Middle-left platform
 	for (int i = 0; i < 4; i++)
 	{
+		if (level->platRow == MIDDLE_LEFT)
+		{
+			if (i == level->platSquare - 1 || i == level->platSquare + 1)
+			{
+				continue;
+			}
+			else if (i == level->platSquare)
+			{
+				//Draw platform hit animation
+				drawPlatHit(area, level, factors, x, y, i, 2, logFile);
+				continue;
+			}	
+		}
+		
 		os_error *e = xosspriteop_put_sprite_scaled(
 			osspriteop_PTR,
 			area,
@@ -73,6 +159,20 @@ void drawPlatforms(osspriteop_area *area, Level *level, os_factors *factors, int
 	//Middle-right platform
 	for (int i = 0; i < 4; i++)
 	{
+		if (level->platRow == MIDDLE_RIGHT)
+		{
+			if (i == level->platSquare - 1 || i == level->platSquare + 1)
+			{
+				continue;
+			}
+			else if (i == level->platSquare)
+			{
+				//Draw platform hit animation
+				drawPlatHit(area, level, factors, x, y, i, 3, logFile);
+				continue;
+			}	
+		}
+		
 		os_error *e = xosspriteop_put_sprite_scaled(
 			osspriteop_PTR,
 			area,
@@ -95,6 +195,20 @@ void drawPlatforms(osspriteop_area *area, Level *level, os_factors *factors, int
 	//Middle platform
 	for (int i = 0; i < 16; i++)
 	{
+		if (level->platRow == MIDDLE)
+		{
+			if (i == level->platSquare - 1 || i == level->platSquare + 1)
+			{
+				continue;
+			}
+			else if (i == level->platSquare)
+			{
+				//Draw platform hit animation
+				drawPlatHit(area, level, factors, x, y, i, 4, logFile);
+				continue;
+			}	
+		}
+		
 		os_error *e = xosspriteop_put_sprite_scaled(
 			osspriteop_PTR,
 			area,
@@ -125,47 +239,8 @@ void drawPlatforms(osspriteop_area *area, Level *level, os_factors *factors, int
 			}
 			else if (i == level->platSquare)
 			{
-				os_error *e = xosspriteop_put_sprite_scaled(
-					osspriteop_PTR,
-					area,
-					(osspriteop_id) level->platMoveFrames[level->frame],
-					x + ((i - 1) * 8 * factors->xmul * 2),
-					y + (56 * factors->ymul * 2),
-					os_ACTION_OVERWRITE | osspriteop_GIVEN_WIDE_ENTRIES | 0x8,
-					factors,
-					level->transTab
-				);
-				
-				switch (level->frame)
-				{
-					case 0:
-						if (!(level->framesDescending))
-						{
-							(level->frame)++;
-						}
-						else
-						{
-							level->platRow = NOT_HIT;
-							level->platSquare = 0;
-							level->framesDescending = 0;
-						}
-						break;
-					case 1:
-						if (!(level->framesDescending))
-						{
-							(level->frame)++;
-						}
-						else
-						{
-							(level->frame)--;
-						}
-						break;
-					case 2:
-						level->framesDescending = 1;
-						(level->frame)--;
-						break;
-				}
-				
+				//Draw platform hit animation
+				drawPlatHit(area, level, factors, x, y, i, 5, logFile);
 				continue;
 			}	
 		}
@@ -192,6 +267,20 @@ void drawPlatforms(osspriteop_area *area, Level *level, os_factors *factors, int
 	//Bottom-right platform
 	for (int i = 0; i < 12; i++)
 	{
+		if (level->platRow == BOTTOM_RIGHT)
+		{
+			if (i == level->platSquare - 1 || i == level->platSquare + 1)
+			{
+				continue;
+			}
+			else if (i == level->platSquare)
+			{
+				//Draw platform hit animation
+				drawPlatHit(area, level, factors, x, y, i, 6, logFile);
+				continue;
+			}	
+		}
+		
 		os_error *e = xosspriteop_put_sprite_scaled(
 			osspriteop_PTR,
 			area,
