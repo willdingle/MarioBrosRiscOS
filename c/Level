@@ -28,6 +28,8 @@ void initLevel(Level *level, osspriteop_area *area, int size, FILE *logFile)
 			level->shellcreepers[0].facing = 'L';
 			level->shellcreepers[0].inPipe = 0;
 			level->shellcreepers[0].inHitState = 0;
+			level->shellcreepers[0].dying = 0;
+			level->shellcreepers[0].dead = 0;
 			
 			selectShellcreeperSprites(
 				&(level->shellcreepers[0]),

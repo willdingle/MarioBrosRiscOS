@@ -23,26 +23,41 @@ void enemyCollision(Player *mario, Level *level, enum GameState *gameState, FILE
 		//fprintf(logFile, "x: %f, y: %f, width: %f, height: %f\n", scX, scY, scWidth, scHeight);
 		//fprintf(logFile, "xSpeed: %f\n", level->shellcreepers[i].xSpeed);
 		
-		//Enemy travelling left collision
-		if (level->shellcreepers[i].facing == 'L')
+		//Enemy left travel collision
+		if (scX <= marX + marWidth && scX >= marX && scY <= marY + marHeight && scY + scHeight >= marY)
 		{
-			if (scX <= marX + marWidth && scX >= marX && scY <= marY + marHeight && scY + scHeight >= marY)
+			if (!level->shellcreepers[i].inHitState && !level->shellcreepers[i].dying)
 			{
 				fprintf(logFile, "Enemy collision!\n");
 				fflush(logFile);
 				mario->curFrame = mario->hitFrame;
 				mario->state = HIT;
 			}
+			else if (level->shellcreepers[i].inHitState)
+			{
+				level->shellcreepers[i].inHitState = 0;
+				level->shellcreepers[i].dying = 1;
+				level->shellcreepers[i].isFalling = 1;
+				level->shellcreepers[i].xSpeed = 5.0;
+			}
+			
 		}
-		//Enemy travelling right collision
-		if (level->shellcreepers[i].facing == 'R')
+		//Enemy right travel collision
+		if (scX + scWidth > marX && scX + scWidth < marX + marWidth && scY <= marY + marWidth && scY + scHeight >= marY)
 		{
-			if (scX + scWidth > marX && scX + scWidth < marX + marWidth && scY <= marY + marWidth && scY + scHeight >= marY)
+			if (!level->shellcreepers[i].inHitState && !level->shellcreepers[i].dying)
 			{
 				fprintf(logFile, "Enemy collision!\n");
 				fflush(logFile);
 				mario->curFrame = mario->hitFrame;
 				mario->state = HIT;
+			}
+			else if (level->shellcreepers[i].inHitState)
+			{
+				level->shellcreepers[i].inHitState = 0;
+				level->shellcreepers[i].dying = 1;
+				level->shellcreepers[i].isFalling = 1;
+				level->shellcreepers[i].xSpeed = 5.0;
 			}
 		}
 	}

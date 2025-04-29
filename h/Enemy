@@ -28,6 +28,8 @@ typedef struct Shellcreeper
 	int isOnPlat;
 	int inPipe;
 	int inHitState;
+	int dying;
+	int dead;
 }
 Shellcreeper;
 

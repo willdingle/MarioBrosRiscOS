@@ -129,7 +129,8 @@ void updateGame(void *ws)
 			//Updates all shellcreepers in level
 			for (int i = 0; i < level.numOfShellcreepers; i++)
 			{
-				updateShellcreeper(&(level.shellcreepers[i]), &level, area, (void*)logFile);
+				if (!level.shellcreepers[i].dead)
+					updateShellcreeper(&(level.shellcreepers[i]), &level, area, (void*)logFile);
 				//fprintf(logFile, "x: %f\n y: %f\n\n", level.shellcreepers[i].x, level.shellcreepers[i].y);
 				//fflush(logFile);
 			}
