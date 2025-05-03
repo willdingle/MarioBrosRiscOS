@@ -38,7 +38,12 @@ void enemyCollision(Player *mario, Level *level, enum GameState *gameState, FILE
 				level->shellcreepers[i].inHitState = 0;
 				level->shellcreepers[i].dying = 1;
 				level->shellcreepers[i].isFalling = 1;
-				level->shellcreepers[i].xSpeed = 5.0;
+				fprintf(logFile, "%c", mario->facing);
+				fflush(logFile);
+				if (mario->facing == 'L')
+					level->shellcreepers[i].xSpeed = -5.0;
+				else
+					level->shellcreepers[i].xSpeed = 5.0;
 			}
 			
 		}
@@ -57,7 +62,12 @@ void enemyCollision(Player *mario, Level *level, enum GameState *gameState, FILE
 				level->shellcreepers[i].inHitState = 0;
 				level->shellcreepers[i].dying = 1;
 				level->shellcreepers[i].isFalling = 1;
-				level->shellcreepers[i].xSpeed = 5.0;
+				fprintf(logFile, "Mario facing: %c\n", mario->facing);
+				fflush(logFile);
+				if (mario->facing == 'L')
+					level->shellcreepers[i].xSpeed = -5.0;
+				else
+					level->shellcreepers[i].xSpeed = 5.0;
 			}
 		}
 	}

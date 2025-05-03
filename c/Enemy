@@ -49,10 +49,7 @@ void updateShellcreeper(Shellcreeper *shellcreeper, Level *level, osspriteop_are
 	//Movement
 	if (!shellcreeper->inHitState)
 	{
-		if (shellcreeper->facing == 'L')
-			shellcreeper->x -= shellcreeper->xSpeed;
-		else if (shellcreeper->facing == 'R')
-			shellcreeper->x += shellcreeper->xSpeed;
+		shellcreeper->x += shellcreeper->xSpeed;
 	}
 	
 	//Animation

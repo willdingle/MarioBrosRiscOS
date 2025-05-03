@@ -133,6 +133,8 @@ void updateGame(void *ws)
 					updateShellcreeper(&(level.shellcreepers[i]), &level, area, (void*)logFile);
 				//fprintf(logFile, "x: %f\n y: %f\n\n", level.shellcreepers[i].x, level.shellcreepers[i].y);
 				//fflush(logFile);
+				fprintf(logFile, "Sc %i facing: %c\n", i, level.shellcreepers[i].facing);
+				fflush(logFile);
 			}
 			
 			//Gets keyboard input and updates player accordingly
@@ -258,7 +260,7 @@ int main()
 	
 	//Set timer
 	initialiseTimer();
-	setTimer(200, updateGame, (void*)&mario);
+	setTimer(60, updateGame, (void*)&mario);
 	
 	//*** MAIN LOOP ***
 	while (!QUIT)
