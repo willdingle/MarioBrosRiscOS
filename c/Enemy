@@ -47,7 +47,14 @@ void updateShellcreeper(Shellcreeper *shellcreeper, Level *level, osspriteop_are
 	}
 	
 	//Movement
-	if (!shellcreeper->inHitState)
+	if (!shellcreeper->inHitState && !shellcreeper->dying)
+	{
+		if (shellcreeper->facing == 'L')
+			shellcreeper->x -= shellcreeper->xSpeed;
+		else if (shellcreeper->facing == 'R')
+			shellcreeper->x += shellcreeper->xSpeed;
+	}
+	else if (shellcreeper->dying)
 	{
 		shellcreeper->x += shellcreeper->xSpeed;
 	}
@@ -142,7 +149,7 @@ void scPlatCollision(Shellcreeper *shellcreeper, Level *level, void *logFile)
 	float objWidth = shellcreeper->width * 4;
 	float objHeight = shellcreeper->height * 4;
 	
-	fprintf((FILE*) logFile, "%f,\t%f,\t%f,\t%f\n", objX, objY, objWidth, objHeight);
+	//fprintf((FILE*) logFile, "%f,\t%f,\t%f,\t%f\n", objX, objY, objWidth, objHeight);
 	
 	int onPlatDetected = 0;
 
