@@ -5,11 +5,12 @@
 
 void updateShellcreeperAnimation(Shellcreeper *shellcreeper)
 {
+	Enemy *scInfo = &(shellcreeper->enemy);
 	shellcreeper->frame++;
 	
 	if (shellcreeper->frame % 4 == 0)
 	{
-		if (shellcreeper->xSpeed == shellcreeper->xMaxSpeed && !shellcreeper->inHitState)
+		if (scInfo->xSpeed == scInfo->xMaxSpeed && !scInfo->inHitState)
 		{
 			if (shellcreeper->curFrame == shellcreeper->walk0Frame || shellcreeper->curFrame == shellcreeper->walk1Frame)
 				shellcreeper->curFrame = shellcreeper->stillFrame;
@@ -37,117 +38,123 @@ void updateShellcreeperAnimation(Shellcreeper *shellcreeper)
 	}
 }
 
-void updateShellcreeper(Shellcreeper *shellcreeper, Level *level, osspriteop_area *area, void *logFile)
+void updateEnemy(Enemy *enemy, void *enemyChildPoint, enum EnemyType enemyType, Level *level, osspriteop_area *area, void *logFile)
 {
 	//Apply falling
-	if (shellcreeper->isFalling && !(shellcreeper->inPipe))
+	if (enemy->isFalling && !(enemy->inPipe))
 	{
-		shellcreeper->ySpeed += -0.5;
-		shellcreeper->y += shellcreeper->ySpeed;
+		enemy->ySpeed += -0.5;
+		enemy->y += enemy->ySpeed;
 	}
 	
 	//Movement
-	if (!shellcreeper->inHitState && !shellcreeper->dying)
+	if (!enemy->inHitState && !enemy->dying)
 	{
-		if (shellcreeper->facing == 'L')
-			shellcreeper->x -= shellcreeper->xSpeed;
-		else if (shellcreeper->facing == 'R')
-			shellcreeper->x += shellcreeper->xSpeed;
+		if (enemy->facing == 'L')
+			enemy->x -= enemy->xSpeed;
+		else if (enemy->facing == 'R')
+			enemy->x += enemy->xSpeed;
 	}
-	else if (shellcreeper->dying)
+	else if (enemy->dying)
 	{
-		shellcreeper->x += shellcreeper->xSpeed;
+		enemy->x += enemy->xSpeed;
 	}
 	
 	//Animation
-	if (!(shellcreeper->isFalling))
+	if (!(enemy->isFalling))
 	{
-		updateShellcreeperAnimation(shellcreeper);
+		switch (enemyType)
+		{
+			case SHELLCREEPER:
+				updateShellcreeperAnimation((Shellcreeper*) enemyChildPoint);
+				break;
+		}
+		
 	}
 	
 	//Platform collision
-	if (!shellcreeper->dying)
+	if (!enemy->dying)
 	{
-		scPlatCollision(shellcreeper, level, logFile);
+		enemyPlatCollision(enemy, enemyChildPoint, enemyType, level, logFile);
 	}
 	
 	//Check if walked off platform
-	if (!(shellcreeper->isFalling) && !(shellcreeper->isOnPlat) && shellcreeper->y + 16*4 > 1)
+	if (!(enemy->isFalling) && !(enemy->isOnPlat) && enemy->y + 16*4 > 1)
 	{
-		shellcreeper->isFalling = 1;
-		shellcreeper->ySpeed = -6.0;
+		enemy->isFalling = 1;
+		enemy->ySpeed = -6.0;
 	}
 	
 	//Check if on ground level, in a pipe or other
-	int shY = (int) (shellcreeper->y);
-	switch (shY)
+	int enY = (int) (enemy->y);
+	switch (enY)
 	{
 		//Ground
 		case 16*4:
 			//Left pipe check
-			if (shellcreeper->facing == 'L' && shellcreeper->x <= 32*4)
+			if (enemy->facing == 'L' && enemy->x <= 32*4)
 			{
-				shellcreeper->y = 24*4;
-				shellcreeper->inPipe = 1;
+				enemy->y = 24*4;
+				enemy->inPipe = 1;
 			}
 			//Right pipe check
-			else if (shellcreeper->facing == 'R' && shellcreeper->x + (shellcreeper->width * 4) >= 1024 - 32*4)
+			else if (enemy->facing == 'R' && enemy->x + (enemy->width * 4) >= 1024 - 32*4)
 			{
-				shellcreeper->y = 24*4;
-				shellcreeper->inPipe = 1;
+				enemy->y = 24*4;
+				enemy->inPipe = 1;
 			}
 			break;
 		
 		//In pipe
 		case 24*4:
 			//Left pipe
-			if (shellcreeper->facing == 'L' && shellcreeper->x + (shellcreeper->width * 4) < 32*4)
+			if (enemy->facing == 'L' && enemy->x + (enemy->width * 4) < 32*4)
 			{
-				shellcreeper->x = 48*4;
-				shellcreeper->y = 178*4;
-				shellcreeper->facing = 'R';
-				shellcreeper->isFalling = 1;
-				shellcreeper->inPipe = 0;
+				enemy->x = 48*4;
+				enemy->y = 178*4;
+				enemy->facing = 'R';
+				enemy->isFalling = 1;
+				enemy->inPipe = 0;
 			}
 			//Right pipe
-			else if (shellcreeper->facing == 'R' && shellcreeper->x > 1024 - 32*4)
+			else if (enemy->facing == 'R' && enemy->x > 1024 - 32*4)
 			{
-				shellcreeper->x = 1024 - 48*4 - shellcreeper->width * 4;
-				shellcreeper->y = 178*4;
-				shellcreeper->facing = 'L';
-				shellcreeper->isFalling = 1;
-				shellcreeper->inPipe = 0;
+				enemy->x = 1024 - 48*4 - enemy->width * 4;
+				enemy->y = 178*4;
+				enemy->facing = 'L';
+				enemy->isFalling = 1;
+				enemy->inPipe = 0;
 			}
 			break;
 			
 		//Other
 		default:
 			//Bounds - wrap around to other side when going off left or right side of screen
-			if (shellcreeper->facing == 'L' && shellcreeper->x + 12 * 4 < 0)
+			if (enemy->facing == 'L' && enemy->x + 12 * 4 < 0)
 			{
-				shellcreeper->x = 1024;
+				enemy->x = 1024;
 			}
-			else if (shellcreeper->facing == 'R' && shellcreeper->x > 1024)
+			else if (enemy->facing == 'R' && enemy->x > 1024)
 			{
-				shellcreeper->x = 0 - 16*4;
+				enemy->x = 0 - 16*4;
 			}
 			break;
 	}
 	
 	//Make shellcreeper dead when it as a whole reaches or goes below y = 0
-	if (shellcreeper->y + shellcreeper->height * 4 <= 0 && shellcreeper->dying)
+	if (enemy->y + enemy->height * 4 <= 0 && enemy->dying)
 	{
-		shellcreeper->dying = 0;
-		shellcreeper->dead = 1;
+		enemy->dying = 0;
+		enemy->dead = 1;
 	}
 }
 
-void scPlatCollision(Shellcreeper *shellcreeper, Level *level, void *logFile)
+void enemyPlatCollision(Enemy *enemy, void *enemyChildPoint, enum EnemyType enemyType, Level *level, void *logFile)
 {
-	float objX = shellcreeper->x;
-	float objY = shellcreeper->y;
-	float objWidth = shellcreeper->width * 4;
-	float objHeight = shellcreeper->height * 4;
+	float objX = enemy->x;
+	float objY = enemy->y;
+	float objWidth = enemy->width * 4;
+	float objHeight = enemy->height * 4;
 	
 	//fprintf((FILE*) logFile, "%f,\t%f,\t%f,\t%f\n", objX, objY, objWidth, objHeight);
 	
@@ -161,12 +168,12 @@ void scPlatCollision(Shellcreeper *shellcreeper, Level *level, void *logFile)
 		float platHeight = level->plats[i].height;
 		
 		//Downwards y platform collision
-		if ((objX <= platX + platWidth && objX + objWidth >= platX && objY <= platY + platHeight && objY >= platY) && !(shellcreeper->ySpeed > 0))
+		if ((objX <= platX + platWidth && objX + objWidth >= platX && objY <= platY + platHeight && objY >= platY) && !(enemy->ySpeed > 0))
 		{
-			shellcreeper->y = platY + platHeight;
-			shellcreeper->ySpeed = 0;
-			shellcreeper->isFalling = 0;
-			shellcreeper->isOnPlat = 1;
+			enemy->y = platY + platHeight;
+			enemy->ySpeed = 0;
+			enemy->isFalling = 0;
+			enemy->isOnPlat = 1;
 			onPlatDetected = 1;
 			
 			//Check if this platform has been hit
@@ -178,19 +185,26 @@ void scPlatCollision(Shellcreeper *shellcreeper, Level *level, void *logFile)
 				int thisPlatSquare = (int) ((midOfSc - level->plats[i].x) / level->platSize / 4);
 				if (thisPlatSquare == level->platSquare)
 				{
-					fprintf((FILE*)logFile, "Shellcreeper hit\n");
-					shellcreeper->inHitState = 1;
-					shellcreeper->curFrame = shellcreeper->hit0Frame;
-					shellcreeper->ySpeed = 5.0;
-					shellcreeper->isFalling = 1;
+					fprintf((FILE*)logFile, "Enemy hit\n");
+					enemy->inHitState = 1;
+					
+					enemy->ySpeed = 5.0;
+					enemy->isFalling = 1;
+					switch (enemyType)
+					{
+						case SHELLCREEPER:
+							
+							((Shellcreeper*) enemyChildPoint)->curFrame = ((Shellcreeper*) enemyChildPoint)->hit0Frame;
+							break;
+					}
 				}
 			}
 		}
 	}
 	
 	//Update if object is on platform
-	if (shellcreeper->isOnPlat && !onPlatDetected)
+	if (enemy->isOnPlat && !onPlatDetected)
 	{
-		shellcreeper->isOnPlat = 0;
+		enemy->isOnPlat = 0;
 	}
 }

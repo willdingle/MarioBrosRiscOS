@@ -5,17 +5,16 @@
 
 typedef struct Level Level;
 
-typedef struct Shellcreeper
+enum EnemyType
 {
-	osspriteop_header *stillFrame;
-	osspriteop_header *walk0Frame;
-	osspriteop_header *walk1Frame;
-	osspriteop_header *hit0Frame;
-	osspriteop_header *hit1Frame;
-	osspriteop_header *curFrame;
-	int frame;
-	int lastWalk;
-	osspriteop_trans_tab *transTab;
+	SHELLCREEPER,
+	SIDESTEPPER,
+	FIGHTERFLY,
+	SLIPICE
+};
+
+typedef struct Enemy
+{
 	float x;
 	float y;
 	float width;
@@ -31,10 +30,26 @@ typedef struct Shellcreeper
 	int dying;
 	int dead;
 }
+Enemy;
+
+typedef struct Shellcreeper
+{
+	Enemy enemy;
+	osspriteop_header *stillFrame;
+	osspriteop_header *walk0Frame;
+	osspriteop_header *walk1Frame;
+	osspriteop_header *hit0Frame;
+	osspriteop_header *hit1Frame;
+	osspriteop_header *curFrame;
+	int frame;
+	int lastWalk;
+	osspriteop_trans_tab *transTab;
+	
+}
 Shellcreeper;
 
 void updateShellcreeperAnimation(Shellcreeper *shellcreeper);
-void updateShellcreeper(Shellcreeper *shellcreeper, Level *level, osspriteop_area *area, void *logFile);
-void scPlatCollision(Shellcreeper *shellcreeper, Level *level, void *logFile);
+void updateEnemy(Enemy *enemy, void *enemyChildPoint, enum EnemyType enemyType, Level *level, osspriteop_area *area, void *logFile);
+void enemyPlatCollision(Enemy *enemy, void *enemyChildPoint, enum EnemyType enemyType, Level *level, void *logFile);
 
 #endif

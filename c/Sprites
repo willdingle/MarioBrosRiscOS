@@ -303,7 +303,6 @@ void selectShellcreeperSprites(
 	}
 	
 	shellcreeper->curFrame = shellcreeper->stillFrame;
-	shellcreeper->facing = 'L';
 	shellcreeper->frame = 0;
 	shellcreeper->lastWalk = 1;
 }

@@ -15,10 +15,11 @@ void enemyCollision(Player *mario, Level *level, enum GameState *gameState, FILE
 	
 	for (int i = 0; i < level->numOfShellcreepers; i++)
 	{
-		float scX = level->shellcreepers[i].x;
-		float scY = level->shellcreepers[i].y;
-		float scWidth = level->shellcreepers[i].width * 4;
-		float scHeight = level->shellcreepers[i].height * 4;
+		Enemy *scInfo = &(level->shellcreepers[i].enemy);
+		float scX = scInfo->x;
+		float scY = scInfo->y;
+		float scWidth = scInfo->width * 4;
+		float scHeight = scInfo->height * 4;
 		
 		//fprintf(logFile, "x: %f, y: %f, width: %f, height: %f\n", scX, scY, scWidth, scHeight);
 		//fprintf(logFile, "xSpeed: %f\n", level->shellcreepers[i].xSpeed);
@@ -26,48 +27,48 @@ void enemyCollision(Player *mario, Level *level, enum GameState *gameState, FILE
 		//Enemy left travel collision
 		if (scX <= marX + marWidth && scX >= marX && scY <= marY + marHeight && scY + scHeight >= marY)
 		{
-			if (!level->shellcreepers[i].inHitState && !level->shellcreepers[i].dying)
+			if (!scInfo->inHitState && !scInfo->dying)
 			{
 				fprintf(logFile, "Enemy collision!\n");
 				fflush(logFile);
 				mario->curFrame = mario->hitFrame;
 				mario->state = HIT;
 			}
-			else if (level->shellcreepers[i].inHitState)
+			else if (scInfo->inHitState)
 			{
-				level->shellcreepers[i].inHitState = 0;
-				level->shellcreepers[i].dying = 1;
-				level->shellcreepers[i].isFalling = 1;
+				scInfo->inHitState = 0;
+				scInfo->dying = 1;
+				scInfo->isFalling = 1;
 				fprintf(logFile, "%c", mario->facing);
 				fflush(logFile);
 				if (mario->facing == 'L')
-					level->shellcreepers[i].xSpeed = -5.0;
+					scInfo->xSpeed = -5.0;
 				else
-					level->shellcreepers[i].xSpeed = 5.0;
+					scInfo->xSpeed = 5.0;
 			}
 			
 		}
 		//Enemy right travel collision
 		if (scX + scWidth > marX && scX + scWidth < marX + marWidth && scY <= marY + marWidth && scY + scHeight >= marY)
 		{
-			if (!level->shellcreepers[i].inHitState && !level->shellcreepers[i].dying)
+			if (scInfo->inHitState && scInfo->dying)
 			{
 				fprintf(logFile, "Enemy collision!\n");
 				fflush(logFile);
 				mario->curFrame = mario->hitFrame;
 				mario->state = HIT;
 			}
-			else if (level->shellcreepers[i].inHitState)
+			else if (scInfo->inHitState)
 			{
-				level->shellcreepers[i].inHitState = 0;
-				level->shellcreepers[i].dying = 1;
-				level->shellcreepers[i].isFalling = 1;
+				scInfo->inHitState = 0;
+				scInfo->dying = 1;
+				scInfo->isFalling = 1;
 				fprintf(logFile, "Mario facing: %c\n", mario->facing);
 				fflush(logFile);
 				if (mario->facing == 'L')
-					level->shellcreepers[i].xSpeed = -5.0;
+					scInfo->xSpeed = -5.0;
 				else
-					level->shellcreepers[i].xSpeed = 5.0;
+					scInfo->xSpeed = 5.0;
 			}
 		}
 	}

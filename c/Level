@@ -18,18 +18,18 @@ void initLevel(Level *level, osspriteop_area *area, int size, FILE *logFile)
 		case 1:
 			level->numOfShellcreepers = 2;
 			level->shellcreepers = (Shellcreeper*) malloc(level->numOfShellcreepers * sizeof(Shellcreeper) + 10000);
-			level->shellcreepers[0].x = 700;
-			level->shellcreepers[0].y = level->plats[0].y + level->plats[0].height + 20;
-			level->shellcreepers[0].width = 12;
-			level->shellcreepers[0].height = 16;
-			level->shellcreepers[0].xSpeed = 7;
-			level->shellcreepers[0].xMaxSpeed = 7;
-			level->shellcreepers[0].isFalling = 1;
-			level->shellcreepers[0].facing = 'L';
-			level->shellcreepers[0].inPipe = 0;
-			level->shellcreepers[0].inHitState = 0;
-			level->shellcreepers[0].dying = 0;
-			level->shellcreepers[0].dead = 0;
+			level->shellcreepers[0].enemy.x = 700;
+			level->shellcreepers[0].enemy.y = level->plats[0].y + level->plats[0].height + 20;
+			level->shellcreepers[0].enemy.width = 12;
+			level->shellcreepers[0].enemy.height = 16;
+			level->shellcreepers[0].enemy.xSpeed = 7;
+			level->shellcreepers[0].enemy.xMaxSpeed = 7;
+			level->shellcreepers[0].enemy.isFalling = 1;
+			level->shellcreepers[0].enemy.facing = 'L';
+			level->shellcreepers[0].enemy.inPipe = 0;
+			level->shellcreepers[0].enemy.inHitState = 0;
+			level->shellcreepers[0].enemy.dying = 0;
+			level->shellcreepers[0].enemy.dead = 0;
 			
 			selectShellcreeperSprites(
 				&(level->shellcreepers[0]),
@@ -39,8 +39,8 @@ void initLevel(Level *level, osspriteop_area *area, int size, FILE *logFile)
 			);
 			
 			level->shellcreepers[1] = level->shellcreepers[0];
-			level->shellcreepers[1].x = 500;
-			level->shellcreepers[1].facing = 'R';
+			level->shellcreepers[1].enemy.x = 500;
+			level->shellcreepers[1].enemy.facing = 'R';
 			
 			break;
 	}

@@ -442,7 +442,8 @@ void redrawWindow(wimp_block *block, osspriteop_area *area, Player *mario, Level
 		//Draw enemies
 		for (int i = 0; i < level->numOfShellcreepers; i++)
 		{
-			if (level->shellcreepers[i].facing == 'R')
+			Enemy *scInfo = &(level->shellcreepers[i].enemy);
+			if (scInfo->facing == 'R')
 			{
 				osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "sc_still");
 				osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "sc_walk0");
@@ -453,14 +454,14 @@ void redrawWindow(wimp_block *block, osspriteop_area *area, Player *mario, Level
 				osspriteop_PTR,
 				area,
 				(osspriteop_id) level->shellcreepers[i].curFrame,
-				x + level->shellcreepers[i].x,
-				y + level->shellcreepers[i].y,
+				x + scInfo->x,
+				y + scInfo->y,
 				os_ACTION_OVERWRITE | osspriteop_GIVEN_WIDE_ENTRIES | 0x8,
 				factors,
 				level->shellcreepers[i].transTab
 			);
 			
-			if (level->shellcreepers[i].facing == 'R')
+			if (scInfo->facing == 'R')
 			{
 				osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "sc_still");
 				osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "sc_walk0");
