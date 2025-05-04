@@ -439,6 +439,27 @@ void redrawWindow(wimp_block *block, osspriteop_area *area, Player *mario, Level
 			fflush(logFile);
 		}
 		
+		if (mario->state == RESPAWNING)
+		{
+			e = xosspriteop_put_sprite_scaled(
+				osspriteop_PTR,
+				area,
+				(osspriteop_id) mario->respPlat,
+				x + mario->x,
+				y + mario->y - 8*4,
+				os_ACTION_OVERWRITE | osspriteop_GIVEN_WIDE_ENTRIES | 0x8,
+				factors,
+				mario->curTransTab
+			);
+			
+			if (e != NULL)
+			{
+				fprintf(logFile, "Put respPlat failed\n"
+					"	errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+				fflush(logFile);
+			}
+		}
+		
 		//Draw enemies
 		for (int i = 0; i < level->numOfShellcreepers; i++)
 		{

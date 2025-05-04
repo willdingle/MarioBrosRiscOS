@@ -24,9 +24,11 @@ void enemyCollision(Player *mario, Level *level, enum GameState *gameState, FILE
 		//fprintf(logFile, "x: %f, y: %f, width: %f, height: %f\n", scX, scY, scWidth, scHeight);
 		//fprintf(logFile, "xSpeed: %f\n", level->shellcreepers[i].xSpeed);
 		
-		//Enemy left travel collision
-		if (scX <= marX + marWidth && scX >= marX && scY <= marY + marHeight && scY + scHeight >= marY)
+		//Check for enemy collision
+		if (scX <= marX + marWidth && scX >= marX && scY <= marY + marHeight && scY + scHeight >= marY
+			|| scX + scWidth > marX && scX + scWidth < marX + marWidth && scY <= marY + marWidth && scY + scHeight >= marY)
 		{
+			//If enemy is in its regular living state, mario becomes hit
 			if (!scInfo->inHitState && !scInfo->dying)
 			{
 				fprintf(logFile, "Enemy collision!\n");
@@ -34,6 +36,7 @@ void enemyCollision(Player *mario, Level *level, enum GameState *gameState, FILE
 				mario->curFrame = mario->hitFrame;
 				mario->state = HIT;
 			}
+			//If enemy is in its hit state, enemy starts dying
 			else if (scInfo->inHitState)
 			{
 				scInfo->inHitState = 0;
@@ -42,34 +45,11 @@ void enemyCollision(Player *mario, Level *level, enum GameState *gameState, FILE
 				fprintf(logFile, "%c", mario->facing);
 				fflush(logFile);
 				if (mario->facing == 'L')
-					scInfo->xSpeed = -5.0;
+					scInfo->xSpeed = -20.0;
 				else
-					scInfo->xSpeed = 5.0;
+					scInfo->xSpeed = 20.0;
 			}
 			
-		}
-		//Enemy right travel collision
-		if (scX + scWidth > marX && scX + scWidth < marX + marWidth && scY <= marY + marWidth && scY + scHeight >= marY)
-		{
-			if (scInfo->inHitState && scInfo->dying)
-			{
-				fprintf(logFile, "Enemy collision!\n");
-				fflush(logFile);
-				mario->curFrame = mario->hitFrame;
-				mario->state = HIT;
-			}
-			else if (scInfo->inHitState)
-			{
-				scInfo->inHitState = 0;
-				scInfo->dying = 1;
-				scInfo->isFalling = 1;
-				fprintf(logFile, "Mario facing: %c\n", mario->facing);
-				fflush(logFile);
-				if (mario->facing == 'L')
-					scInfo->xSpeed = -5.0;
-				else
-					scInfo->xSpeed = 5.0;
-			}
 		}
 	}
 }
@@ -143,8 +123,17 @@ void calcPlatHit(Player *mario, Level *level, int i, FILE *logFile)
 	getPlatRow(&(level->platRow), i);
 	float midOfMario = (mario->x + (mario->x + mario->width * 4)) / 2;
 	level->platSquare = (int) ((midOfMario - level->plats[i].x) / level->platSize / 4);
-	fprintf(logFile, "Plat square hit: %i\n", level->platSquare);
-	fflush(logFile);
+	
+	if (level->platSquare < 0 || level->platSquare > (level->plats[i].x / level->platSize / 4) + (level->plats[i].width / level->platSize / 4) - 1)
+	{
+		level->platRow = NOT_HIT;
+		level->platSquare = 0;
+	}
+	else
+	{
+		fprintf(logFile, "Plat square hit: %i\n", level->platSquare);
+		fflush(logFile);
+	}
 }
 
 void updatePlayerAnimation(Player *mario)

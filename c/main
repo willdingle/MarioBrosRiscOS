@@ -134,8 +134,8 @@ void updateGame(void *ws)
 					updateEnemy(&(level.shellcreepers[i].enemy), &(level.shellcreepers[i]), enemyType, &level, area, (void*)logFile);
 				//fprintf(logFile, "x: %f\n y: %f\n\n", level.shellcreepers[i].x, level.shellcreepers[i].y);
 				//fflush(logFile);
-				fprintf(logFile, "Sc %i facing: %c\n", i, level.shellcreepers[i].enemy.facing);
-				fflush(logFile);
+				//fprintf(logFile, "Sc %i facing: %c\n", i, level.shellcreepers[i].enemy.facing);
+				//fflush(logFile);
 			}
 			
 			//Gets keyboard input and updates player accordingly

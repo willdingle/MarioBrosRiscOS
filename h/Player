@@ -25,6 +25,7 @@ typedef struct Player
 	osspriteop_header *hitFrame;
 	osspriteop_header *dyingFrame;
 	osspriteop_header *curFrame;
+	osspriteop_header *respPlat;
 	int frame;
 	osspriteop_trans_tab *mainTransTab, *jumpTransTab, *curTransTab;
 	float x;
