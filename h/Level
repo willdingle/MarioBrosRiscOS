@@ -12,6 +12,7 @@ typedef struct PlatformInfo
 	float y;
 	float width;
 	float height;
+	int numOfSquares;
 }
 PlatformInfo;
 

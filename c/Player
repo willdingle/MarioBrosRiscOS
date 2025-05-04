@@ -124,7 +124,8 @@ void calcPlatHit(Player *mario, Level *level, int i, FILE *logFile)
 	float midOfMario = (mario->x + (mario->x + mario->width * 4)) / 2;
 	level->platSquare = (int) ((midOfMario - level->plats[i].x) / level->platSize / 4);
 	
-	if (level->platSquare < 0 || level->platSquare > (level->plats[i].x / level->platSize / 4) + (level->plats[i].width / level->platSize / 4) - 1)
+	fprintf(logFile, "Platsq hit: %i, Num of platsqs: %i\n", level->platSquare, level->plats[i].numOfSquares);
+	if (level->platSquare < 0 || level->platSquare > level->plats[i].numOfSquares - 1)
 	{
 		level->platRow = NOT_HIT;
 		level->platSquare = 0;

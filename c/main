@@ -186,45 +186,52 @@ int main()
 	//Store positions and dimensions of platforms for collision detection
 	level.platSize = 8;
 		//Top-left
+		level.plats[0].numOfSquares = 14;
 		level.plats[0].x = 0;
 		level.plats[0].y = 152 * factors.ymul * 2;		
-		level.plats[0].width = 14 * level.platSize * factors.xmul * 2;
+		level.plats[0].width = level.plats[0].numOfSquares * level.platSize * factors.xmul * 2;
 		level.plats[0].height = level.platSize * factors.ymul * 2;
 		
 		//Top-right
+		level.plats[1].numOfSquares = 14;
 		level.plats[1].x = 144 * factors.xmul * 2;
 		level.plats[1].y = 152 * factors.ymul * 2;		
-		level.plats[1].width = 14 * level.platSize * factors.xmul * 2;
+		level.plats[1].width = level.plats[1].numOfSquares * level.platSize * factors.xmul * 2;
 		level.plats[1].height = level.platSize * factors.ymul * 2;
 		
 		//Middle-left
+		level.plats[2].numOfSquares = 4;
 		level.plats[2].x = 0;
 		level.plats[2].y = 96 * factors.ymul * 2;		
-		level.plats[2].width = 4 * level.platSize * factors.xmul * 2;
+		level.plats[2].width = level.plats[2].numOfSquares * level.platSize * factors.xmul * 2;
 		level.plats[2].height = level.platSize * factors.ymul * 2;
 		
 		//Middle-right
+		level.plats[3].numOfSquares = 4;
 		level.plats[3].x = 224 * factors.xmul * 2;
 		level.plats[3].y = 96 * factors.ymul * 2;		
-		level.plats[3].width = 4 * level.platSize * factors.xmul * 2;
+		level.plats[3].width = level.plats[3].numOfSquares * level.platSize * factors.xmul * 2;
 		level.plats[3].height = level.platSize * factors.ymul * 2;		
 		
 		//Middle
+		level.plats[4].numOfSquares = 16;
 		level.plats[4].x = 64 * factors.xmul * 2;
 		level.plats[4].y = 104 * factors.ymul * 2;		
-		level.plats[4].width = 16 * level.platSize * factors.xmul * 2;
+		level.plats[4].width = level.plats[4].numOfSquares * level.platSize * factors.xmul * 2;
 		level.plats[4].height = level.platSize * factors.ymul * 2;
 		
 		//Bottom-left
+		level.plats[5].numOfSquares = 12;
 		level.plats[5].x = 0;
 		level.plats[5].y = 56 * factors.ymul * 2;		
-		level.plats[5].width = 12 * level.platSize * factors.xmul * 2;
+		level.plats[5].width = level.plats[5].numOfSquares * level.platSize * factors.xmul * 2;
 		level.plats[5].height = level.platSize * factors.ymul * 2;
 
 		//Bottom-right
+		level.plats[6].numOfSquares = 12;
 		level.plats[6].x = 160 * factors.xmul * 2;
 		level.plats[6].y = 56 * factors.ymul * 2;		
-		level.plats[6].width = 12 * level.platSize * factors.xmul * 2;
+		level.plats[6].width = level.plats[6].numOfSquares * level.platSize * factors.xmul * 2;
 		level.plats[6].height = level.platSize * factors.ymul * 2;
 		
 		//Ground
