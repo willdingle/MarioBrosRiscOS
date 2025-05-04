@@ -2,6 +2,73 @@
 
 #include <string.h>
 
+void drawHUD(osspriteop_area *area, HUD *hud, Player *mario, os_factors *factors, int x, int y, FILE *logFile)
+{
+	//Points I
+	os_error *e = xosspriteop_put_sprite_scaled(
+		osspriteop_PTR,
+		area,
+		(osspriteop_id) hud->points_i,
+		x + 24*4,
+		y + 201*4,
+		os_ACTION_OVERWRITE | osspriteop_GIVEN_WIDE_ENTRIES | 0x8,
+		factors,
+		mario->mainTransTab
+	);
+	
+	if (e != NULL)
+	{
+		fprintf(logFile, "Put points_i failed\n"
+			"	errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+		fflush(logFile);
+	}
+	
+	//Score
+	updateHUDScore(hud, mario->score);
+	for (int i = 0; i < 6; i++)
+	{
+		e = xosspriteop_put_sprite_scaled(
+			osspriteop_PTR,
+			area,
+			(osspriteop_id) hud->scoreDisplay[i],
+			(x + 32*4) + (i * (8*4)),
+			y + 201*4,
+			os_ACTION_OVERWRITE | osspriteop_GIVEN_WIDE_ENTRIES | 0x8,
+			factors,
+			mario->mainTransTab
+		);
+		
+		if (e != NULL)
+		{
+			fprintf(logFile, "Put score failed\n"
+				"	errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+			fflush(logFile);
+		}
+	}
+	
+	//Lives
+	for (int i = 0; i < mario->extraLives; i++)
+	{
+		e = xosspriteop_put_sprite_scaled(
+			osspriteop_PTR,
+			area,
+			(osspriteop_id) hud->mario_hud,
+			(x + 64*4) + (i * (8*4 + 5*4)),
+			y + 191*4,
+			os_ACTION_OVERWRITE | osspriteop_GIVEN_WIDE_ENTRIES | 0x8,
+			factors,
+			mario->mainTransTab
+		);
+		
+		if (e != NULL)
+		{
+			fprintf(logFile, "Put mario_hud failed\n"
+				"	errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+			fflush(logFile);
+		}
+	}
+}
+
 void drawPlatHit(osspriteop_area *area, Level *level, os_factors *factors, int x, int y, int i, int curPlatRow, FILE *logFile)
 {
 	os_error *e = xosspriteop_put_sprite_scaled(
@@ -301,7 +368,7 @@ void drawPlatforms(osspriteop_area *area, Level *level, os_factors *factors, int
 	}
 }
 
-void redrawWindow(wimp_block *block, osspriteop_area *area, Player *mario, Level *level, os_factors *factors, FILE *logFile)
+void redrawWindow(wimp_block *block, osspriteop_area *area, Player *mario, Level *level, HUD *hud, os_factors *factors, FILE *logFile)
 {
 	wimp_draw draw;
 	
@@ -496,6 +563,9 @@ void redrawWindow(wimp_block *block, osspriteop_area *area, Player *mario, Level
 				fflush(logFile);
 			}
 		}
+		
+		//Draw HUD
+		drawHUD(area, hud, mario, factors, x, y, logFile);
 		
 		xwimp_get_rectangle(&draw, &more);
 	}

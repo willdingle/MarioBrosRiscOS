@@ -43,6 +43,185 @@ osspriteop_area* loadSpriteFile(const char *filename, int *sizePoint, FILE *logF
 	return area;
 }
 
+void selectHUDSprites(
+	HUD *hud,
+	osspriteop_area *area,
+	int size,
+	FILE *logFile
+)
+{
+	//Font
+	os_error *e = xosspriteop_select_sprite(
+		osspriteop_USER_AREA,
+		area,
+		(osspriteop_id) "font_0",
+		&(hud->font_numbers[0])
+	);
+
+	if (e != NULL)
+	{
+		fprintf(logFile, "selecting font_0 failed\n"
+		"   errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+		fflush(logFile);
+	}
+	
+	e = xosspriteop_select_sprite(
+		osspriteop_USER_AREA,
+		area,
+		(osspriteop_id) "font_1",
+		&(hud->font_numbers[1])
+	);
+
+	if (e != NULL)
+	{
+		fprintf(logFile, "selecting font_1 failed\n"
+		"   errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+		fflush(logFile);
+	}
+	
+	e = xosspriteop_select_sprite(
+		osspriteop_USER_AREA,
+		area,
+		(osspriteop_id) "font_2",
+		&(hud->font_numbers[2])
+	);
+
+	if (e != NULL)
+	{
+		fprintf(logFile, "selecting font_2 failed\n"
+		"   errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+		fflush(logFile);
+	}
+	
+	e = xosspriteop_select_sprite(
+		osspriteop_USER_AREA,
+		area,
+		(osspriteop_id) "font_3",
+		&(hud->font_numbers[3])
+	);
+
+	if (e != NULL)
+	{
+		fprintf(logFile, "selecting font_3 failed\n"
+		"   errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+		fflush(logFile);
+	}
+	
+	e = xosspriteop_select_sprite(
+		osspriteop_USER_AREA,
+		area,
+		(osspriteop_id) "font_4",
+		&(hud->font_numbers[4])
+	);
+
+	if (e != NULL)
+	{
+		fprintf(logFile, "selecting font_4 failed\n"
+		"   errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+		fflush(logFile);
+	}
+	
+	e = xosspriteop_select_sprite(
+		osspriteop_USER_AREA,
+		area,
+		(osspriteop_id) "font_5",
+		&(hud->font_numbers[5])
+	);
+
+	if (e != NULL)
+	{
+		fprintf(logFile, "selecting font_5 failed\n"
+		"   errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+		fflush(logFile);
+	}
+	
+	e = xosspriteop_select_sprite(
+		osspriteop_USER_AREA,
+		area,
+		(osspriteop_id) "font_6",
+		&(hud->font_numbers[6])
+	);
+
+	if (e != NULL)
+	{
+		fprintf(logFile, "selecting font_6 failed\n"
+		"   errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+		fflush(logFile);
+	}
+	
+	e = xosspriteop_select_sprite(
+		osspriteop_USER_AREA,
+		area,
+		(osspriteop_id) "font_7",
+		&(hud->font_numbers[7])
+	);
+
+	if (e != NULL)
+	{
+		fprintf(logFile, "selecting font_7 failed\n"
+		"   errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+		fflush(logFile);
+	}
+	
+	e = xosspriteop_select_sprite(
+		osspriteop_USER_AREA,
+		area,
+		(osspriteop_id) "font_8",
+		&(hud->font_numbers[8])
+	);
+
+	if (e != NULL)
+	{
+		fprintf(logFile, "selecting font_8 failed\n"
+		"   errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+		fflush(logFile);
+	}
+	
+	e = xosspriteop_select_sprite(
+		osspriteop_USER_AREA,
+		area,
+		(osspriteop_id) "font_9",
+		&(hud->font_numbers[9])
+	);
+
+	if (e != NULL)
+	{
+		fprintf(logFile, "selecting font_9 failed\n"
+		"   errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+		fflush(logFile);
+	}
+	
+	//Mario HUD
+	e = xosspriteop_select_sprite(
+		osspriteop_USER_AREA,
+		area,
+		(osspriteop_id) "mario_hud",
+		&(hud->mario_hud)
+	);
+
+	if (e != NULL)
+	{
+		fprintf(logFile, "selecting mario_hud failed\n"
+		"   errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+		fflush(logFile);
+	}
+	
+	//Points I
+	e = xosspriteop_select_sprite(
+		osspriteop_USER_AREA,
+		area,
+		(osspriteop_id) "points_i",
+		&(hud->points_i)
+	);
+
+	if (e != NULL)
+	{
+		fprintf(logFile, "selecting points_i failed\n"
+		"   errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+		fflush(logFile);
+	}
+}
+
 void selectLevelSprites(
 	Level *level,
 	osspriteop_area *area,

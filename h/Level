@@ -6,6 +6,16 @@
 
 #include "Enemy.h"
 
+typedef struct HUD
+{
+	osspriteop_header *font_numbers[10];
+	osspriteop_header *mario_hud;
+	osspriteop_header *points_i;
+	
+	osspriteop_header *scoreDisplay[6];
+}
+HUD;
+
 typedef struct PlatformInfo
 {
 	float x;
@@ -60,12 +70,8 @@ enum GameState
 	NAME_SCREEN
 };
 
-void initLevel(
-	Level *level,
-	osspriteop_area *area,
-	int size,
-	FILE *logFile
-);
+void initLevel(Level *level, osspriteop_area *area, int size, FILE *logFile);
 void getPlatRow(enum PlatRow *thisPlatRow, int i);
+void updateHUDScore(HUD *hud, int score);
 
 #endif

@@ -30,6 +30,7 @@ typedef struct Enemy
 	int dying;
 	int dead;
 	int timeTillSpawn;
+	int points;
 }
 Enemy;
 
@@ -50,7 +51,7 @@ typedef struct Shellcreeper
 Shellcreeper;
 
 void updateShellcreeperAnimation(Shellcreeper *shellcreeper);
-void updateEnemy(Enemy *enemy, void *enemyChildPoint, enum EnemyType enemyType, Level *level, osspriteop_area *area, void *logFile);
-void enemyPlatCollision(Enemy *enemy, void *enemyChildPoint, enum EnemyType enemyType, Level *level, void *logFile);
+void updateEnemy(Enemy *enemy, void *enemyChildPoint, enum EnemyType enemyType, Level *level, int *playerScore, osspriteop_area *area, void *logFile);
+void enemyPlatCollision(Enemy *enemy, void *enemyChildPoint, enum EnemyType enemyType, Level *level, int *playerScore, void *logFile);
 
 #endif

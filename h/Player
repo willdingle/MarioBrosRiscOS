@@ -41,6 +41,8 @@ typedef struct Player
 	int isOnPlat;
 	enum PlayerState state;
 	int hitTime;
+	int score;
+	int extraLives;
 }
 Player;
 

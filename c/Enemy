@@ -38,7 +38,7 @@ void updateShellcreeperAnimation(Shellcreeper *shellcreeper)
 	}
 }
 
-void updateEnemy(Enemy *enemy, void *enemyChildPoint, enum EnemyType enemyType, Level *level, osspriteop_area *area, void *logFile)
+void updateEnemy(Enemy *enemy, void *enemyChildPoint, enum EnemyType enemyType, Level *level, int *playerScore, osspriteop_area *area, void *logFile)
 {
 	//Apply falling
 	if (enemy->isFalling && !(enemy->inPipe))
@@ -75,7 +75,7 @@ void updateEnemy(Enemy *enemy, void *enemyChildPoint, enum EnemyType enemyType, 
 	//Platform collision
 	if (!enemy->dying)
 	{
-		enemyPlatCollision(enemy, enemyChildPoint, enemyType, level, logFile);
+		enemyPlatCollision(enemy, enemyChildPoint, enemyType, level, playerScore, logFile);
 	}
 	
 	//Check if walked off platform
@@ -129,8 +129,8 @@ void updateEnemy(Enemy *enemy, void *enemyChildPoint, enum EnemyType enemyType, 
 			enemy->isFalling = 1;
 			enemy->inPipe = 0;
 		}
-		fprintf((FILE*)logFile, "X: %f, Y: %f\n", enemy->x, enemy->y);
-		fflush((FILE*)logFile);
+		//fprintf((FILE*)logFile, "X: %f, Y: %f\n", enemy->x, enemy->y);
+		//fflush((FILE*)logFile);
 	}
 	else
 	{
@@ -153,7 +153,7 @@ void updateEnemy(Enemy *enemy, void *enemyChildPoint, enum EnemyType enemyType, 
 	}
 }
 
-void enemyPlatCollision(Enemy *enemy, void *enemyChildPoint, enum EnemyType enemyType, Level *level, void *logFile)
+void enemyPlatCollision(Enemy *enemy, void *enemyChildPoint, enum EnemyType enemyType, Level *level, int *playerScore, void *logFile)
 {
 	float objX = enemy->x;
 	float objY = enemy->y;
@@ -191,6 +191,7 @@ void enemyPlatCollision(Enemy *enemy, void *enemyChildPoint, enum EnemyType enem
 				{
 					fprintf((FILE*)logFile, "Enemy hit\n");
 					enemy->inHitState = 1;
+					*playerScore += 10;
 					
 					enemy->ySpeed = 5.0;
 					enemy->isFalling = 1;

@@ -27,13 +27,12 @@ char *data;
 osspriteop_area *area;
 Player mario;
 Level level;
+HUD hud;
 enum GameState gameState = PLAYING;
 os_factors factors;
 int size;
 
 FILE *logFile;
-
-
 
 //********** SCREEN MODE INFO **********
 typedef union
@@ -43,19 +42,19 @@ typedef union
    struct
    {    
       int modeFlags,
-          scrRCol,
-          scrBRow,
-          nColour,
-          xEigFactor,
-          yEigFactor,
-          lineLength,  
-          screenSize,
-          yShiftSize,
-          log2bpp,
-          log2bpc,
-          xWindLimit,
-          yWindLimit,
-          minScreenBanks;
+		  scrRCol,
+		  scrBRow,
+		  nColour,
+		  xEigFactor,
+		  yEigFactor,
+		  lineLength,  
+		  screenSize,
+		  yShiftSize,
+		  log2bpp,
+		  log2bpc,
+		  xWindLimit,
+		  yWindLimit,
+		  minScreenBanks;
    }
    info;
 }
@@ -67,15 +66,15 @@ void updateModeInfo()
 {                                      
    for (int i = 0; i < 15; i++)
    {
-      modeInfo.numbers[i] = i;
+	   modeInfo.numbers[i] = i;
    }
 
    modeInfo.numbers[14] = -1;
 
    os_error *e = xos_read_vdu_variables(
-					(os_vdu_var_list*)modeInfo.numbers, 
-                    modeInfo.numbers
-				);
+		(os_vdu_var_list*)modeInfo.numbers, 
+		modeInfo.numbers
+	);
 }
 
 
@@ -131,7 +130,7 @@ void updateGame(void *ws)
 			for (int i = 0; i < level.numOfShellcreepers; i++)
 			{
 				if (!level.shellcreepers[i].enemy.dead && os_read_monotonic_time() >= level.shellcreepers[i].enemy.timeTillSpawn)
-					updateEnemy(&(level.shellcreepers[i].enemy), &(level.shellcreepers[i]), enemyType, &level, area, (void*)logFile);
+					updateEnemy(&(level.shellcreepers[i].enemy), &(level.shellcreepers[i]), enemyType, &level, &(mario->score), area, (void*)logFile);
 				//fprintf(logFile, "x: %f\n y: %f\n\n", level.shellcreepers[i].x, level.shellcreepers[i].y);
 				//fflush(logFile);
 				//fprintf(logFile, "Sc %i facing: %c\n", i, level.shellcreepers[i].enemy.facing);
@@ -171,6 +170,7 @@ int main()
 	mario.xMaxSpeed = 12;
 	mario.ySpeed = 0;
 	mario.state = LIVING;
+	mario.extraLives = 2;
 	selectPlayerSprites(
 		&mario, 
 		"mario",
@@ -182,6 +182,9 @@ int main()
 		modeInfo.info.yEigFactor,
 		logFile
 	);
+	
+	//Load HUD sprites
+	selectHUDSprites(&hud, area, size, logFile);
 	
 	//Store positions and dimensions of platforms for collision detection
 	level.platSize = 8;
@@ -281,7 +284,7 @@ int main()
 				updateTimer();
 				break;
 			case wimp_REDRAW_WINDOW_REQUEST:
-				redrawWindow(block, area, &mario, &level, &factors, logFile);
+				redrawWindow(block, area, &mario, &level, &hud, &factors, logFile);
 				break;
 			case wimp_MOUSE_CLICK:
 				fprintf(logFile, "mouse click\n");
