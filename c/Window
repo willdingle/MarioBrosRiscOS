@@ -336,6 +336,43 @@ void redrawWindow(wimp_block *block, osspriteop_area *area, Player *mario, Level
 			fflush(logFile);
 		}
 		
+		//Draw enemies
+		for (int i = 0; i < level->numOfShellcreepers; i++)
+		{
+			Enemy *scInfo = &(level->shellcreepers[i].enemy);
+			if (scInfo->facing == 'R')
+			{
+				osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "sc_still");
+				osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "sc_walk0");
+				osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "sc_walk1");
+			}
+			
+			e = xosspriteop_put_sprite_scaled(
+				osspriteop_PTR,
+				area,
+				(osspriteop_id) level->shellcreepers[i].curFrame,
+				x + scInfo->x,
+				y + scInfo->y,
+				os_ACTION_OVERWRITE | osspriteop_GIVEN_WIDE_ENTRIES | 0x8,
+				factors,
+				level->shellcreepers[i].transTab
+			);
+			
+			if (scInfo->facing == 'R')
+			{
+				osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "sc_still");
+				osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "sc_walk0");
+				osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "sc_walk1");
+			}
+			
+			if (e != NULL)
+			{
+				fprintf(logFile, "Put shellcreeper %d failed\n"
+					"	errnum = %d: message = '%s'\n", i, e->errnum, e->errmess);
+				fflush(logFile);
+			}
+		}
+		
 		//Draw pipes
 		e = xosspriteop_put_sprite_scaled(
 			osspriteop_PTR,
@@ -459,45 +496,6 @@ void redrawWindow(wimp_block *block, osspriteop_area *area, Player *mario, Level
 				fflush(logFile);
 			}
 		}
-		
-		//Draw enemies
-		for (int i = 0; i < level->numOfShellcreepers; i++)
-		{
-			Enemy *scInfo = &(level->shellcreepers[i].enemy);
-			if (scInfo->facing == 'R')
-			{
-				osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "sc_still");
-				osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "sc_walk0");
-				osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "sc_walk1");
-			}
-			
-			e = xosspriteop_put_sprite_scaled(
-				osspriteop_PTR,
-				area,
-				(osspriteop_id) level->shellcreepers[i].curFrame,
-				x + scInfo->x,
-				y + scInfo->y,
-				os_ACTION_OVERWRITE | osspriteop_GIVEN_WIDE_ENTRIES | 0x8,
-				factors,
-				level->shellcreepers[i].transTab
-			);
-			
-			if (scInfo->facing == 'R')
-			{
-				osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "sc_still");
-				osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "sc_walk0");
-				osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "sc_walk1");
-			}
-			
-			if (e != NULL)
-			{
-				fprintf(logFile, "Put shellcreeper %d failed\n"
-					"	errnum = %d: message = '%s'\n", i, e->errnum, e->errmess);
-				fflush(logFile);
-			}
-		}
-		
-		
 		
 		xwimp_get_rectangle(&draw, &more);
 	}
