@@ -130,7 +130,7 @@ void updateGame(void *ws)
 			enum EnemyType enemyType = SHELLCREEPER;
 			for (int i = 0; i < level.numOfShellcreepers; i++)
 			{
-				if (!level.shellcreepers[i].enemy.dead)
+				if (!level.shellcreepers[i].enemy.dead && os_read_monotonic_time() >= level.shellcreepers[i].enemy.timeTillSpawn)
 					updateEnemy(&(level.shellcreepers[i].enemy), &(level.shellcreepers[i]), enemyType, &level, area, (void*)logFile);
 				//fprintf(logFile, "x: %f\n y: %f\n\n", level.shellcreepers[i].x, level.shellcreepers[i].y);
 				//fflush(logFile);

@@ -29,6 +29,7 @@ typedef struct Enemy
 	int inHitState;
 	int dying;
 	int dead;
+	int timeTillSpawn;
 }
 Enemy;
 

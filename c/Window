@@ -336,6 +336,9 @@ void redrawWindow(wimp_block *block, osspriteop_area *area, Player *mario, Level
 			fflush(logFile);
 		}
 		
+		//Draw platforms
+		drawPlatforms(area, level, factors, x, y, logFile);
+		
 		//Draw enemies
 		for (int i = 0; i < level->numOfShellcreepers; i++)
 		{
@@ -453,9 +456,6 @@ void redrawWindow(wimp_block *block, osspriteop_area *area, Player *mario, Level
 		}
 		
 		osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "pipe_top");
-		
-		//Draw platforms
-		drawPlatforms(area, level, factors, x, y, logFile);
 		
 		//Draw player
 		e = xosspriteop_put_sprite_scaled(
