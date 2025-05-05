@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include "oslib/osbyte.h"
 
 #define WIN_NUM_BUF_SIZE 12
 
@@ -28,7 +29,7 @@ osspriteop_area *area;
 Player mario;
 Level level;
 HUD hud;
-enum GameState gameState = PLAYING;
+enum GameState gameState = MAIN_MENU;
 os_factors factors;
 int size;
 
@@ -121,6 +122,29 @@ void updateGame(void *ws)
 {
 	switch(gameState)
 	{
+		case MAIN_MENU:
+		{
+			int enterPressed;
+			os_byte(
+				osbyte_SCAN_KEYBOARD,
+				73 ^ 0x80,
+				0,
+				&enterPressed,
+				NULL
+			);
+			
+			if (enterPressed)
+			{
+				gameState = PLAYING;
+				setTimer(60, updateGame, ws);
+				wimp_force_redraw(block->open.w, 0, 0, 1024, +960);
+			}
+			
+			//fprintf(logFile, "Enter pressed: %i\n", enterPressed);
+			//fflush(logFile);
+			setTimer(10, updateGame, (void*)&mario);
+			break;
+		}
 		case PLAYING:
 		{
 			Player* mario = (Player*)ws;
@@ -158,8 +182,8 @@ void updateGame(void *ws)
 			level.levelNum = 1;
 			initLevel(&level, &mario, area, size, logFile);
 			setTimer(60, updateGame, (void*)&mario);
-			gameState = PLAYING;
 			wimp_force_redraw(block->open.w, 0, 0, 1024, +960);
+			gameState = MAIN_MENU;
 			break;
 		}
 	}
@@ -278,7 +302,7 @@ int main()
 	
 	//Set timer
 	initialiseTimer();
-	setTimer(60, updateGame, (void*)&mario);
+	setTimer(10, updateGame, (void*)&mario);
 	
 	//*** MAIN LOOP ***
 	while (!QUIT)
@@ -291,14 +315,7 @@ int main()
 				updateTimer();
 				break;
 			case wimp_REDRAW_WINDOW_REQUEST:
-				switch (gameState)
-				{
-					case PLAYING:
-					case GAME_OVER:
-						redrawWindowPlaying(block, area, &mario, &level, &hud, &gameState, &factors, logFile);
-						break;
-				}
-				
+				redrawWindowPlaying(block, area, &mario, &level, &hud, &gameState, &factors, logFile);
 				break;
 			case wimp_MOUSE_CLICK:
 				fprintf(logFile, "mouse click\n");

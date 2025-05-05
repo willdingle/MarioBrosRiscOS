@@ -3,8 +3,8 @@
 #include "oslib/osbyte.h"
 #include "Level.h"
 
-KeyCodes keys = {.left=25, .right=121, .x=66};
 GameInfo gameInfo = {.gravity = -0.98};
+KeyCodes keys = {.left=25, .right=121, .x=66, .enter=73};
 
 void enemyCollision(Player *mario, Level *level, enum GameState *gameState, FILE *logFile)
 {
@@ -35,6 +35,7 @@ void enemyCollision(Player *mario, Level *level, enum GameState *gameState, FILE
 				fflush(logFile);
 				mario->curFrame = mario->hitFrame;
 				mario->state = HIT;
+				mario->hitTime = 0;
 			}
 			//If enemy is in its hit state, enemy starts dying
 			else if (scInfo->inHitState)

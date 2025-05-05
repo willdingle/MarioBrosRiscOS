@@ -10,11 +10,16 @@ typedef struct Player Player;
 
 typedef struct HUD
 {
+	osspriteop_header *main_menu;
+	
 	osspriteop_header *font_numbers[10];
 	osspriteop_header *mario_hud;
 	osspriteop_header *points_i;
+	osspriteop_header *points_top;
 	
-	osspriteop_header *scoreDisplay[6];
+	osspriteop_header *scoreDisplayI[6];
+	osspriteop_header *scoreDisplayTop[6];
+	int highScore;
 	
 	osspriteop_header *game_over_text;
 }
@@ -71,7 +76,6 @@ enum GameState
 	PLAYING,
 	POINTS_SCREEN,
 	GAME_OVER,
-	NAME_SCREEN
 };
 
 void initLevel(Level *level, Player *mario, osspriteop_area *area, int size, FILE *logFile);

@@ -50,8 +50,23 @@ void selectHUDSprites(
 	FILE *logFile
 )
 {
-	//Font
+	//Main menu
 	os_error *e = xosspriteop_select_sprite(
+		osspriteop_USER_AREA,
+		area,
+		(osspriteop_id) "main_menu",
+		&(hud->main_menu)
+	);
+
+	if (e != NULL)
+	{
+		fprintf(logFile, "selecting main_menu failed\n"
+		"   errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+		fflush(logFile);
+	}
+	
+	//Font
+	e = xosspriteop_select_sprite(
 		osspriteop_USER_AREA,
 		area,
 		(osspriteop_id) "font_0",
@@ -217,6 +232,21 @@ void selectHUDSprites(
 	if (e != NULL)
 	{
 		fprintf(logFile, "selecting points_i failed\n"
+		"   errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+		fflush(logFile);
+	}
+	
+	//Points top
+	e = xosspriteop_select_sprite(
+		osspriteop_USER_AREA,
+		area,
+		(osspriteop_id) "points_top",
+		&(hud->points_top)
+	);
+
+	if (e != NULL)
+	{
+		fprintf(logFile, "selecting points_top failed\n"
 		"   errnum = %d: message = '%s'\n", e->errnum, e->errmess);
 		fflush(logFile);
 	}

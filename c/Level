@@ -101,6 +101,16 @@ void updateHUDScore(HUD *hud, int score)
 	for (int i = 0; i < 6; i++)
 	{
 		int digit = (int)(score / pow(10, i)) % 10;
-		hud->scoreDisplay[5 - i] = hud->font_numbers[digit];
+		hud->scoreDisplayI[5 - i] = hud->font_numbers[digit];
+	}
+	
+	if (score > hud->highScore || hud->highScore == 0)
+	{
+		hud->highScore = score;
+		for (int i = 0; i < 6; i++)
+		{
+			int digit = (int)(hud->highScore / pow(10, i)) % 10;
+			hud->scoreDisplayTop[5 - i] = hud->font_numbers[digit];
+		}
 	}
 }

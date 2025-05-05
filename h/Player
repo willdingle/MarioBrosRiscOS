@@ -51,6 +51,7 @@ typedef struct KeyCodes
 	const int left;
 	const int right;
 	const int x;
+	const int enter;
 }
 KeyCodes;
 

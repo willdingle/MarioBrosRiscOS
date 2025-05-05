@@ -2,6 +2,11 @@
 
 #include <string.h>
 
+void drawMainMenu(osspriteop_area *area, HUD *hud, Player *mario, os_factors *factors, int x, int y, FILE *logFile)
+{
+	
+}
+
 void drawHUD(osspriteop_area *area, HUD *hud, Player *mario, os_factors *factors, int x, int y, FILE *logFile)
 {
 	//Points I
@@ -23,14 +28,14 @@ void drawHUD(osspriteop_area *area, HUD *hud, Player *mario, os_factors *factors
 		fflush(logFile);
 	}
 	
-	//Score
+	//Score I
 	updateHUDScore(hud, mario->score);
 	for (int i = 0; i < 6; i++)
 	{
 		e = xosspriteop_put_sprite_scaled(
 			osspriteop_PTR,
 			area,
-			(osspriteop_id) hud->scoreDisplay[i],
+			(osspriteop_id) hud->scoreDisplayI[i],
 			(x + 32*4) + (i * (8*4)),
 			y + 201*4,
 			os_ACTION_OVERWRITE | osspriteop_GIVEN_WIDE_ENTRIES | 0x8,
@@ -40,7 +45,48 @@ void drawHUD(osspriteop_area *area, HUD *hud, Player *mario, os_factors *factors
 		
 		if (e != NULL)
 		{
-			fprintf(logFile, "Put score failed\n"
+			fprintf(logFile, "Put score I failed\n"
+				"	errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+			fflush(logFile);
+		}
+	}
+	
+	//Points Top
+	e = xosspriteop_put_sprite_scaled(
+		osspriteop_PTR,
+		area,
+		(osspriteop_id) hud->points_top,
+		x + 91*4,
+		y + 201*4,
+		os_ACTION_OVERWRITE | osspriteop_GIVEN_WIDE_ENTRIES | 0x8,
+		factors,
+		mario->mainTransTab
+	);
+	
+	if (e != NULL)
+	{
+		fprintf(logFile, "Put points_top failed\n"
+			"	errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+		fflush(logFile);
+	}
+	
+	//Score Top
+	for (int i = 0; i < 6; i++)
+	{
+		e = xosspriteop_put_sprite_scaled(
+			osspriteop_PTR,
+			area,
+			(osspriteop_id) hud->scoreDisplayTop[i],
+			(x + 112*4) + (i * (8*4)),
+			y + 201*4,
+			os_ACTION_OVERWRITE | osspriteop_GIVEN_WIDE_ENTRIES | 0x8,
+			factors,
+			mario->mainTransTab
+		);
+		
+		if (e != NULL)
+		{
+			fprintf(logFile, "Put score top failed\n"
 				"	errnum = %d: message = '%s'\n", e->errnum, e->errmess);
 			fflush(logFile);
 		}
@@ -384,210 +430,239 @@ void redrawWindowPlaying(wimp_block *block, osspriteop_area *area, Player *mario
 		int x = draw.box.x0 - draw.xscroll;
 		int y = draw.box.y1 - draw.yscroll;
 		
-		//Draw floor
-		os_error *e = xosspriteop_put_sprite_scaled(
-			osspriteop_PTR,
-			area,
-			(osspriteop_id) level->floor,
-			x,
-			y,
-			os_ACTION_OVERWRITE | osspriteop_GIVEN_WIDE_ENTRIES | 0x8,
-			factors,
-			mario->mainTransTab
-		);
-		
-		if (e != NULL)
+		switch (*gameState)
 		{
-			fprintf(logFile, "Put level floor failed\n"
-				"	errnum = %d: message = '%s'\n", e->errnum, e->errmess);
-			fflush(logFile);
-		}
-		
-		//Draw platforms
-		drawPlatforms(area, level, factors, x, y, logFile);
-		
-		//Draw enemies
-		for (int i = 0; i < level->numOfShellcreepers; i++)
-		{
-			Enemy *scInfo = &(level->shellcreepers[i].enemy);
-			if (scInfo->facing == 'R')
+			case MAIN_MENU:
 			{
-				osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "sc_still");
-				osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "sc_walk0");
-				osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "sc_walk1");
+				os_error *e = xosspriteop_put_sprite_scaled(
+					osspriteop_PTR,
+					area,
+					(osspriteop_id) hud->main_menu,
+					x,
+					y,
+					os_ACTION_OVERWRITE | osspriteop_GIVEN_WIDE_ENTRIES | 0x8,
+					factors,
+					mario->mainTransTab
+				);
+				
+				if (e != NULL)
+				{
+					fprintf(logFile, "Put main_menu failed\n"
+						"	errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+					fflush(logFile);
+				}
+				break;
 			}
-			
-			e = xosspriteop_put_sprite_scaled(
-				osspriteop_PTR,
-				area,
-				(osspriteop_id) level->shellcreepers[i].curFrame,
-				x + scInfo->x,
-				y + scInfo->y,
-				os_ACTION_OVERWRITE | osspriteop_GIVEN_WIDE_ENTRIES | 0x8,
-				factors,
-				level->shellcreepers[i].transTab
-			);
-			
-			if (scInfo->facing == 'R')
+			case PLAYING:
+			case GAME_OVER:
 			{
-				osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "sc_still");
-				osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "sc_walk0");
-				osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "sc_walk1");
+				//Draw floor
+				os_error *e = xosspriteop_put_sprite_scaled(
+					osspriteop_PTR,
+					area,
+					(osspriteop_id) level->floor,
+					x,
+					y,
+					os_ACTION_OVERWRITE | osspriteop_GIVEN_WIDE_ENTRIES | 0x8,
+					factors,
+					mario->mainTransTab
+				);
+				
+				if (e != NULL)
+				{
+					fprintf(logFile, "Put level floor failed\n"
+						"	errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+					fflush(logFile);
+				}
+				
+				//Draw platforms
+				drawPlatforms(area, level, factors, x, y, logFile);
+				
+				//Draw HUD
+				drawHUD(area, hud, mario, factors, x, y, logFile);
+				
+				//Draw game over text
+				if (*gameState == GAME_OVER)
+				{
+					e = xosspriteop_put_sprite_scaled(
+						osspriteop_PTR,
+						area,
+						(osspriteop_id) hud->game_over_text,
+						x + 96*4,
+						y + 128*4,
+						os_ACTION_OVERWRITE | osspriteop_GIVEN_WIDE_ENTRIES | 0x8,
+						factors,
+						mario->curTransTab
+					);
+					
+					if (e != NULL)
+					{
+						fprintf(logFile, "Put game over text failed\n"
+							"	errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+						fflush(logFile);
+					}
+				}
+				
+				//Draw enemies
+				for (int i = 0; i < level->numOfShellcreepers; i++)
+				{
+					Enemy *scInfo = &(level->shellcreepers[i].enemy);
+					if (scInfo->facing == 'R')
+					{
+						osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "sc_still");
+						osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "sc_walk0");
+						osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "sc_walk1");
+					}
+					
+					e = xosspriteop_put_sprite_scaled(
+						osspriteop_PTR,
+						area,
+						(osspriteop_id) level->shellcreepers[i].curFrame,
+						x + scInfo->x,
+						y + scInfo->y,
+						os_ACTION_OVERWRITE | osspriteop_GIVEN_WIDE_ENTRIES | 0x8,
+						factors,
+						level->shellcreepers[i].transTab
+					);
+					
+					if (scInfo->facing == 'R')
+					{
+						osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "sc_still");
+						osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "sc_walk0");
+						osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "sc_walk1");
+					}
+					
+					if (e != NULL)
+					{
+						fprintf(logFile, "Put shellcreeper %d failed\n"
+							"	errnum = %d: message = '%s'\n", i, e->errnum, e->errmess);
+						fflush(logFile);
+					}
+				}
+				
+				//Draw pipes
+				e = xosspriteop_put_sprite_scaled(
+					osspriteop_PTR,
+					area,
+					(osspriteop_id) level->pipeBottom,
+					x + 1024 - (32*4),
+					y + (25 * 4),
+					os_ACTION_OVERWRITE | osspriteop_GIVEN_WIDE_ENTRIES | 0x8,
+					factors,
+					mario->mainTransTab
+				);
+				
+				if (e != NULL)
+				{
+					fprintf(logFile, "Put pipe bottom right failed\n"
+						"	errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+					fflush(logFile);
+				}
+				
+				osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "pipe_bottom");
+				
+				e = xosspriteop_put_sprite_scaled(
+					osspriteop_PTR,
+					area,
+					(osspriteop_id) level->pipeBottom,
+					x,
+					y + (25 * 4),
+					os_ACTION_OVERWRITE | osspriteop_GIVEN_WIDE_ENTRIES | 0x8,
+					factors,
+					mario->mainTransTab
+				);
+				
+				if (e != NULL)
+				{
+					fprintf(logFile, "Put pipe bottom left failed\n"
+						"	errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+					fflush(logFile);
+				}
+				
+				osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "pipe_bottom");
+				
+				e = xosspriteop_put_sprite_scaled(
+					osspriteop_PTR,
+					area,
+					(osspriteop_id) level->pipeTop,
+					x + 1024 - (48*4),
+					y + 896 - (56*4),
+					os_ACTION_OVERWRITE | osspriteop_GIVEN_WIDE_ENTRIES | 0x8,
+					factors,
+					mario->mainTransTab
+				);
+				
+				if (e != NULL)
+				{
+					fprintf(logFile, "Put pipe top right failed\n"
+						"	errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+					fflush(logFile);
+				}
+				
+				osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "pipe_top");
+				
+				e = xosspriteop_put_sprite_scaled(
+					osspriteop_PTR,
+					area,
+					(osspriteop_id) level->pipeTop,
+					x,
+					y + 896 - (56*4),
+					os_ACTION_OVERWRITE | osspriteop_GIVEN_WIDE_ENTRIES | 0x8,
+					factors,
+					mario->mainTransTab
+				);
+				
+				if (e != NULL)
+				{
+					fprintf(logFile, "Put pipe top left failed\n"
+						"	errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+					fflush(logFile);
+				}
+				
+				osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "pipe_top");
+				
+				//Draw player
+				e = xosspriteop_put_sprite_scaled(
+					osspriteop_PTR,
+					area,
+					(osspriteop_id) mario->curFrame,
+					x + mario->x,
+					y + mario->y,
+					os_ACTION_OVERWRITE | osspriteop_GIVEN_WIDE_ENTRIES | 0x8,
+					factors,
+					mario->curTransTab
+				);
+				
+				if (e != NULL)
+				{
+					fprintf(logFile, "Put mario failed\n"
+						"	errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+					fflush(logFile);
+				}
+				
+				if (mario->state == RESPAWNING)
+				{
+					e = xosspriteop_put_sprite_scaled(
+						osspriteop_PTR,
+						area,
+						(osspriteop_id) mario->respPlat,
+						x + mario->x,
+						y + mario->y - 8*4,
+						os_ACTION_OVERWRITE | osspriteop_GIVEN_WIDE_ENTRIES | 0x8,
+						factors,
+						mario->curTransTab
+					);
+					
+					if (e != NULL)
+					{
+						fprintf(logFile, "Put respPlat failed\n"
+							"	errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+						fflush(logFile);
+					}
+				}
 			}
-			
-			if (e != NULL)
-			{
-				fprintf(logFile, "Put shellcreeper %d failed\n"
-					"	errnum = %d: message = '%s'\n", i, e->errnum, e->errmess);
-				fflush(logFile);
-			}
 		}
 		
-		//Draw pipes
-		e = xosspriteop_put_sprite_scaled(
-			osspriteop_PTR,
-			area,
-			(osspriteop_id) level->pipeBottom,
-			x + 1024 - (32*4),
-			y + (25 * 4),
-			os_ACTION_OVERWRITE | osspriteop_GIVEN_WIDE_ENTRIES | 0x8,
-			factors,
-			mario->mainTransTab
-		);
-		
-		if (e != NULL)
-		{
-			fprintf(logFile, "Put pipe bottom right failed\n"
-				"	errnum = %d: message = '%s'\n", e->errnum, e->errmess);
-			fflush(logFile);
-		}
-		
-		osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "pipe_bottom");
-		
-		e = xosspriteop_put_sprite_scaled(
-			osspriteop_PTR,
-			area,
-			(osspriteop_id) level->pipeBottom,
-			x,
-			y + (25 * 4),
-			os_ACTION_OVERWRITE | osspriteop_GIVEN_WIDE_ENTRIES | 0x8,
-			factors,
-			mario->mainTransTab
-		);
-		
-		if (e != NULL)
-		{
-			fprintf(logFile, "Put pipe bottom left failed\n"
-				"	errnum = %d: message = '%s'\n", e->errnum, e->errmess);
-			fflush(logFile);
-		}
-		
-		osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "pipe_bottom");
-		
-		e = xosspriteop_put_sprite_scaled(
-			osspriteop_PTR,
-			area,
-			(osspriteop_id) level->pipeTop,
-			x + 1024 - (48*4),
-			y + 896 - (56*4),
-			os_ACTION_OVERWRITE | osspriteop_GIVEN_WIDE_ENTRIES | 0x8,
-			factors,
-			mario->mainTransTab
-		);
-		
-		if (e != NULL)
-		{
-			fprintf(logFile, "Put pipe top right failed\n"
-				"	errnum = %d: message = '%s'\n", e->errnum, e->errmess);
-			fflush(logFile);
-		}
-		
-		osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "pipe_top");
-		
-		e = xosspriteop_put_sprite_scaled(
-			osspriteop_PTR,
-			area,
-			(osspriteop_id) level->pipeTop,
-			x,
-			y + 896 - (56*4),
-			os_ACTION_OVERWRITE | osspriteop_GIVEN_WIDE_ENTRIES | 0x8,
-			factors,
-			mario->mainTransTab
-		);
-		
-		if (e != NULL)
-		{
-			fprintf(logFile, "Put pipe top left failed\n"
-				"	errnum = %d: message = '%s'\n", e->errnum, e->errmess);
-			fflush(logFile);
-		}
-		
-		osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "pipe_top");
-		
-		//Draw player
-		e = xosspriteop_put_sprite_scaled(
-			osspriteop_PTR,
-			area,
-			(osspriteop_id) mario->curFrame,
-			x + mario->x,
-			y + mario->y,
-			os_ACTION_OVERWRITE | osspriteop_GIVEN_WIDE_ENTRIES | 0x8,
-			factors,
-			mario->curTransTab
-		);
-		
-		if (e != NULL)
-		{
-			fprintf(logFile, "Put mario failed\n"
-				"	errnum = %d: message = '%s'\n", e->errnum, e->errmess);
-			fflush(logFile);
-		}
-		
-		if (mario->state == RESPAWNING)
-		{
-			e = xosspriteop_put_sprite_scaled(
-				osspriteop_PTR,
-				area,
-				(osspriteop_id) mario->respPlat,
-				x + mario->x,
-				y + mario->y - 8*4,
-				os_ACTION_OVERWRITE | osspriteop_GIVEN_WIDE_ENTRIES | 0x8,
-				factors,
-				mario->curTransTab
-			);
-			
-			if (e != NULL)
-			{
-				fprintf(logFile, "Put respPlat failed\n"
-					"	errnum = %d: message = '%s'\n", e->errnum, e->errmess);
-				fflush(logFile);
-			}
-		}
-		
-		//Draw HUD
-		drawHUD(area, hud, mario, factors, x, y, logFile);
-		
-		//Draw game over text
-		if (*gameState == GAME_OVER)
-		{
-			e = xosspriteop_put_sprite_scaled(
-				osspriteop_PTR,
-				area,
-				(osspriteop_id) hud->game_over_text,
-				x + 96*4,
-				y + 128*4,
-				os_ACTION_OVERWRITE | osspriteop_GIVEN_WIDE_ENTRIES | 0x8,
-				factors,
-				mario->curTransTab
-			);
-			
-			if (e != NULL)
-			{
-				fprintf(logFile, "Put game over text failed\n"
-					"	errnum = %d: message = '%s'\n", e->errnum, e->errmess);
-				fflush(logFile);
-			}
-		}
 		
 		xwimp_get_rectangle(&draw, &more);
 	}
