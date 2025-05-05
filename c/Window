@@ -368,7 +368,7 @@ void drawPlatforms(osspriteop_area *area, Level *level, os_factors *factors, int
 	}
 }
 
-void redrawWindow(wimp_block *block, osspriteop_area *area, Player *mario, Level *level, HUD *hud, os_factors *factors, FILE *logFile)
+void redrawWindowPlaying(wimp_block *block, osspriteop_area *area, Player *mario, Level *level, HUD *hud, enum GameState *gameState, os_factors *factors, FILE *logFile)
 {
 	wimp_draw draw;
 	
@@ -566,6 +566,28 @@ void redrawWindow(wimp_block *block, osspriteop_area *area, Player *mario, Level
 		
 		//Draw HUD
 		drawHUD(area, hud, mario, factors, x, y, logFile);
+		
+		//Draw game over text
+		if (*gameState == GAME_OVER)
+		{
+			e = xosspriteop_put_sprite_scaled(
+				osspriteop_PTR,
+				area,
+				(osspriteop_id) hud->game_over_text,
+				x + 96*4,
+				y + 128*4,
+				os_ACTION_OVERWRITE | osspriteop_GIVEN_WIDE_ENTRIES | 0x8,
+				factors,
+				mario->curTransTab
+			);
+			
+			if (e != NULL)
+			{
+				fprintf(logFile, "Put game over text failed\n"
+					"	errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+				fflush(logFile);
+			}
+		}
 		
 		xwimp_get_rectangle(&draw, &more);
 	}

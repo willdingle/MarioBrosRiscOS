@@ -143,6 +143,23 @@ void updateGame(void *ws)
 			//Call a window redraw and reset the timer
 			wimp_force_redraw(block->open.w, 0, 0, 1024, +960);
 			setTimer(4, updateGame, ws);
+			
+			//If mario runs out of lives, game over
+			if (mario->extraLives < 0)
+			{
+				gameState = GAME_OVER;
+				wimp_force_redraw(block->open.w, 0, 0, 1024, +960);
+				setTimer(500, updateGame, ws);
+			}
+			break;
+		}
+		case GAME_OVER:
+		{
+			level.levelNum = 1;
+			initLevel(&level, &mario, area, size, logFile);
+			setTimer(60, updateGame, (void*)&mario);
+			gameState = PLAYING;
+			wimp_force_redraw(block->open.w, 0, 0, 1024, +960);
 			break;
 		}
 	}
@@ -161,16 +178,6 @@ int main()
 	
 	//Load sprite file and load player sprites
 	area = loadSpriteFile("<MarioBros$Dir>.!Sprites", &size, logFile);
-	mario.x = 150;
-	mario.y = 16*4;
-	mario.width = 16;
-	mario.height = 24;
-	mario.xSpeed = 0;
-	mario.xAcc = 1;
-	mario.xMaxSpeed = 12;
-	mario.ySpeed = 0;
-	mario.state = LIVING;
-	mario.extraLives = 2;
 	selectPlayerSprites(
 		&mario, 
 		"mario",
@@ -245,7 +252,7 @@ int main()
 		
 	//Initialise level
 	level.levelNum = 1;
-	initLevel(&level, area, size, logFile);
+	initLevel(&level, &mario, area, size, logFile);
 	
 	//Load window
 	wimp_open_template("<MarioBros$Dir>.Templates");
@@ -284,7 +291,14 @@ int main()
 				updateTimer();
 				break;
 			case wimp_REDRAW_WINDOW_REQUEST:
-				redrawWindow(block, area, &mario, &level, &hud, &factors, logFile);
+				switch (gameState)
+				{
+					case PLAYING:
+					case GAME_OVER:
+						redrawWindowPlaying(block, area, &mario, &level, &hud, &gameState, &factors, logFile);
+						break;
+				}
+				
 				break;
 			case wimp_MOUSE_CLICK:
 				fprintf(logFile, "mouse click\n");

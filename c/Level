@@ -1,12 +1,13 @@
 #include "Level.h"
 
 #include "Sprites.h"
+#include "Player.h"
 
 #include <stdlib.h>
 #include <math.h>
 #include "oslib/os.h"
 
-void initLevel(Level *level, osspriteop_area *area, int size, FILE *logFile)
+void initLevel(Level *level, Player *mario, osspriteop_area *area, int size, FILE *logFile)
 {
 	selectLevelSprites(
 		level,
@@ -14,6 +15,17 @@ void initLevel(Level *level, osspriteop_area *area, int size, FILE *logFile)
 		size,
 		logFile
 	);
+	
+	mario->x = 150;
+	mario->y = 16*4;
+	mario->width = 16;
+	mario->height = 24;
+	mario->xSpeed = 0;
+	mario->xAcc = 1;
+	mario->xMaxSpeed = 12;
+	mario->ySpeed = 0;
+	mario->state = LIVING;
+	mario->extraLives = 2;
 	
 	switch (level->levelNum)
 	{

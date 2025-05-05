@@ -220,6 +220,21 @@ void selectHUDSprites(
 		"   errnum = %d: message = '%s'\n", e->errnum, e->errmess);
 		fflush(logFile);
 	}
+	
+	//Game over text
+	e = xosspriteop_select_sprite(
+		osspriteop_USER_AREA,
+		area,
+		(osspriteop_id) "game_over",
+		&(hud->game_over_text)
+	);
+
+	if (e != NULL)
+	{
+		fprintf(logFile, "selecting game_over failed\n"
+		"   errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+		fflush(logFile);
+	}
 }
 
 void selectLevelSprites(
