@@ -136,13 +136,19 @@ void updateGame(void *ws)
 			if (enterPressed)
 			{
 				gameState = PLAYING;
-				setTimer(60, updateGame, ws);
+				//Initialise level
+				level.levelNum = 1;
+				initLevel(&level, &mario, area, size, logFile);
+				setTimer(100, updateGame, ws);
 				wimp_force_redraw(block->open.w, 0, 0, 1024, +960);
+			}
+			else
+			{
+				setTimer(10, updateGame, ws);
 			}
 			
 			//fprintf(logFile, "Enter pressed: %i\n", enterPressed);
 			//fflush(logFile);
-			setTimer(10, updateGame, (void*)&mario);
 			break;
 		}
 		case PLAYING:
@@ -179,11 +185,9 @@ void updateGame(void *ws)
 		}
 		case GAME_OVER:
 		{
-			level.levelNum = 1;
-			initLevel(&level, &mario, area, size, logFile);
-			setTimer(60, updateGame, (void*)&mario);
 			wimp_force_redraw(block->open.w, 0, 0, 1024, +960);
 			gameState = MAIN_MENU;
+			setTimer(10, updateGame, ws);
 			break;
 		}
 	}
@@ -274,9 +278,6 @@ int main()
 		level.plats[7].width = 1024;
 		level.plats[7].height = 16*4;
 		
-	//Initialise level
-	level.levelNum = 1;
-	initLevel(&level, &mario, area, size, logFile);
 	
 	//Load window
 	wimp_open_template("<MarioBros$Dir>.Templates");
