@@ -13,8 +13,19 @@ enum EnemyType
 	SLIPICE
 };
 
+enum EnemyState
+{
+	ENEMY_IN_PIPE,
+	ENEMY_LIVING,
+	ENEMY_HIT,
+	ENEMY_DYING,
+	ENEMY_DEAD
+	
+};
+
 typedef struct Enemy
 {
+	enum EnemyState state;
 	float x;
 	float y;
 	float width;
@@ -25,10 +36,6 @@ typedef struct Enemy
 	char facing;
 	int isFalling;
 	int isOnPlat;
-	int inPipe;
-	int inHitState;
-	int dying;
-	int dead;
 	int timeTillSpawn;
 	int points;
 }

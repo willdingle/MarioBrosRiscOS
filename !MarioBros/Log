@@ -4,8 +4,24 @@ colourtrans table size = 1024
 colourtrans table size = 1024
 colourtrans table size = 1024
 colourtrans table size = 1024
+Platsq hit: 1, Num of platsqs: 12
+Plat square hit: 1
+Enemy hit
+LPlatsq hit: 10, Num of platsqs: 12
+Plat square hit: 10
 Enemy collision!
-Enemy collision!
+Platsq hit: 11, Num of platsqs: 14
+Plat square hit: 11
+Platsq hit: 11, Num of platsqs: 14
+Plat square hit: 11
+Enemy hit
+LEnemy collision!
 Enemy collision!
 colourtrans table size = 1024
 colourtrans table size = 1024
+Platsq hit: 9, Num of platsqs: 12
+Plat square hit: 9
+Platsq hit: 0, Num of platsqs: 16
+Plat square hit: 0
+Enemy hit
+R

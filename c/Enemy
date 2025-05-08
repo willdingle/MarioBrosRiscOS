@@ -10,7 +10,7 @@ void updateShellcreeperAnimation(Shellcreeper *shellcreeper)
 	
 	if (shellcreeper->frame % 4 == 0)
 	{
-		if (scInfo->xSpeed == scInfo->xMaxSpeed && !scInfo->inHitState)
+		if (scInfo->xSpeed == scInfo->xMaxSpeed && scInfo->state != ENEMY_HIT)
 		{
 			if (shellcreeper->curFrame == shellcreeper->walk0Frame || shellcreeper->curFrame == shellcreeper->walk1Frame)
 				shellcreeper->curFrame = shellcreeper->stillFrame;
@@ -41,21 +41,21 @@ void updateShellcreeperAnimation(Shellcreeper *shellcreeper)
 void updateEnemy(Enemy *enemy, void *enemyChildPoint, enum EnemyType enemyType, Level *level, int *playerScore, osspriteop_area *area, void *logFile)
 {
 	//Apply falling
-	if (enemy->isFalling && !(enemy->inPipe))
+	if (enemy->isFalling && !(enemy->state == ENEMY_IN_PIPE))
 	{
 		enemy->ySpeed += -0.5;
 		enemy->y += enemy->ySpeed;
 	}
 	
 	//Movement
-	if (!enemy->inHitState && !enemy->dying)
+	if (enemy->state == ENEMY_IN_PIPE || enemy->state == ENEMY_LIVING)
 	{
 		if (enemy->facing == 'L')
 			enemy->x -= enemy->xSpeed;
 		else if (enemy->facing == 'R')
 			enemy->x += enemy->xSpeed;
 	}
-	else if (enemy->dying)
+	else if (enemy->state == ENEMY_DYING)
 	{
 		enemy->x += enemy->xSpeed;
 	}
@@ -73,7 +73,7 @@ void updateEnemy(Enemy *enemy, void *enemyChildPoint, enum EnemyType enemyType, 
 	}
 	
 	//Platform collision
-	if (!enemy->dying)
+	if (enemy->state == ENEMY_LIVING || enemy->state == ENEMY_HIT)
 	{
 		enemyPlatCollision(enemy, enemyChildPoint, enemyType, level, playerScore, logFile);
 	}
@@ -92,16 +92,16 @@ void updateEnemy(Enemy *enemy, void *enemyChildPoint, enum EnemyType enemyType, 
 		if (enemy->facing == 'L' && enemy->x <= 32*4)
 		{
 			enemy->y = 25*4;
-			enemy->inPipe = 1;
+			enemy->state = ENEMY_IN_PIPE;
 		}
 		//Right pipe check
 		else if (enemy->facing == 'R' && enemy->x + (enemy->width * 4) >= 1024 - 32*4)
 		{
 			enemy->y = 25*4;
-			enemy->inPipe = 1;
+			enemy->state = ENEMY_IN_PIPE;
 		}
 	}
-	else if (enemy->inPipe)
+	else if (enemy->state == ENEMY_IN_PIPE)
 	{
 		//Left bottom pipe
 		if (enemy->facing == 'L' && enemy->y == 25*4 && enemy->x + (enemy->width * 4) < 32*4)
@@ -114,7 +114,7 @@ void updateEnemy(Enemy *enemy, void *enemyChildPoint, enum EnemyType enemyType, 
 		else if (enemy->facing == 'R' && enemy->y == 178*4 && enemy->x > 48*4)
 		{
 			enemy->isFalling = 1;
-			enemy->inPipe = 0;
+			enemy->state = ENEMY_LIVING;
 		}
 		//Right bottom pipe
 		else if (enemy->facing == 'R' && enemy->y == 25*4 && enemy->x > 1024 - 32*4)
@@ -127,7 +127,7 @@ void updateEnemy(Enemy *enemy, void *enemyChildPoint, enum EnemyType enemyType, 
 		else if (enemy->facing == 'L' && enemy->y == 178*4 && enemy->x < 1024 - 48*4 - enemy->width * 4)
 		{
 			enemy->isFalling = 1;
-			enemy->inPipe = 0;
+			enemy->state = ENEMY_LIVING;
 		}
 		//fprintf((FILE*)logFile, "X: %f, Y: %f\n", enemy->x, enemy->y);
 		//fflush((FILE*)logFile);
@@ -146,10 +146,9 @@ void updateEnemy(Enemy *enemy, void *enemyChildPoint, enum EnemyType enemyType, 
 	}
 	
 	//Make shellcreeper dead when it as a whole reaches or goes below y = 0
-	if (enemy->y + enemy->height * 4 <= 0 && enemy->dying)
+	if (enemy->y + enemy->height * 4 <= 0 && enemy->state == ENEMY_DYING)
 	{
-		enemy->dying = 0;
-		enemy->dead = 1;
+		enemy->state = ENEMY_DEAD;
 	}
 }
 
@@ -190,7 +189,7 @@ void enemyPlatCollision(Enemy *enemy, void *enemyChildPoint, enum EnemyType enem
 				if (thisPlatSquare == level->platSquare)
 				{
 					fprintf((FILE*)logFile, "Enemy hit\n");
-					enemy->inHitState = 1;
+					enemy->state = ENEMY_HIT;
 					*playerScore += 10;
 					
 					enemy->ySpeed = 5.0;

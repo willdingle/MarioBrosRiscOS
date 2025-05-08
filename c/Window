@@ -640,7 +640,7 @@ void redrawWindowPlaying(wimp_block *block, osspriteop_area *area, Player *mario
 					fflush(logFile);
 				}
 				
-				if (mario->state == RESPAWNING)
+				if (mario->state == PLAYER_RESPAWNING)
 				{
 					e = xosspriteop_put_sprite_scaled(
 						osspriteop_PTR,

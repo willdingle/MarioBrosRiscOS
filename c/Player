@@ -28,20 +28,19 @@ void enemyCollision(Player *mario, Level *level, enum GameState *gameState, FILE
 		if (scX <= marX + marWidth && scX >= marX && scY <= marY + marHeight && scY + scHeight >= marY
 			|| scX + scWidth > marX && scX + scWidth < marX + marWidth && scY <= marY + marWidth && scY + scHeight >= marY)
 		{
-			//If enemy is in its regular living state, mario becomes hit
-			if (!scInfo->inHitState && !scInfo->dying)
+			//If enemy is in its living state, mario becomes hit
+			if (scInfo->state == ENEMY_LIVING)
 			{
 				fprintf(logFile, "Enemy collision!\n");
 				fflush(logFile);
 				mario->curFrame = mario->hitFrame;
-				mario->state = HIT;
+				mario->state = PLAYER_HIT;
 				mario->hitTime = 0;
 			}
 			//If enemy is in its hit state, enemy starts dying
-			else if (scInfo->inHitState)
+			else if (scInfo->state == ENEMY_HIT)
 			{
-				scInfo->inHitState = 0;
-				scInfo->dying = 1;
+				scInfo->state = ENEMY_DYING;
 				scInfo->isFalling = 1;
 				fprintf(logFile, "%c", mario->facing);
 				fflush(logFile);
@@ -170,22 +169,22 @@ void updatePlayer(Player *mario, Level *level, osspriteop_area *area, enum GameS
 {
 	switch (mario->state)
 	{
-		case LIVING:
+		case PLAYER_LIVING:
 			updatePlayerPlaying(mario, level, area, gameState, logFile);
 			break;
 			
-		case HIT:
+		case PLAYER_HIT:
 			mario->hitTime += 1;
 			if (mario->hitTime >= 120/4)
 			{
-				mario->state = DYING;
+				mario->state = PLAYER_DYING;
 				mario->curFrame = mario->dyingFrame;
 				mario->ySpeed = 22.0;
 				mario->hitTime = 0;
 			}
 			break;
 			
-		case DYING:
+		case PLAYER_DYING:
 			mario->hitTime += 1;
 			mario->ySpeed += gameInfo.gravity;
 			mario->y += mario->ySpeed;
@@ -197,14 +196,14 @@ void updatePlayer(Player *mario, Level *level, osspriteop_area *area, enum GameS
 				mario->x = 108*4;
 				mario->y = 896 + 8*4;
 				mario->ySpeed = -3;
-				mario->state = RESPAWNING;
+				mario->state = PLAYER_RESPAWNING;
 				mario->curFrame = mario->stillFrame;
 				mario->curTransTab = mario->mainTransTab;
 				mario->extraLives -= 1;
 			}
 			break;
 			
-		case RESPAWNING:
+		case PLAYER_RESPAWNING:
 			mario->y += mario->ySpeed;
 			if (mario->y < 184*4)
 			{
@@ -232,7 +231,7 @@ void updatePlayer(Player *mario, Level *level, osspriteop_area *area, enum GameS
 				if (leftPressed || rightPressed)
 				{
 					mario->isJumping = 1;
-					mario->state = LIVING;
+					mario->state = PLAYER_LIVING;
 				}
 			}
 			break;

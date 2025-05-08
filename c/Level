@@ -24,7 +24,7 @@ void initLevel(Level *level, Player *mario, osspriteop_area *area, int size, FIL
 	mario->xAcc = 1;
 	mario->xMaxSpeed = 12;
 	mario->ySpeed = 0;
-	mario->state = LIVING;
+	mario->state = PLAYER_LIVING;
 	mario->extraLives = 2;
 	mario->score = 0;
 	
@@ -41,10 +41,7 @@ void initLevel(Level *level, Player *mario, osspriteop_area *area, int size, FIL
 			level->shellcreepers[0].enemy.xMaxSpeed = 7;
 			level->shellcreepers[0].enemy.isFalling = 0;
 			level->shellcreepers[0].enemy.facing = 'L';
-			level->shellcreepers[0].enemy.inPipe = 1;
-			level->shellcreepers[0].enemy.inHitState = 0;
-			level->shellcreepers[0].enemy.dying = 0;
-			level->shellcreepers[0].enemy.dead = 0;
+			level->shellcreepers[0].enemy.state = ENEMY_IN_PIPE;
 			level->shellcreepers[0].enemy.timeTillSpawn = 0;
 			
 			selectShellcreeperSprites(

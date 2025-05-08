@@ -9,10 +9,10 @@ enum GameState;
 
 enum PlayerState
 {
-	LIVING,
-	HIT,
-	DYING,
-	RESPAWNING
+	PLAYER_LIVING,
+	PLAYER_HIT,
+	PLAYER_DYING,
+	PLAYER_RESPAWNING
 };
 
 typedef struct Player
