@@ -2,6 +2,7 @@
 #include "Level.h"
 
 #include <stdio.h>
+#include "oslib/os.h"
 
 void updateShellcreeperAnimation(Shellcreeper *shellcreeper)
 {
@@ -40,6 +41,21 @@ void updateShellcreeperAnimation(Shellcreeper *shellcreeper)
 
 void updateEnemy(Enemy *enemy, void *enemyChildPoint, enum EnemyType enemyType, Level *level, int *playerScore, osspriteop_area *area, void *logFile)
 {
+	//Go back to living if in hit state for more than hitTime
+	if (enemy->state == ENEMY_HIT && os_read_monotonic_time() >= enemy->hitTime)
+	{
+		enemy->state = ENEMY_LIVING;
+		switch (enemyType)
+		{
+			case SHELLCREEPER:
+			{
+				Shellcreeper* sc = (Shellcreeper*) enemyChildPoint;
+				sc->curFrame = sc->walk0Frame;
+				break;
+			}
+		}
+	}
+	
 	//Apply falling
 	if (enemy->isFalling && !(enemy->state == ENEMY_IN_PIPE))
 	{
@@ -190,6 +206,7 @@ void enemyPlatCollision(Enemy *enemy, void *enemyChildPoint, enum EnemyType enem
 				{
 					fprintf((FILE*)logFile, "Enemy hit\n");
 					enemy->state = ENEMY_HIT;
+					enemy->hitTime = os_read_monotonic_time() + 800;
 					*playerScore += 10;
 					
 					enemy->ySpeed = 5.0;

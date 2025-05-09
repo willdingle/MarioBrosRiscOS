@@ -406,6 +406,147 @@ void selectLevelSprites(
 	
 }
 
+void selectSidestepperSprites(
+	Sidestepper *sidestepper,
+	osspriteop_area *area,
+	int size,
+	FILE *logFile
+)
+{
+	//Walk frames
+	os_error *e = xosspriteop_select_sprite(
+		osspriteop_USER_AREA,
+		area,
+		(osspriteop_id) "ss_walk0",
+		&(sidestepper->walkFrames[0])
+	);
+
+	if (e != NULL)
+	{
+		fprintf(logFile, "selecting ss_walk0 failed\n"
+		"   errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+		fflush(logFile);
+	}
+	
+	e = xosspriteop_select_sprite(
+		osspriteop_USER_AREA,
+		area,
+		(osspriteop_id) "ss_walk1",
+		&(sidestepper->walkFrames[1])
+	);
+
+	if (e != NULL)
+	{
+		fprintf(logFile, "selecting ss_walk1 failed\n"
+		"   errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+		fflush(logFile);
+	}
+	
+	e = xosspriteop_select_sprite(
+		osspriteop_USER_AREA,
+		area,
+		(osspriteop_id) "ss_walk2",
+		&(sidestepper->walkFrames[2])
+	);
+
+	if (e != NULL)
+	{
+		fprintf(logFile, "selecting ss_walk2 failed\n"
+		"   errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+		fflush(logFile);
+	}
+	
+	//Run frames
+	e = xosspriteop_select_sprite(
+		osspriteop_USER_AREA,
+		area,
+		(osspriteop_id) "ss_run0",
+		&(sidestepper->runFrames[0])
+	);
+
+	if (e != NULL)
+	{
+		fprintf(logFile, "selecting ss_run0 failed\n"
+		"   errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+		fflush(logFile);
+	}
+	
+	e = xosspriteop_select_sprite(
+		osspriteop_USER_AREA,
+		area,
+		(osspriteop_id) "ss_run1",
+		&(sidestepper->runFrames[1])
+	);
+
+	if (e != NULL)
+	{
+		fprintf(logFile, "selecting ss_run1 failed\n"
+		"   errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+		fflush(logFile);
+	}
+	
+	e = xosspriteop_select_sprite(
+		osspriteop_USER_AREA,
+		area,
+		(osspriteop_id) "ss_run2",
+		&(sidestepper->runFrames[2])
+	);
+
+	if (e != NULL)
+	{
+		fprintf(logFile, "selecting ss_run2 failed\n"
+		"   errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+		fflush(logFile);
+	}
+	
+	e = xcolourtrans_generate_table_for_sprite(
+		area,
+		(osspriteop_id) "ss_walk0",
+		os_CURRENT_MODE,
+		colourtrans_CURRENT_PALETTE,
+		NULL,
+		colourtrans_CURRENT_IF_ABSENT | colourtrans_RETURN_WIDE_ENTRIES,
+		NULL,
+		NULL,
+		&size
+	);
+	
+	if (e != NULL)
+	{
+	   fprintf(logFile, "xcolourtrans_generate_table #1 failed\n"
+	   "   errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+	   fflush(logFile);
+	}
+	
+	fprintf(logFile, "colourtrans table size = %d\n", size);
+	fflush(logFile);
+	
+	sidestepper->transTab = malloc(size);
+	
+	e = xcolourtrans_generate_table_for_sprite(
+		area,
+		(osspriteop_id) "ss_walk0",
+		os_CURRENT_MODE,
+		colourtrans_CURRENT_PALETTE,
+		sidestepper->transTab,
+		colourtrans_CURRENT_IF_ABSENT | colourtrans_RETURN_WIDE_ENTRIES,
+		NULL,
+		NULL,
+		&size
+	);
+	
+	if (e != NULL)
+	{
+	   fprintf(logFile, "xcolourtrans_generate_table #2 failed\n"
+	   "   errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+	   fflush(logFile);
+	}
+	
+	sidestepper->curFrame = sidestepper->walkFrames[0];
+	sidestepper->frame = 0;
+	sidestepper->lastWalk = 1;
+}
+
 void selectShellcreeperSprites(
 	Shellcreeper *shellcreeper,
 	osspriteop_area *area,

@@ -37,6 +37,7 @@ typedef struct Enemy
 	int isFalling;
 	int isOnPlat;
 	int timeTillSpawn;
+	int hitTime;
 	int points;
 }
 Enemy;
@@ -56,6 +57,19 @@ typedef struct Shellcreeper
 	
 }
 Shellcreeper;
+
+typedef struct Sidestepper
+{
+	Enemy enemy;
+	osspriteop_header* walkFrames[3];
+	osspriteop_header* runFrames[3];
+	osspriteop_header* curFrame;
+	int frame;
+	int lastWalk;
+	int angry;
+	osspriteop_trans_tab *transTab;
+}
+Sidestepper;
 
 void updateShellcreeperAnimation(Shellcreeper *shellcreeper);
 void updateEnemy(Enemy *enemy, void *enemyChildPoint, enum EnemyType enemyType, Level *level, int *playerScore, osspriteop_area *area, void *logFile);

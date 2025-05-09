@@ -159,12 +159,20 @@ void updateGame(void *ws)
 			enum EnemyType enemyType = SHELLCREEPER;
 			for (int i = 0; i < level.numOfShellcreepers; i++)
 			{
-				if (level.shellcreepers[i].enemy.state != ENEMY_DEAD  && os_read_monotonic_time() >= level.shellcreepers[i].enemy.timeTillSpawn)
+				if (level.shellcreepers[i].enemy.state != ENEMY_DEAD && os_read_monotonic_time() >= level.shellcreepers[i].enemy.timeTillSpawn)
 					updateEnemy(&(level.shellcreepers[i].enemy), &(level.shellcreepers[i]), enemyType, &level, &(mario->score), area, (void*)logFile);
 				//fprintf(logFile, "x: %f\n y: %f\n\n", level.shellcreepers[i].x, level.shellcreepers[i].y);
 				//fflush(logFile);
 				//fprintf(logFile, "Sc %i facing: %c\n", i, level.shellcreepers[i].enemy.facing);
 				//fflush(logFile);
+			}
+			
+			//Updates all sidesteppers in level
+			enemyType = SIDESTEPPER;
+			for (int i = 0; i < level.numOfSidesteppers; i++)
+			{
+				if (level.sidesteppers[i].enemy.state != ENEMY_DEAD && os_read_monotonic_time() >= level.sidesteppers[i].enemy.timeTillSpawn)
+					updateEnemy(&(level.sidesteppers[i].enemy), &(level.sidesteppers[i]), enemyType, &level, &(mario->score), area, (void*)logFile);
 			}
 			
 			//Gets keyboard input and updates player accordingly

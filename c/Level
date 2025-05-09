@@ -32,6 +32,7 @@ void initLevel(Level *level, Player *mario, osspriteop_area *area, int size, FIL
 	{
 		case 1:
 			level->numOfShellcreepers = 3;
+			level->numOfSidesteppers = 0;
 			level->shellcreepers = (Shellcreeper*) malloc(level->numOfShellcreepers * sizeof(Shellcreeper) + 10000);
 			level->shellcreepers[0].enemy.x = 1024 - 48*4;
 			level->shellcreepers[0].enemy.y = 178*4;
@@ -60,6 +61,41 @@ void initLevel(Level *level, Player *mario, osspriteop_area *area, int size, FIL
 			level->shellcreepers[2].enemy.x = 48*4 - level->shellcreepers[2].enemy.width * 4;
 			level->shellcreepers[2].enemy.facing = 'R';
 			level->shellcreepers[2].enemy.timeTillSpawn = os_read_monotonic_time() + 900;
+			
+			break;
+			
+		case 4:
+			level->numOfShellcreepers = 0;
+			level->numOfSidesteppers = 4;
+			level->sidesteppers = (Sidestepper*) malloc(level->numOfSidesteppers * sizeof(Sidestepper) + 10000);
+			level->sidesteppers[0].enemy.x = 1024 - 48*4;
+			level->sidesteppers[0].enemy.y = 178*4;
+			level->sidesteppers[0].enemy.width = 12;
+			level->sidesteppers[0].enemy.height = 16;
+			level->sidesteppers[0].enemy.xSpeed = 7;
+			level->sidesteppers[0].enemy.xMaxSpeed = 7;
+			level->sidesteppers[0].enemy.isFalling = 0;
+			level->sidesteppers[0].enemy.facing = 'L';
+			level->sidesteppers[0].enemy.state = ENEMY_IN_PIPE;
+			level->sidesteppers[0].enemy.timeTillSpawn = 0;
+			
+			selectSidestepperSprites(
+				&(level->sidesteppers[0]),
+				area,
+				size,
+				logFile
+			);
+			
+			level->sidesteppers[1] = level->sidesteppers[0];
+			level->sidesteppers[1].enemy.x = 48*4 - level->sidesteppers[1].enemy.width * 4;
+			level->sidesteppers[1].enemy.facing = 'R';
+			level->sidesteppers[1].enemy.timeTillSpawn = os_read_monotonic_time() + 300;
+			
+			level->sidesteppers[2] = level->sidesteppers[1];
+			level->sidesteppers[2].enemy.timeTillSpawn = os_read_monotonic_time() + 1000;
+			
+			level->sidesteppers[3] = level->sidesteppers[0];
+			level->sidesteppers[3].enemy.timeTillSpawn = os_read_monotonic_time() + 1300;
 			
 			break;
 	}
