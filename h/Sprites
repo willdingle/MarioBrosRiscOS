@@ -17,6 +17,13 @@ osspriteop_area* loadSpriteFile(
 	FILE *logFile
 );
 
+void selectCoinSprites(
+	Coin *coin,
+	osspriteop_area *area,
+	int size,
+	FILE *logFile
+);
+
 void selectHUDSprites(
 	HUD *hud,
 	osspriteop_area *area,

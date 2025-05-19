@@ -43,6 +43,54 @@ osspriteop_area* loadSpriteFile(const char *filename, int *sizePoint, FILE *logF
 	return area;
 }
 
+void selectCoinSprites(
+	Coin *coin,
+	osspriteop_area *area,
+	int size,
+	FILE *logFile
+)
+{
+	for (int i = 0; i < 5; i++)
+	{
+		char spriteName[20];
+		snprintf(spriteName, 20, "coin_spin%i", i);
+		
+		//Spin frames
+		os_error *e = xosspriteop_select_sprite(
+			osspriteop_USER_AREA,
+			area,
+			(osspriteop_id) spriteName,
+			&(coin->spinFrames[i])
+		);
+
+		if (e != NULL)
+		{
+			fprintf(logFile, "selecting %s failed\n"
+			"   errnum = %d: message = '%s'\n", spriteName, e->errnum, e->errmess);
+			fflush(logFile);
+		}
+		
+		//Pickup frames
+		snprintf(spriteName, 20, "coin_pickup%i", i);
+		
+		e = xosspriteop_select_sprite(
+			osspriteop_USER_AREA,
+			area,
+			(osspriteop_id) spriteName,
+			&(coin->pickupFrames[i])
+		);
+
+		if (e != NULL)
+		{
+			fprintf(logFile, "selecting %s failed\n"
+			"   errnum = %d: message = '%s'\n", spriteName, e->errnum, e->errmess);
+			fflush(logFile);
+		}
+	}
+	
+	coin->curFrame = coin->spinFrames[0];
+}
+
 void selectHUDSprites(
 	HUD *hud,
 	osspriteop_area *area,
@@ -344,11 +392,19 @@ void selectLevelSprites(
 			platMoveFrameIds[2] = (osspriteop_id) "plat_blue3";
 			break;
 			
+		case 3:
+			platId = (osspriteop_id) "plat_smooth";
+			platMoveFrameIds[0] = (osspriteop_id) "plat_smooth1";
+			platMoveFrameIds[1] = (osspriteop_id) "plat_smooth2";
+			platMoveFrameIds[2] = (osspriteop_id) "plat_smooth3";
+			break;
+			
 		case 4:
 			platId = (osspriteop_id) "plat_bumpy";
 			platMoveFrameIds[0] = (osspriteop_id) "plat_bumpy1";
 			platMoveFrameIds[1] = (osspriteop_id) "plat_bumpy2";
 			platMoveFrameIds[2] = (osspriteop_id) "plat_bumpy3";
+			break;
 	}
 	
 	e = xosspriteop_select_sprite(

@@ -8,6 +8,23 @@
 
 typedef struct Player Player;
 
+typedef struct Coin
+{
+	osspriteop_header *curFrame;
+	osspriteop_header *spinFrames[5];
+	osspriteop_header *pickupFrames[5];
+	int lastFrame;
+	int frame;
+	
+	float x;
+	float y;
+	float width;
+	float height;
+	int collected;
+	int inactive;
+}
+Coin;
+
 typedef struct HUD
 {
 	osspriteop_header *main_menu;
@@ -54,6 +71,7 @@ typedef struct Level
 {
 	int levelNum;
 	int phaseNum;
+	int bonusLevel;
 	osspriteop_header *floor;
 	osspriteop_header *pipeBottom;
 	osspriteop_header *pipeTop;
@@ -72,6 +90,9 @@ typedef struct Level
 	int numOfShellcreepers;
 	Sidestepper *sidesteppers;
 	int numOfSidesteppers;
+	
+	int numOfCoins;
+	Coin *coins;
 }
 Level;
 
@@ -88,5 +109,6 @@ void initLevel(Level *level, Player *mario, osspriteop_area *area, int size, FIL
 void getPlatRow(enum PlatRow *thisPlatRow, int i);
 void updateHUDScore(HUD *hud, int score);
 void increasePhaseNum(int *phaseNum, HUD *hud);
+void updateCoin(Coin *coin);
 
 #endif

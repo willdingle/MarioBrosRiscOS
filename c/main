@@ -183,6 +183,19 @@ void updateGame(void *ws)
 				
 			}
 			
+			//Updates all coins in level
+			for (int i = 0; i < level.numOfCoins; i++)
+			{
+				if (!level.coins[i].inactive)
+				{
+					if (level.bonusLevel)
+					{
+						levelOver = 0;
+					}
+					updateCoin(&(level.coins[i]));
+				}
+			}
+			
 			//Gets keyboard input and updates player accordingly
 			updatePlayer(mario, &level, area, &gameState, logFile);
 			
