@@ -31,7 +31,14 @@ void initLevel(Level *level, Player *mario, osspriteop_area *area, int size, FIL
 			);
 			level->numOfShellcreepers = 3;
 			level->numOfSidesteppers = 0;
-			level->shellcreepers = (Shellcreeper*) malloc(level->numOfShellcreepers * sizeof(Shellcreeper) + 10000);
+			if (level->shellcreepers)
+			{
+				level->shellcreepers = (Shellcreeper*) realloc(level->shellcreepers, level->numOfShellcreepers * sizeof(Shellcreeper) + 10000);
+			}
+			else
+			{
+				level->shellcreepers = (Shellcreeper*) malloc(level->numOfShellcreepers * sizeof(Shellcreeper) + 10000);
+			}
 			level->shellcreepers[0].enemy.x = 1024 - 48*4;
 			level->shellcreepers[0].enemy.y = 178*4;
 			level->shellcreepers[0].enemy.width = 12;
@@ -96,9 +103,18 @@ void initLevel(Level *level, Player *mario, osspriteop_area *area, int size, FIL
 				size,
 				logFile
 			);
+			
 			level->numOfShellcreepers = 0;
 			level->numOfSidesteppers = 4;
-			level->sidesteppers = (Sidestepper*) malloc(level->numOfSidesteppers * sizeof(Sidestepper) + 10000);
+			if (level->sidesteppers)
+			{
+				level->sidesteppers = (Sidestepper*) realloc(level->sidesteppers, level->numOfSidesteppers * sizeof(Sidestepper) + 10000);
+			}
+			else
+			{
+				level->sidesteppers = (Sidestepper*) malloc(level->numOfSidesteppers * sizeof(Sidestepper) + 10000);
+			}
+			
 			level->sidesteppers[0].enemy.x = 1024 - 48*4;
 			level->sidesteppers[0].enemy.y = 178*4;
 			level->sidesteppers[0].enemy.width = 12;
@@ -129,6 +145,25 @@ void initLevel(Level *level, Player *mario, osspriteop_area *area, int size, FIL
 			level->sidesteppers[3] = level->sidesteppers[0];
 			level->sidesteppers[3].enemy.timeTillSpawn = os_read_monotonic_time() + 1300;
 			break;
+			
+		case 5:
+			level->numOfShellcreepers = 2;
+			level->numOfSidesteppers = 4;
+			
+			
+			
+			level->sidesteppers = (Sidestepper*) malloc(level->numOfSidesteppers * sizeof(Sidestepper) + 10000);
+			level->sidesteppers[0].enemy.x = 1024 - 48*4;
+			level->sidesteppers[0].enemy.y = 178*4;
+			level->sidesteppers[0].enemy.width = 12;
+			level->sidesteppers[0].enemy.height = 16;
+			level->sidesteppers[0].enemy.xSpeed = 7;
+			level->sidesteppers[0].enemy.xMaxSpeed = 7;
+			level->sidesteppers[0].enemy.isFalling = 0;
+			level->sidesteppers[0].enemy.facing = 'L';
+			level->sidesteppers[0].enemy.state = ENEMY_IN_PIPE;
+			level->sidesteppers[0].angry = 0;
+			level->sidesteppers[0].enemy.timeTillSpawn = 0;
 	}
 }
 
