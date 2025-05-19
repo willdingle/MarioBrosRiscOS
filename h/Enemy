@@ -63,6 +63,7 @@ typedef struct Sidestepper
 	Enemy enemy;
 	osspriteop_header* walkFrames[3];
 	osspriteop_header* runFrames[3];
+	osspriteop_header* hitFrames[2];
 	osspriteop_header* curFrame;
 	int frame;
 	int lastWalk;
@@ -72,6 +73,7 @@ typedef struct Sidestepper
 Sidestepper;
 
 void updateShellcreeperAnimation(Shellcreeper *shellcreeper);
+void updateSidestepperAnimation(Sidestepper *sidestepper);
 void updateEnemy(Enemy *enemy, void *enemyChildPoint, enum EnemyType enemyType, Level *level, int *playerScore, osspriteop_area *area, void *logFile);
 void enemyPlatCollision(Enemy *enemy, void *enemyChildPoint, enum EnemyType enemyType, Level *level, int *playerScore, void *logFile);
 

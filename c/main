@@ -138,6 +138,7 @@ void updateGame(void *ws)
 				gameState = PLAYING;
 				//Initialise level
 				level.levelNum = 1;
+				increasePhaseNum(&(level.phaseNum), &hud);
 				initLevel(&level, &mario, area, size, logFile);
 				setTimer(100, updateGame, ws);
 				wimp_force_redraw(block->open.w, 0, 0, 1024, +960);
@@ -146,33 +147,40 @@ void updateGame(void *ws)
 			{
 				setTimer(10, updateGame, ws);
 			}
-			
-			//fprintf(logFile, "Enter pressed: %i\n", enterPressed);
-			//fflush(logFile);
 			break;
 		}
 		case PLAYING:
 		{
 			Player* mario = (Player*)ws;
+			int levelOver = 1;
 			
 			//Updates all shellcreepers in level
 			enum EnemyType enemyType = SHELLCREEPER;
 			for (int i = 0; i < level.numOfShellcreepers; i++)
 			{
-				if (level.shellcreepers[i].enemy.state != ENEMY_DEAD && os_read_monotonic_time() >= level.shellcreepers[i].enemy.timeTillSpawn)
-					updateEnemy(&(level.shellcreepers[i].enemy), &(level.shellcreepers[i]), enemyType, &level, &(mario->score), area, (void*)logFile);
-				//fprintf(logFile, "x: %f\n y: %f\n\n", level.shellcreepers[i].x, level.shellcreepers[i].y);
-				//fflush(logFile);
-				//fprintf(logFile, "Sc %i facing: %c\n", i, level.shellcreepers[i].enemy.facing);
-				//fflush(logFile);
+				if (level.shellcreepers[i].enemy.state != ENEMY_DEAD)
+				{
+					levelOver = 0;
+					if (os_read_monotonic_time() >= level.shellcreepers[i].enemy.timeTillSpawn)
+					{
+						updateEnemy(&(level.shellcreepers[i].enemy), &(level.shellcreepers[i]), enemyType, &level, &(mario->score), area, (void*)logFile);
+					}
+				}
 			}
 			
 			//Updates all sidesteppers in level
 			enemyType = SIDESTEPPER;
 			for (int i = 0; i < level.numOfSidesteppers; i++)
 			{
-				if (level.sidesteppers[i].enemy.state != ENEMY_DEAD && os_read_monotonic_time() >= level.sidesteppers[i].enemy.timeTillSpawn)
-					updateEnemy(&(level.sidesteppers[i].enemy), &(level.sidesteppers[i]), enemyType, &level, &(mario->score), area, (void*)logFile);
+				if (level.sidesteppers[i].enemy.state != ENEMY_DEAD)
+				{
+					levelOver = 0;
+					if (os_read_monotonic_time() >= level.sidesteppers[i].enemy.timeTillSpawn)
+					{
+						updateEnemy(&(level.sidesteppers[i].enemy), &(level.sidesteppers[i]), enemyType, &level, &(mario->score), area, (void*)logFile);
+					}
+				}
+				
 			}
 			
 			//Gets keyboard input and updates player accordingly
@@ -188,6 +196,16 @@ void updateGame(void *ws)
 				gameState = GAME_OVER;
 				wimp_force_redraw(block->open.w, 0, 0, 1024, +960);
 				setTimer(500, updateGame, ws);
+			}
+			
+			//Check if level is over
+			if (levelOver)
+			{
+				//Initialise level
+				level.levelNum += 1;
+				increasePhaseNum(&(level.phaseNum), &hud);
+				initLevel(&level, mario, area, size, logFile);
+				setTimer(200, updateGame, ws);
 			}
 			break;
 		}

@@ -265,6 +265,21 @@ void selectHUDSprites(
 		"   errnum = %d: message = '%s'\n", e->errnum, e->errmess);
 		fflush(logFile);
 	}
+	
+	//Phase
+	e = xosspriteop_select_sprite(
+		osspriteop_USER_AREA,
+		area,
+		(osspriteop_id) "p_equals",
+		&(hud->p_equals)
+	);
+
+	if (e != NULL)
+	{
+		fprintf(logFile, "selecting p_equals failed\n"
+		"   errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+		fflush(logFile);
+	}
 }
 
 void selectLevelSprites(
@@ -328,6 +343,12 @@ void selectLevelSprites(
 			platMoveFrameIds[1] = (osspriteop_id) "plat_blue2";
 			platMoveFrameIds[2] = (osspriteop_id) "plat_blue3";
 			break;
+			
+		case 4:
+			platId = (osspriteop_id) "plat_bumpy";
+			platMoveFrameIds[0] = (osspriteop_id) "plat_bumpy1";
+			platMoveFrameIds[1] = (osspriteop_id) "plat_bumpy2";
+			platMoveFrameIds[2] = (osspriteop_id) "plat_bumpy3";
 	}
 	
 	e = xosspriteop_select_sprite(
@@ -361,6 +382,9 @@ void selectLevelSprites(
 		}
 	}
 	
+	fprintf(logFile, "all level sprites selected\n");
+	fflush(logFile);
+	
 	e = xcolourtrans_generate_table_for_sprite(
 		area,
 		platId,
@@ -382,6 +406,11 @@ void selectLevelSprites(
 	
 	fprintf(logFile, "colourtrans table size = %d\n", size);
 	fflush(logFile);
+	
+	if (level->transTab)
+	{
+		free(level->transTab);
+	}
 	
 	level->transTab = malloc(size);
 	
@@ -495,6 +524,35 @@ void selectSidestepperSprites(
 	if (e != NULL)
 	{
 		fprintf(logFile, "selecting ss_run2 failed\n"
+		"   errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+		fflush(logFile);
+	}
+	
+	//Hit frames
+	e = xosspriteop_select_sprite(
+		osspriteop_USER_AREA,
+		area,
+		(osspriteop_id) "ss_hit0",
+		&(sidestepper->hitFrames[0])
+	);
+
+	if (e != NULL)
+	{
+		fprintf(logFile, "selecting ss_hit0 failed\n"
+		"   errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+		fflush(logFile);
+	}
+	
+	e = xosspriteop_select_sprite(
+		osspriteop_USER_AREA,
+		area,
+		(osspriteop_id) "ss_hit1",
+		&(sidestepper->hitFrames[1])
+	);
+
+	if (e != NULL)
+	{
+		fprintf(logFile, "selecting ss_hit1 failed\n"
 		"   errnum = %d: message = '%s'\n", e->errnum, e->errmess);
 		fflush(logFile);
 	}

@@ -21,6 +21,9 @@ typedef struct HUD
 	osspriteop_header *scoreDisplayTop[6];
 	int highScore;
 	
+	osspriteop_header *p_equals;
+	osspriteop_header *phaseNumDisplay[2];
+	
 	osspriteop_header *game_over_text;
 }
 HUD;
@@ -50,6 +53,7 @@ enum PlatRow
 typedef struct Level
 {
 	int levelNum;
+	int phaseNum;
 	osspriteop_header *floor;
 	osspriteop_header *pipeBottom;
 	osspriteop_header *pipeTop;
@@ -83,5 +87,6 @@ enum GameState
 void initLevel(Level *level, Player *mario, osspriteop_area *area, int size, FILE *logFile);
 void getPlatRow(enum PlatRow *thisPlatRow, int i);
 void updateHUDScore(HUD *hud, int score);
+void increasePhaseNum(int *phaseNum, HUD *hud);
 
 #endif

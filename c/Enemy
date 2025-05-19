@@ -39,6 +39,63 @@ void updateShellcreeperAnimation(Shellcreeper *shellcreeper)
 	}
 }
 
+void updateSidestepperAnimation(Sidestepper *sidestepper)
+{
+	Enemy *enemyInfo = &(sidestepper->enemy);
+	sidestepper->frame++;
+	
+	if (enemyInfo->state != ENEMY_HIT)
+	{
+		if (sidestepper->angry && sidestepper->frame % 2 == 0)
+		{
+			if (sidestepper->curFrame == sidestepper->runFrames[1] || sidestepper->curFrame == sidestepper->runFrames[2])
+			{
+				sidestepper->curFrame = sidestepper->runFrames[0];
+			}
+			else if (sidestepper->curFrame == sidestepper->runFrames[0])
+			{
+				if (sidestepper->lastWalk == 0)
+				{
+					sidestepper->curFrame = sidestepper->runFrames[2];
+					sidestepper->lastWalk = 1;
+				}
+				else
+				{
+					sidestepper->curFrame = sidestepper->runFrames[1];
+					sidestepper->lastWalk = 0;
+				}
+			}
+		}
+		else if (sidestepper->frame % 4 == 0)
+		{
+			if (sidestepper->curFrame == sidestepper->walkFrames[1] || sidestepper->curFrame == sidestepper->walkFrames[2])
+			{
+				sidestepper->curFrame = sidestepper->walkFrames[0];
+			}
+			else if (sidestepper->curFrame == sidestepper->walkFrames[0])
+			{
+				if (sidestepper->lastWalk == 0)
+				{
+					sidestepper->curFrame = sidestepper->walkFrames[2];
+					sidestepper->lastWalk = 1;
+				}
+				else
+				{
+					sidestepper->curFrame = sidestepper->walkFrames[1];
+					sidestepper->lastWalk = 0;
+				}
+			}
+		}
+	}
+	else if (sidestepper->frame % 4 == 0)
+	{
+		if (sidestepper->curFrame == sidestepper->hitFrames[0])
+			sidestepper->curFrame = sidestepper->hitFrames[1];
+		else
+			sidestepper->curFrame = sidestepper->hitFrames[0];
+	}
+}
+
 void updateEnemy(Enemy *enemy, void *enemyChildPoint, enum EnemyType enemyType, Level *level, int *playerScore, osspriteop_area *area, void *logFile)
 {
 	//Go back to living if in hit state for more than hitTime
@@ -51,6 +108,15 @@ void updateEnemy(Enemy *enemy, void *enemyChildPoint, enum EnemyType enemyType, 
 			{
 				Shellcreeper* sc = (Shellcreeper*) enemyChildPoint;
 				sc->curFrame = sc->walk0Frame;
+				break;
+			}
+			case SIDESTEPPER:
+			{
+				Sidestepper* ss = (Sidestepper*) enemyChildPoint;
+				if (ss->angry)
+					ss->curFrame = ss->runFrames[0];
+				else
+					ss->curFrame = ss->walkFrames[0];
 				break;
 			}
 		}
@@ -83,6 +149,9 @@ void updateEnemy(Enemy *enemy, void *enemyChildPoint, enum EnemyType enemyType, 
 		{
 			case SHELLCREEPER:
 				updateShellcreeperAnimation((Shellcreeper*) enemyChildPoint);
+				break;
+			case SIDESTEPPER:
+				updateSidestepperAnimation((Sidestepper*) enemyChildPoint);
 				break;
 		}
 		
@@ -161,7 +230,7 @@ void updateEnemy(Enemy *enemy, void *enemyChildPoint, enum EnemyType enemyType, 
 		}
 	}
 	
-	//Make shellcreeper dead when it as a whole reaches or goes below y = 0
+	//Make enemy dead when it as a whole reaches or goes below y = 0
 	if (enemy->y + enemy->height * 4 <= 0 && enemy->state == ENEMY_DYING)
 	{
 		enemy->state = ENEMY_DEAD;
@@ -175,7 +244,7 @@ void enemyPlatCollision(Enemy *enemy, void *enemyChildPoint, enum EnemyType enem
 	float objWidth = enemy->width * 4;
 	float objHeight = enemy->height * 4;
 	
-	//fprintf((FILE*) logFile, "%f,\t%f,\t%f,\t%f\n", objX, objY, objWidth, objHeight);
+	fprintf((FILE*) logFile, "%f,\t%f,\t%f,\t%f\n", objX, objY, objWidth, objHeight);
 	
 	int onPlatDetected = 0;
 
@@ -204,19 +273,40 @@ void enemyPlatCollision(Enemy *enemy, void *enemyChildPoint, enum EnemyType enem
 				int thisPlatSquare = (int) ((midOfSc - level->plats[i].x) / level->platSize / 4);
 				if (thisPlatSquare == level->platSquare)
 				{
-					fprintf((FILE*)logFile, "Enemy hit\n");
-					enemy->state = ENEMY_HIT;
-					enemy->hitTime = os_read_monotonic_time() + 800;
-					*playerScore += 10;
-					
 					enemy->ySpeed = 5.0;
 					enemy->isFalling = 1;
+					
 					switch (enemyType)
 					{
 						case SHELLCREEPER:
-							
+						{
 							((Shellcreeper*) enemyChildPoint)->curFrame = ((Shellcreeper*) enemyChildPoint)->hit0Frame;
+							fprintf((FILE*)logFile, "Enemy hit\n");
+							enemy->state = ENEMY_HIT;
+							enemy->hitTime = os_read_monotonic_time() + 800;
+							*playerScore += 10;
 							break;
+						}
+						case SIDESTEPPER:
+						{
+							Sidestepper* sidestepper = (Sidestepper*) enemyChildPoint;
+							if (!sidestepper->angry)
+							{
+								sidestepper->angry = 1;
+								sidestepper->curFrame = sidestepper->runFrames[0];
+								sidestepper->enemy.xSpeed = 8;
+								sidestepper->enemy.xMaxSpeed = 8;
+							}
+							else
+							{
+								sidestepper->curFrame = sidestepper->hitFrames[0];
+								fprintf((FILE*)logFile, "Enemy hit\n");
+								enemy->state = ENEMY_HIT;
+								enemy->hitTime = os_read_monotonic_time() + 800;
+								*playerScore += 10;
+							}
+							break;
+						}
 					}
 				}
 			}

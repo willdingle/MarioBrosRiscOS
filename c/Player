@@ -42,7 +42,46 @@ void enemyCollision(Player *mario, Level *level, enum GameState *gameState, FILE
 			{
 				scInfo->state = ENEMY_DYING;
 				scInfo->isFalling = 1;
-				fprintf(logFile, "%c", mario->facing);
+				fflush(logFile);
+				if (mario->facing == 'L')
+					scInfo->xSpeed = -20.0;
+				else
+					scInfo->xSpeed = 20.0;
+				mario->score += 800;
+			}
+			
+		}
+	}
+	
+	for (int i = 0; i < level->numOfSidesteppers; i++)
+	{
+		Enemy *scInfo = &(level->sidesteppers[i].enemy);
+		float scX = scInfo->x;
+		float scY = scInfo->y;
+		float scWidth = scInfo->width * 4;
+		float scHeight = scInfo->height * 4;
+		
+		//fprintf(logFile, "x: %f, y: %f, width: %f, height: %f\n", scX, scY, scWidth, scHeight);
+		//fprintf(logFile, "xSpeed: %f\n", level->shellcreepers[i].xSpeed);
+		
+		//Check for enemy collision
+		if (scX <= marX + marWidth && scX >= marX && scY <= marY + marHeight && scY + scHeight >= marY
+			|| scX + scWidth > marX && scX + scWidth < marX + marWidth && scY <= marY + marWidth && scY + scHeight >= marY)
+		{
+			//If enemy is in its living state, mario becomes hit
+			if (scInfo->state == ENEMY_LIVING)
+			{
+				fprintf(logFile, "Enemy collision!\n");
+				fflush(logFile);
+				mario->curFrame = mario->hitFrame;
+				mario->state = PLAYER_HIT;
+				mario->hitTime = 0;
+			}
+			//If enemy is in its hit state, enemy starts dying
+			else if (scInfo->state == ENEMY_HIT)
+			{
+				scInfo->state = ENEMY_DYING;
+				scInfo->isFalling = 1;
 				fflush(logFile);
 				if (mario->facing == 'L')
 					scInfo->xSpeed = -20.0;
