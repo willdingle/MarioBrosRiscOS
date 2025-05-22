@@ -27,6 +27,7 @@ typedef struct Player
 	osspriteop_header *curFrame;
 	osspriteop_header *respPlat;
 	int frame;
+	int lastWalk;
 	osspriteop_trans_tab *mainTransTab, *jumpTransTab, *curTransTab;
 	float x;
 	float y;

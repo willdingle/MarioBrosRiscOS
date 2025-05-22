@@ -186,12 +186,20 @@ void updatePlayerAnimation(Player *mario)
 		//If accelerating, switch between 3 frames
 		if (mario->xSpeed > 0 && mario->xSpeed < mario->xMaxSpeed)
 		{
-			if (mario->curFrame == mario->run0Frame)
+			if (mario->curFrame == mario->run0Frame || mario->curFrame == mario->run1Frame)
+			{
 				mario->curFrame = mario->accFrame;
-			else if (mario->curFrame == mario->accFrame)
+			}
+			else if (mario->lastWalk == 0)
+			{
 				mario->curFrame = mario->run1Frame;
+				mario->lastWalk = 1;
+			}
 			else
+			{
 				mario->curFrame = mario->run0Frame;
+				mario->lastWalk = 0;
+			}
 		}
 		//If at full speed, switch between 2 frames
 		else if (mario->xSpeed == mario->xMaxSpeed)
