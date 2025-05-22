@@ -279,14 +279,10 @@ int main()
 	//Load sprite file and load player sprites
 	area = loadSpriteFile("<MarioBros$Dir>.!Sprites", &size, logFile);
 	selectPlayerSprites(
-		&mario, 
-		"mario",
-		2,
+		&mario,
 		area, 
 		size,
 		&factors,
-		modeInfo.info.xEigFactor,
-		modeInfo.info.yEigFactor,
 		logFile
 	);
 	

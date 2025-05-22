@@ -54,13 +54,9 @@ void selectShellcreeperSprites(
 
 void selectPlayerSprites(
 	Player *mario,
-	const char *spriteName,
-	const int numOfFrames,
 	osspriteop_area *area,
 	int size,
 	os_factors *factors,
-	int xEigFactor,
-	int yEigFactor,
 	FILE *logFile
 );
 
