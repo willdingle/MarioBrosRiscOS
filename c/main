@@ -145,12 +145,26 @@ void updateGame(void *ws)
 			}
 			else
 			{
-				setTimer(10, updateGame, ws);
+				setTimer(4, updateGame, ws);
 			}
 			break;
 		}
 		case PLAYING:
 		{
+			int enterPressed;
+			os_byte(
+				osbyte_SCAN_KEYBOARD,
+				73 ^ 0x80,
+				0,
+				&enterPressed,
+				NULL
+			);
+			
+			if (enterPressed)
+			{
+				gameState = PAUSE;
+			}
+			
 			Player* mario = (Player*)ws;
 			int levelOver = 1;
 			
@@ -222,11 +236,30 @@ void updateGame(void *ws)
 			}
 			break;
 		}
+		case PAUSE:
+		{
+			int enterPressed;
+			os_byte(
+				osbyte_SCAN_KEYBOARD,
+				73 ^ 0x80,
+				0,
+				&enterPressed,
+				NULL
+			);
+			
+			if (enterPressed)
+			{
+				gameState = PLAYING;
+			}
+			
+			setTimer(4, updateGame, ws);
+			break;
+		}
 		case GAME_OVER:
 		{
 			wimp_force_redraw(block->open.w, 0, 0, 1024, +960);
 			gameState = MAIN_MENU;
-			setTimer(10, updateGame, ws);
+			setTimer(4, updateGame, ws);
 			break;
 		}
 	}

@@ -499,6 +499,7 @@ void redrawWindowPlaying(wimp_block *block, osspriteop_area *area, Player *mario
 				break;
 			}
 			case PLAYING:
+			case PAUSE:
 			case GAME_OVER:
 			{
 				//Draw floor
