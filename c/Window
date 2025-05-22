@@ -2,11 +2,6 @@
 
 #include <string.h>
 
-void drawMainMenu(osspriteop_area *area, HUD *hud, Player *mario, os_factors *factors, int x, int y, FILE *logFile)
-{
-	
-}
-
 void drawHUD(osspriteop_area *area, HUD *hud, Player *mario, int phaseNum, os_factors *factors, int x, int y, FILE *logFile)
 {
 	//Points I
