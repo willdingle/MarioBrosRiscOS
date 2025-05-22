@@ -99,8 +99,8 @@ Level;
 enum GameState
 {
 	MAIN_MENU,
-	LEVEL_INTRO,
 	PLAYING,
+	PAUSE,
 	POINTS_SCREEN,
 	GAME_OVER,
 };

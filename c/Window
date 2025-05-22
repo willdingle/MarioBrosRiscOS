@@ -630,16 +630,26 @@ void redrawWindowPlaying(wimp_block *block, osspriteop_area *area, Player *mario
 				//Draw coins
 				for (int i = 0; i < level->numOfCoins; i++)
 				{
-					e = xosspriteop_put_sprite_scaled(
-						osspriteop_PTR,
-						area,
-						(osspriteop_id) level->coins[i].curFrame,
-						x + level->coins[i].x,
-						y + level->coins[i].y,
-						os_ACTION_OVERWRITE | osspriteop_GIVEN_WIDE_ENTRIES | 0x8,
-						factors,
-						mario->mainTransTab
-					);
+					if (! level->coins[i].inactive)
+					{
+						e = xosspriteop_put_sprite_scaled(
+							osspriteop_PTR,
+							area,
+							(osspriteop_id) level->coins[i].curFrame,
+							x + level->coins[i].x,
+							y + level->coins[i].y,
+							os_ACTION_OVERWRITE | osspriteop_GIVEN_WIDE_ENTRIES | 0x8,
+							factors,
+							mario->mainTransTab
+						);
+						
+						if (e != NULL)
+						{
+							fprintf(logFile, "Put coin %d failed\n"
+								"	errnum = %d: message = '%s'\n", i, e->errnum, e->errmess);
+							fflush(logFile);
+						}
+					}
 				}
 				
 				//Draw pipes

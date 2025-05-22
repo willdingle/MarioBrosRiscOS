@@ -92,6 +92,26 @@ void enemyCollision(Player *mario, Level *level, enum GameState *gameState, FILE
 			
 		}
 	}
+	
+	Coin *coins = level->coins;
+	for (int i = 0; i < level->numOfCoins; i++)
+	{
+		if (! coins[i].collected)
+		{
+			float coinX = coins[i].x;
+			float coinY = coins[i].y;
+			float coinWidth = coins[i].width * 4;
+			float coinHeight = coins[i].height * 4;
+			
+			//Check for coin collision
+			if (coinX <= marX + marWidth && coinX >= marX && coinY <= marY + marHeight && coinY + coinHeight >= marY
+				|| coinX + coinWidth > marX && coinX + coinWidth < marX + marWidth && coinY <= marY + marWidth && coinY + coinHeight >= marY)
+			{
+				coins[i].collected = 1;
+				coins[i].lastFrame = 0;
+			}
+		}
+	}
 }
 
 void platCollision(Player *mario, Level *level, int oldX, int oldY, FILE *logFile)

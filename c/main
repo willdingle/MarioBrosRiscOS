@@ -137,7 +137,7 @@ void updateGame(void *ws)
 			{
 				gameState = PLAYING;
 				//Initialise level
-				level.levelNum = 1;
+				level.levelNum = 3;
 				increasePhaseNum(&(level.phaseNum), &hud);
 				initLevel(&level, &mario, area, size, logFile);
 				setTimer(100, updateGame, ws);
