@@ -252,7 +252,6 @@ void updatePlayer(Player *mario, Level *level, osspriteop_area *area, enum GameS
 			break;
 			
 		case PLAYER_DYING:
-			mario->hitTime += 1;
 			mario->ySpeed += gameInfo.gravity;
 			mario->y += mario->ySpeed;
 			//fprintf(logFile, "mario y: %f\n mario state: %i\n\n", mario->y, mario->state);
