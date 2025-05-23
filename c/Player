@@ -355,6 +355,7 @@ void updatePlayerPlaying(Player *mario, Level *level, osspriteop_area *area, enu
 			osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario_acc");
 			osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario_run1");
 			osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario_jump");
+			osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario_hit");
 			mario->facing = 'L';
 		}
 		keyPressed = 1;
@@ -377,6 +378,7 @@ void updatePlayerPlaying(Player *mario, Level *level, osspriteop_area *area, enu
 			osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario_acc");
 			osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario_run1");
 			osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario_jump");
+			osspriteop_flip_about_yaxis(osspriteop_USER_AREA, area, (osspriteop_id) "mario_hit");
 			mario->facing = 'R';
 		}
 		keyPressed = 1;
