@@ -38,7 +38,6 @@ typedef struct Enemy
 	int isOnPlat;
 	int timeTillSpawn;
 	int hitTime;
-	int points;
 }
 Enemy;
 

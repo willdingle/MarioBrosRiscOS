@@ -385,6 +385,7 @@ void updatePlayerPlaying(Player *mario, Level *level, osspriteop_area *area, enu
 	}
 			
 	//X - jump
+	//Jump physics: https://gamedev.stackexchange.com/questions/60008/smooth-jumping-in-2d-platformers
 	if (xPressed && !(mario->isJumping))
 	{
 		mario->ySpeed = 22.0;
@@ -402,6 +403,7 @@ void updatePlayerPlaying(Player *mario, Level *level, osspriteop_area *area, enu
 	}
 	
 	//Apply jump / fall
+	//Jump physics: https://gamedev.stackexchange.com/questions/60008/smooth-jumping-in-2d-platformers
 	if (mario->isJumping)
 	{
 		mario->ySpeed += gameInfo.gravity;

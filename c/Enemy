@@ -123,6 +123,7 @@ void updateEnemy(Enemy *enemy, void *enemyChildPoint, enum EnemyType enemyType, 
 	}
 	
 	//Apply falling
+	//Jump physics: https://gamedev.stackexchange.com/questions/60008/smooth-jumping-in-2d-platformers
 	if (enemy->isFalling && !(enemy->state == ENEMY_IN_PIPE))
 	{
 		enemy->ySpeed += -0.5;
@@ -273,6 +274,7 @@ void enemyPlatCollision(Enemy *enemy, void *enemyChildPoint, enum EnemyType enem
 				int thisPlatSquare = (int) ((midOfSc - level->plats[i].x) / level->platSize / 4);
 				if (thisPlatSquare == level->platSquare)
 				{
+					//Jump physics: https://gamedev.stackexchange.com/questions/60008/smooth-jumping-in-2d-platformers
 					enemy->ySpeed = 5.0;
 					enemy->isFalling = 1;
 					
