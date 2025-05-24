@@ -138,8 +138,11 @@ void updateGame(void *ws)
 				gameState = PLAYING;
 				//Initialise level
 				level.levelNum = 1;
+				level.phaseNum = 0;
+				mario.score = 0;
 				increasePhaseNum(&(level.phaseNum), &hud);
 				initLevel(&level, &mario, area, size, logFile);
+				mario.extraLives = 2;
 				setTimer(100, updateGame, ws);
 				wimp_force_redraw(block->open.w, 0, 0, 1024, +960);
 			}

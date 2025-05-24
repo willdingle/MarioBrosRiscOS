@@ -18,7 +18,6 @@ void initLevel(Level *level, Player *mario, osspriteop_area *area, int size, FIL
 	mario->xMaxSpeed = 12;
 	mario->ySpeed = 0;
 	mario->state = PLAYER_LIVING;
-	mario->extraLives = 2;
 	
 	switch (level->levelNum)
 	{
