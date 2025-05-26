@@ -97,6 +97,7 @@ void updateGame(void *ws)
 				level.levelNum = 1;
 				level.phaseNum = 0;
 				mario.score = 0;
+				updateHUDScore(&hud, mario.score);
 				increasePhaseNum(&(level.phaseNum), &hud);
 				initLevel(&level, &mario, area, size, logFile);
 				mario.extraLives = 2;
@@ -127,6 +128,7 @@ void updateGame(void *ws)
 			
 			Player* mario = (Player*)ws;
 			int levelOver = 1;
+			int scoreBefore = mario->score;
 			
 			//Updates all shellcreepers in level
 			enum EnemyType enemyType = SHELLCREEPER;
@@ -173,6 +175,16 @@ void updateGame(void *ws)
 			//Gets keyboard input and updates player accordingly
 			updatePlayer(mario, &level, area, &gameState, logFile);
 			
+			//Update score sprites
+			if (scoreBefore != mario->score)
+			{
+				updateHUDScore(&hud, mario->score);
+				if (scoreBefore < 20000 && mario->score >= 20000)
+				{
+					mario->extraLives++;
+				}
+			}
+			
 			//Call a window redraw and reset the timer
 			wimp_force_redraw(block->open.w, 0, 0, 1024, +960);
 			setTimer(4, updateGame, ws);
@@ -189,7 +201,14 @@ void updateGame(void *ws)
 			if (levelOver)
 			{
 				//Initialise level
-				level.levelNum += 1;
+				if (level.levelNum < 5)
+				{
+					level.levelNum += 1;
+				}
+				else
+				{
+					level.levelNum = 1;
+				}
 				increasePhaseNum(&(level.phaseNum), &hud);
 				initLevel(&level, mario, area, size, logFile);
 				setTimer(200, updateGame, ws);

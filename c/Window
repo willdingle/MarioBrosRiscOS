@@ -24,7 +24,6 @@ void drawHUD(osspriteop_area *area, HUD *hud, Player *mario, int phaseNum, os_fa
 	}
 	
 	//Score I
-	updateHUDScore(hud, mario->score);
 	for (int i = 0; i < 6; i++)
 	{
 		e = xosspriteop_put_sprite_scaled(
