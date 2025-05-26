@@ -4,6 +4,7 @@
 
 #include <stdlib.h>
 
+//https://github.com/usr-bin-gcc/OSLibGame/blob/main/!OSLibGame/c/main
 osspriteop_area* loadSpriteFile(const char *filename, int *sizePoint, FILE *logFile)
 {
 	int size;
