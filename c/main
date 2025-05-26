@@ -35,49 +35,6 @@ int size;
 
 FILE *logFile;
 
-//********** SCREEN MODE INFO **********
-typedef union
-{        
-   int numbers[14];
-
-   struct
-   {    
-      int modeFlags,
-		  scrRCol,
-		  scrBRow,
-		  nColour,
-		  xEigFactor,
-		  yEigFactor,
-		  lineLength,  
-		  screenSize,
-		  yShiftSize,
-		  log2bpp,
-		  log2bpc,
-		  xWindLimit,
-		  yWindLimit,
-		  minScreenBanks;
-   }
-   info;
-}
-ModeInfo;                                 
-
-ModeInfo modeInfo;
-
-void updateModeInfo()
-{                                      
-   for (int i = 0; i < 15; i++)
-   {
-	   modeInfo.numbers[i] = i;
-   }
-
-   modeInfo.numbers[14] = -1;
-
-   os_error *e = xos_read_vdu_variables(
-		(os_vdu_var_list*)modeInfo.numbers, 
-		modeInfo.numbers
-	);
-}
-
 
 
 //********** TIMER **********
@@ -277,7 +234,6 @@ int main()
 	windowOpen = FALSE;
 	logFile = fopen("<MarioBros$Dir>.Log", "w");
 	task = wimp_initialise(wimp_VERSION_RO3, "Mario Bros", NULL, NULL);
-	updateModeInfo();
 	
 	//Load sprite file and load player sprites
 	area = loadSpriteFile("<MarioBros$Dir>.!Sprites", &size, logFile);
