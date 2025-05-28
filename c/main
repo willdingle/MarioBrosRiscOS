@@ -42,6 +42,7 @@ FILE *logFile;
 os_t timer;
 void (*timerCallback)(void*);
 void *timerWorkspace;
+int enterDelayTime;
 
 void initialiseTimer()
 {
@@ -92,6 +93,7 @@ void updateGame(void *ws)
 			
 			if (enterPressed)
 			{
+				enterDelayTime = os_read_monotonic_time() + 100;
 				gameState = PLAYING;
 				//Initialise level
 				level.levelNum = 1;
@@ -121,8 +123,9 @@ void updateGame(void *ws)
 				NULL
 			);
 			
-			if (enterPressed)
+			if (enterPressed && os_read_monotonic_time() > enterDelayTime)
 			{
+				enterDelayTime = os_read_monotonic_time() + 100;
 				gameState = PAUSE;
 			}
 			
@@ -226,8 +229,9 @@ void updateGame(void *ws)
 				NULL
 			);
 			
-			if (enterPressed)
+			if (enterPressed && os_read_monotonic_time() > enterDelayTime)
 			{
+				enterDelayTime = os_read_monotonic_time() + 100;
 				gameState = PLAYING;
 			}
 			
