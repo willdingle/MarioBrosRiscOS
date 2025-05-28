@@ -245,7 +245,7 @@ void enemyPlatCollision(Enemy *enemy, void *enemyChildPoint, enum EnemyType enem
 	float objWidth = enemy->width * 4;
 	float objHeight = enemy->height * 4;
 	
-	fprintf((FILE*) logFile, "%f,\t%f,\t%f,\t%f\n", objX, objY, objWidth, objHeight);
+	//fprintf((FILE*) logFile, "%f,\t%f,\t%f,\t%f\n", objX, objY, objWidth, objHeight);
 	
 	int onPlatDetected = 0;
 

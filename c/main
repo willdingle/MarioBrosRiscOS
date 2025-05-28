@@ -43,6 +43,8 @@ os_t timer;
 void (*timerCallback)(void*);
 void *timerWorkspace;
 int enterDelayTime;
+int lastTime;
+int fps;
 
 void initialiseTimer()
 {
@@ -66,6 +68,11 @@ void updateTimer()
 		
 		if (time >= timer)
 		{
+			int deltaTime = time - lastTime;
+			fps = 100 / deltaTime;
+			fprintf(logFile, "FPS: %i\n", fps);
+			fflush(logFile);
+			lastTime = time;
 			timer = 0;
 			timerCallback(timerWorkspace); 
 		}
