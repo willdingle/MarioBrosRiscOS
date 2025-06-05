@@ -30,6 +30,7 @@ typedef struct HUD
 	osspriteop_header *main_menu;
 	
 	osspriteop_header *font_numbers[10];
+	osspriteop_header *decimalPoint;
 	osspriteop_header *mario_hud;
 	osspriteop_header *points_i;
 	osspriteop_header *points_top;
@@ -39,7 +40,13 @@ typedef struct HUD
 	int highScore;
 	
 	osspriteop_header *p_equals;
+	osspriteop_header *phaseText;
+	int phaseDisplayTime;
 	osspriteop_header *phaseNumDisplay[2];
+	
+	osspriteop_header *timerBox;
+	osspriteop_header *timerDisplay[4];
+	int timer;
 	
 	osspriteop_header *game_over_text;
 }
@@ -110,5 +117,6 @@ void getPlatRow(enum PlatRow *thisPlatRow, int i);
 void updateHUDScore(HUD *hud, int score);
 void increasePhaseNum(int *phaseNum, HUD *hud);
 void updateCoin(Coin *coin);
+void updateHUDTimer(HUD *hud, int deltaTime, FILE *logFile);
 
 #endif

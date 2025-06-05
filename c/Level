@@ -45,6 +45,7 @@ void initLevel(Level *level, Player *mario, osspriteop_area *area, int size, FIL
 			level->shellcreepers[0].enemy.width = 12;
 			level->shellcreepers[0].enemy.height = 16;
 			level->shellcreepers[0].enemy.xSpeed = 7;
+			level->shellcreepers[0].enemy.ySpeed = 0;
 			level->shellcreepers[0].enemy.xMaxSpeed = 7;
 			level->shellcreepers[0].enemy.isFalling = 0;
 			level->shellcreepers[0].enemy.facing = 'L';
@@ -78,6 +79,7 @@ void initLevel(Level *level, Player *mario, osspriteop_area *area, int size, FIL
 			level->shellcreepers[0].enemy.width = 12;
 			level->shellcreepers[0].enemy.height = 16;
 			level->shellcreepers[0].enemy.xSpeed = 7;
+			level->shellcreepers[0].enemy.ySpeed = 0;
 			level->shellcreepers[0].enemy.xMaxSpeed = 7;
 			level->shellcreepers[0].enemy.isFalling = 0;
 			level->shellcreepers[0].enemy.facing = 'L';
@@ -107,10 +109,11 @@ void initLevel(Level *level, Player *mario, osspriteop_area *area, int size, FIL
 		
 			level->numOfShellcreepers = 0;
 			level->numOfSidesteppers = 0;
-			level->numOfCoins = 1;
+			level->numOfCoins = 10;
 			level->bonusLevel = 1;
 			level->coins = (Coin*) malloc(level->numOfCoins * sizeof(Coin) + 10000);
 			
+			//Top row
 			level->coins[0].x = 52*4;
 			level->coins[0].y = 188*4;
 			level->coins[0].width = 8;
@@ -124,6 +127,40 @@ void initLevel(Level *level, Player *mario, osspriteop_area *area, int size, FIL
 				size,
 				logFile
 			);
+			
+			level->coins[1] = level->coins[0];
+			level->coins[1].x = 1024 - 52*4 - level->coins[0].width * 4;
+			
+			//Top-middle row
+			level->coins[2] = level->coins[0];
+			level->coins[2].x = 20*4;
+			level->coins[2].y = 132*4;
+			
+			level->coins[3] = level->coins[2];
+			level->coins[3].x = 40*4;
+			
+			level->coins[4] = level->coins[2];
+			level->coins[4].x = 1024 - 40*4 - level->coins[0].width * 4;
+			
+			level->coins[5] = level->coins[2];
+			level->coins[5].x = 1024 - 20*4 - level->coins[0].width * 4;
+			
+			//Bottom-middle row
+			level->coins[6] = level->coins[0];
+			level->coins[6].x = 84*4;
+			level->coins[6].y = 90*4;
+			
+			level->coins[7] = level->coins[6];
+			level->coins[7].x = 1024 - 84*4 - level->coins[0].width * 4;
+			
+			//Bottom row
+			level->coins[8] = level->coins[0];
+			level->coins[8].x = 36*4;
+			level->coins[8].y = 36*4;
+			
+			level->coins[9] = level->coins[8];
+			level->coins[9].x = 1024 - 36*4 - level->coins[0].width * 4;
+			
 			break;
 			
 		case 4:
@@ -137,6 +174,7 @@ void initLevel(Level *level, Player *mario, osspriteop_area *area, int size, FIL
 			level->numOfShellcreepers = 0;
 			level->numOfSidesteppers = 4;
 			level->numOfCoins = 0;
+			level->bonusLevel = 0;
 			if (level->sidesteppers)
 			{
 				level->sidesteppers = (Sidestepper*) realloc(level->sidesteppers, level->numOfSidesteppers * sizeof(Sidestepper) + 10000);
@@ -151,6 +189,7 @@ void initLevel(Level *level, Player *mario, osspriteop_area *area, int size, FIL
 			level->sidesteppers[0].enemy.width = 16;
 			level->sidesteppers[0].enemy.height = 16;
 			level->sidesteppers[0].enemy.xSpeed = 7;
+			level->sidesteppers[0].enemy.ySpeed = 0;
 			level->sidesteppers[0].enemy.xMaxSpeed = 7;
 			level->sidesteppers[0].enemy.isFalling = 0;
 			level->sidesteppers[0].enemy.facing = 'L';
@@ -188,6 +227,7 @@ void initLevel(Level *level, Player *mario, osspriteop_area *area, int size, FIL
 			level->shellcreepers[0].enemy.width = 12;
 			level->shellcreepers[0].enemy.height = 16;
 			level->shellcreepers[0].enemy.xSpeed = 7;
+			level->shellcreepers[0].enemy.ySpeed = 0;
 			level->shellcreepers[0].enemy.xMaxSpeed = 7;
 			level->shellcreepers[0].enemy.isFalling = 0;
 			level->shellcreepers[0].enemy.facing = 'R';
@@ -204,6 +244,7 @@ void initLevel(Level *level, Player *mario, osspriteop_area *area, int size, FIL
 			level->sidesteppers[0].enemy.width = 12;
 			level->sidesteppers[0].enemy.height = 16;
 			level->sidesteppers[0].enemy.xSpeed = 7;
+			level->sidesteppers[0].enemy.ySpeed = 0;
 			level->sidesteppers[0].enemy.xMaxSpeed = 7;
 			level->sidesteppers[0].enemy.isFalling = 0;
 			level->sidesteppers[0].enemy.facing = 'R';
@@ -318,4 +359,26 @@ void updateCoin(Coin *coin)
 		}
 		
 	}
+}
+
+void updateHUDTimer(HUD *hud, int deltaTime, FILE *logFile)
+{
+	if (deltaTime < 50)
+	{
+		hud->timer -= deltaTime;
+	}
+	
+	int timerToPoint1 = hud->timer / 10;
+	
+	for (int i = 0; i < 3; i++)
+	{
+		int digit = (int)(timerToPoint1 / pow(10, i)) % 10;
+		hud->timerDisplay[2 - i] = hud->font_numbers[digit];
+	}
+	
+	hud->timerDisplay[3] = hud->timerDisplay[2];
+	hud->timerDisplay[2] = hud->decimalPoint;
+	
+	//fprintf(logFile, "Timer: %i\n", timerToPoint1);
+	//fflush(logFile);
 }

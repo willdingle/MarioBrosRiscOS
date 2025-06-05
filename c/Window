@@ -2,7 +2,9 @@
 
 #include <string.h>
 
-void drawHUD(osspriteop_area *area, HUD *hud, Player *mario, int phaseNum, os_factors *factors, int x, int y, FILE *logFile)
+#include "oslib/os.h"
+
+void drawHUD(osspriteop_area *area, HUD *hud, Player *mario, int phaseNum, os_factors *factors, int x, int y, int bonusLevel, FILE *logFile)
 {
 	//Points I
 	os_error *e = xosspriteop_put_sprite_scaled(
@@ -108,7 +110,7 @@ void drawHUD(osspriteop_area *area, HUD *hud, Player *mario, int phaseNum, os_fa
 		}
 	}
 	
-	//Phase
+	//Phase bottom-left corner
 	e = xosspriteop_put_sprite_scaled(
 		osspriteop_PTR,
 		area,
@@ -152,6 +154,92 @@ void drawHUD(osspriteop_area *area, HUD *hud, Player *mario, int phaseNum, os_fa
 			break;
 		}
 	}
+	
+	//Phase at start of level
+	if (os_read_monotonic_time() < hud->phaseDisplayTime)
+	{
+		e = xosspriteop_put_sprite_scaled(
+			osspriteop_PTR,
+			area,
+			(osspriteop_id) hud->phaseText,
+			x + 96*4,
+			y + 80*4,
+			os_ACTION_OVERWRITE | osspriteop_GIVEN_WIDE_ENTRIES | 0x8,
+			factors,
+			mario->mainTransTab
+		);
+		
+		for (int i = 0; i < 2; i++)
+		{
+			e = xosspriteop_put_sprite_scaled(
+				osspriteop_PTR,
+				area,
+				(osspriteop_id) hud->phaseNumDisplay[i],
+				(x + 96*4 + 48*4) + (i * (8*4)),
+				y + 80*4,
+				os_ACTION_OVERWRITE | osspriteop_GIVEN_WIDE_ENTRIES | 0x8,
+				factors,
+				mario->mainTransTab
+			);
+			
+			if (e != NULL)
+			{
+				fprintf(logFile, "Put phaseNumDisplay failed\n"
+					"	errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+				fflush(logFile);
+			}
+			
+			if (phaseNum < 10)
+			{
+				break;
+			}
+		}
+	}
+	
+	//Timer for bonus level
+	if (bonusLevel)
+	{
+		e = xosspriteop_put_sprite_scaled(
+			osspriteop_PTR,
+			area,
+			(osspriteop_id) hud->timerBox,
+			x + 106*4,
+			y + 178*4,
+			os_ACTION_OVERWRITE | osspriteop_GIVEN_WIDE_ENTRIES | 0x8,
+			factors,
+			mario->mainTransTab
+		);
+		
+		if (e != NULL)
+		{
+			fprintf(logFile, "Put timer_box failed\n"
+				"	errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+			fflush(logFile);
+		}
+		
+		for (int i = 0; i < 4; i++)
+		{
+			e = xosspriteop_put_sprite_scaled(
+				osspriteop_PTR,
+				area,
+				(osspriteop_id) hud->timerDisplay[i],
+				(x + 112*4) + (i * (8*4)),
+				y + 184*4,
+				os_ACTION_OVERWRITE | osspriteop_GIVEN_WIDE_ENTRIES | 0x8,
+				factors,
+				mario->mainTransTab
+			);
+			
+			if (e != NULL)
+			{
+				fprintf(logFile, "Put timer display failed\n"
+					"	errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+				fflush(logFile);
+			}
+		}
+	}
+	
+	
 }
 
 void drawPlatHit(osspriteop_area *area, Level *level, os_factors *factors, int x, int y, int i, int curPlatRow, FILE *logFile)
@@ -519,7 +607,7 @@ void redrawWindowPlaying(wimp_block *block, osspriteop_area *area, Player *mario
 				drawPlatforms(area, level, factors, x, y, logFile);
 				
 				//Draw HUD
-				drawHUD(area, hud, mario, level->phaseNum, factors, x, y, logFile);
+				drawHUD(area, hud, mario, level->phaseNum, factors, x, y, level->bonusLevel, logFile);
 				
 				//Draw game over text
 				if (*gameState == GAME_OVER)

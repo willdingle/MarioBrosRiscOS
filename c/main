@@ -44,6 +44,7 @@ void (*timerCallback)(void*);
 void *timerWorkspace;
 int enterDelayTime;
 int lastTime;
+int deltaTime;
 int fps;
 
 void initialiseTimer()
@@ -68,10 +69,10 @@ void updateTimer()
 		
 		if (time >= timer)
 		{
-			int deltaTime = time - lastTime;
+			deltaTime = time - lastTime;
 			fps = 100 / deltaTime;
-			fprintf(logFile, "FPS: %i\n", fps);
-			fflush(logFile);
+			//fprintf(logFile, "FPS: %i\n", fps);
+			//fflush(logFile);
 			lastTime = time;
 			timer = 0;
 			timerCallback(timerWorkspace); 
@@ -109,8 +110,16 @@ void updateGame(void *ws)
 				updateHUDScore(&hud, mario.score);
 				increasePhaseNum(&(level.phaseNum), &hud);
 				initLevel(&level, &mario, area, size, logFile);
+				if (level.bonusLevel)
+				{
+					//20 second timer (0.01 second accuracy)
+					hud.timer = 2000;
+					deltaTime = 0;
+					updateHUDTimer(&hud, deltaTime, logFile);
+				}
 				mario.extraLives = 2;
 				setTimer(100, updateGame, ws);
+				hud.phaseDisplayTime = os_read_monotonic_time() + 100 + 400;
 				wimp_force_redraw(block->open.w, 0, 0, 1024, +960);
 			}
 			else
@@ -207,6 +216,19 @@ void updateGame(void *ws)
 				setTimer(500, updateGame, ws);
 			}
 			
+			//Updates timer for bonus levels
+			if (level.bonusLevel)
+			{
+				if (hud.timer >= 0)
+				{
+					updateHUDTimer(&hud, deltaTime, logFile);
+				}
+				else
+				{
+					levelOver = 1;
+				}
+			}
+			
 			//Check if level is over
 			if (levelOver)
 			{
@@ -221,7 +243,15 @@ void updateGame(void *ws)
 				}
 				increasePhaseNum(&(level.phaseNum), &hud);
 				initLevel(&level, mario, area, size, logFile);
+				if (level.bonusLevel)
+				{
+					//20 second timer (0.01 second accuracy)
+					hud.timer = 2000;
+					deltaTime = 0;
+					updateHUDTimer(&hud, deltaTime, logFile);
+				}
 				setTimer(200, updateGame, ws);
+				hud.phaseDisplayTime = os_read_monotonic_time() + 200 + 400;
 			}
 			break;
 		}

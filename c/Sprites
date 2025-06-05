@@ -322,10 +322,53 @@ void selectHUDSprites(
 		(osspriteop_id) "p_equals",
 		&(hud->p_equals)
 	);
-
+	
 	if (e != NULL)
 	{
 		fprintf(logFile, "selecting p_equals failed\n"
+		"   errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+		fflush(logFile);
+	}
+	
+	e = xosspriteop_select_sprite(
+		osspriteop_USER_AREA,
+		area,
+		(osspriteop_id) "phase",
+		&(hud->phaseText)
+	);
+
+	if (e != NULL)
+	{
+		fprintf(logFile, "selecting phase failed\n"
+		"   errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+		fflush(logFile);
+	}
+	
+	//Timer
+	e = xosspriteop_select_sprite(
+		osspriteop_USER_AREA,
+		area,
+		(osspriteop_id) "timer_box",
+		&(hud->timerBox)
+	);
+	
+	if (e != NULL)
+	{
+		fprintf(logFile, "selecting timer_box failed\n"
+		"   errnum = %d: message = '%s'\n", e->errnum, e->errmess);
+		fflush(logFile);
+	}
+	
+	e = xosspriteop_select_sprite(
+		osspriteop_USER_AREA,
+		area,
+		(osspriteop_id) "dec_point",
+		&(hud->decimalPoint)
+	);
+	
+	if (e != NULL)
+	{
+		fprintf(logFile, "selecting decimal_point failed\n"
 		"   errnum = %d: message = '%s'\n", e->errnum, e->errmess);
 		fflush(logFile);
 	}

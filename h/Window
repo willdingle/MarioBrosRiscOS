@@ -6,7 +6,7 @@
 #include "oslib/wimp.h"
 
 void drawText(osspriteop_area *area, char *text, HUD *hud, os_factors *factors, int x, int y, FILE *logFile);
-void drawHUD(osspriteop_area *area, HUD *hud, Player *mario, int phaseNum, os_factors *factors, int x, int y, FILE *logFile);
+void drawHUD(osspriteop_area *area, HUD *hud, Player *mario, int phaseNum, os_factors *factors, int x, int y, int bonusLevel, FILE *logFile);
 void drawPlatHit(osspriteop_area *area, Level *level, os_factors *factors, int x, int y, int i, int curPlatRow, FILE *logFile);
 void drawPlatforms(osspriteop_area *area, Level *level, os_factors *factors, int x, int y, FILE *logFile);
 void redrawWindowPlaying(wimp_block *block, osspriteop_area *area, Player *mario, Level *level, HUD *hud, enum GameState *gameState, os_factors *factors, FILE *logFile);
