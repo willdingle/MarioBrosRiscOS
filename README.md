@@ -1,4 +1,5 @@
 # Mario Bros for RISC OS
+A remake of the NES version of Mario Bros for RISC OS, programmed in C using OSLib.
  
 ## How to run
 1. Go on a RISC OS machine or emulator (I used RPCEmu RISC OS Direct (5.27) Easy Start Bundle: https://www.marutan.net/rpcemu/easystart.html)
